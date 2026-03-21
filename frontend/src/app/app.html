@@ -1,0 +1,17 @@
+<div style="text-align:center; margin-top:30px;">
+  <h1>Usuarios</h1>
+
+  <table border="1" style="margin: auto; margin-top:20px;">
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Rol</th>
+    </tr>
+
+    <tr *ngFor="let usuario of usuarios">
+      <td>{{ usuario.id }}</td>
+      <td>{{ usuario.nombre }}</td>
+      <td>{{ usuario.rol }}</td>
+    </tr>
+  </table>
+</div>

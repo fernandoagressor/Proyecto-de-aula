@@ -29,4 +29,11 @@ public class UsuarioController {
         usuarios.add(usuario);
         return usuario;
     }
+    @DeleteMapping("/{id}")
+    public void eliminarUsuario(@PathVariable Long id) {
+        usuarios.removeIf(usuario -> usuario.getId() == id);
+
+    }
+
+
 }

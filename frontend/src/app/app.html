@@ -1,51 +1,156 @@
-<h1 style="text-align: center;">Usuarios</h1>
+<!-- LOGIN -->
+<div *ngIf="!usuarioLogueado" style="text-align: center; margin-top: 50px;">
+  <h2>Login</h2>
 
-<!-- FORMULARIO CREAR -->
-<div style="text-align: center; margin-bottom: 20px;">
+  <input
+    [(ngModel)]="loginNombre"
+    placeholder="Usuario"
+    style="padding: 8px; margin-right: 10px;"
+  >
 
-  <input [(ngModel)]="nombre" placeholder="Nombre">
-  <input [(ngModel)]="password" placeholder="Password">
-  <input [(ngModel)]="rol" placeholder="Rol">
-
-  <button (click)="crearUsuario()">Crear</button>
-
-</div>
-
-<!-- TABLA -->
-<table border="1" style="margin: auto;">
-
-  <tr>
-    <th>ID</th>
-    <th>Nombre</th>
-    <th>Rol</th>
-    <th>Acciones</th>
-  </tr>
-
-  <tr *ngFor="let u of usuarios">
-    <td>{{u.id}}</td>
-    <td>{{u.nombre}}</td>
-    <td>{{u.rol}}</td>
-
-    <td>
-      <button (click)="seleccionarUsuario(u)">Editar</button>
-      <button (click)="eliminarUsuario(u.id)">Eliminar</button>
-    </td>
-  </tr>
-
-</table>
-
-<!-- FORMULARIO EDITAR -->
-<div *ngIf="usuarioSeleccionado" style="text-align: center; margin-top: 20px;">
-
-  <h3>Editar Usuario</h3>
-
-  <input [(ngModel)]="usuarioSeleccionado.nombre" placeholder="Nombre">
-  <input [(ngModel)]="usuarioSeleccionado.password" placeholder="Password">
-  <input [(ngModel)]="usuarioSeleccionado.rol" placeholder="Rol">
+  <input
+    [(ngModel)]="loginPassword"
+    type="password"
+    placeholder="Contraseña"
+    style="padding: 8px; margin-right: 10px;"
+  >
 
   <br><br>
 
-  <button (click)="actualizarUsuario()">Guardar</button>
-  <button (click)="cancelarEdicion()">Cancelar</button>
+  <button
+    (click)="login()"
+    style="padding: 8px 14px;"
+  >
+    Ingresar
+  </button>
+</div>
+
+<!-- SISTEMA -->
+<div *ngIf="usuarioLogueado">
+
+  <h2 style="text-align: center;">
+    Bienvenido {{ usuarioLogueado.nombre }} - Rol: {{ usuarioLogueado.rol }}
+  </h2>
+
+  <div style="text-align: center; margin-bottom: 20px;">
+    <button
+      (click)="logout()"
+      style="padding: 8px 14px;"
+    >
+      Cerrar sesión
+    </button>
+  </div>
+
+  <h1 style="text-align: center;">Usuarios</h1>
+
+  <!-- FORMULARIO CREAR SOLO ADMIN -->
+  <div *ngIf="esAdmin()" style="text-align: center; margin-bottom: 20px;">
+
+    <input
+      [(ngModel)]="nombre"
+      placeholder="Nombre"
+      style="padding: 8px; margin-right: 10px;"
+    >
+
+    <input
+      [(ngModel)]="password"
+      placeholder="Password"
+      type="password"
+      style="padding: 8px; margin-right: 10px;"
+    >
+
+    <select
+      [(ngModel)]="rol"
+      style="padding: 8px; margin-right: 10px;"
+    >
+      <option value="">Seleccione rol</option>
+      <option value="administrador">Administrador</option>
+      <option value="empleado">Empleado</option>
+    </select>
+
+    <button
+      (click)="crearUsuario()"
+      style="padding: 8px 14px;"
+    >
+      Crear
+    </button>
+  </div>
+
+  <!-- TABLA -->
+  <table
+    border="1"
+    style="margin: auto; border-collapse: collapse; min-width: 500px;"
+  >
+    <tr>
+      <th style="padding: 10px;">ID</th>
+      <th style="padding: 10px;">Nombre</th>
+      <th style="padding: 10px;">Rol</th>
+      <th *ngIf="esAdmin()" style="padding: 10px;">Acciones</th>
+    </tr>
+
+    <tr *ngFor="let u of usuarios">
+      <td style="padding: 10px;">{{ u.id }}</td>
+      <td style="padding: 10px;">{{ u.nombre }}</td>
+      <td style="padding: 10px;">{{ u.rol }}</td>
+
+      <td *ngIf="esAdmin()" style="padding: 10px;">
+        <button
+          (click)="seleccionarUsuario(u)"
+          style="margin-right: 5px;"
+        >
+          Editar
+        </button>
+
+        <button (click)="eliminarUsuario(u.id)">
+          Eliminar
+        </button>
+      </td>
+    </tr>
+  </table>
+
+  <!-- FORMULARIO EDITAR SOLO ADMIN -->
+  <div
+    *ngIf="usuarioSeleccionado && esAdmin()"
+    style="text-align: center; margin-top: 20px;"
+  >
+    <h3>Editar Usuario</h3>
+
+    <input
+      [(ngModel)]="usuarioSeleccionado.nombre"
+      placeholder="Nombre"
+      style="padding: 8px; margin-right: 10px;"
+    >
+
+    <input
+      [(ngModel)]="usuarioSeleccionado.password"
+      placeholder="Password"
+      type="password"
+      style="padding: 8px; margin-right: 10px;"
+    >
+
+    <select
+      [(ngModel)]="usuarioSeleccionado.rol"
+      style="padding: 8px; margin-right: 10px;"
+    >
+      <option value="administrador">Administrador</option>
+      <option value="empleado">Empleado</option>
+    </select>
+
+    <br><br>
+
+    <button
+      (click)="actualizarUsuario()"
+      style="padding: 8px 14px; margin-right: 10px;"
+    >
+      Guardar
+    </button>
+
+    <button
+      (click)="cancelarEdicion()"
+      style="padding: 8px 14px;"
+    >
+      Cancelar
+    </button>
+  </div>
 
 </div>

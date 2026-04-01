@@ -32,7 +32,15 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     public void eliminarUsuario(@PathVariable Long id) {
         usuarios.removeIf(usuario -> usuario.getId() == id);
-
+    }
+    @PostMapping("/login")
+    public Usuario login(@RequestBody Usuario loginData) {
+        for (Usuario u : usuarios) {
+            if (u.getNombre().trim().equalsIgnoreCase(loginData.getNombre().trim()) && u.getPassword().equals(loginData.getPassword())) {
+                return u;
+            }
+        }
+        return null;
     }
     @PutMapping("/{id}")
     public Usuario atualizarUsuario(@PathVariable long id, @RequestBody Usuario usuarioActualizado) {

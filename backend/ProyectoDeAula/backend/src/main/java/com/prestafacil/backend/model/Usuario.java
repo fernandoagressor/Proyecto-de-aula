@@ -1,7 +1,7 @@
 package com.prestafacil.backend.model;
 
 public class Usuario {
-    private long id;
+    private Long id;
     private String nombre;
     private String password;
     private String rol;
@@ -9,7 +9,7 @@ public class Usuario {
     public Usuario(){
 
     }
-    public Usuario(long id, String nombre, String password,String rol){
+    public Usuario(Long id, String nombre, String password,String rol){
         this.id = id;
         this.nombre = nombre;
         this.password = password;

@@ -32,4 +32,9 @@ export class UsuariosService {
   actualizarUsuario(id: number, usuario: any):Observable<any>{
     return this.http.put<void>(`${this.apiUrl}/${id}`, usuario);
   }
+
+
+  login(datos: any){
+  return this.http.post<any>(`http://localhost:8080/api/usuarios/login`, datos);
+  }
 }

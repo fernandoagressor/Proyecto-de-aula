@@ -34,6 +34,18 @@ public class UsuarioController {
         usuarios.removeIf(usuario -> usuario.getId() == id);
 
     }
+    @PutMapping("/{id}")
+    public Usuario atualizarUsuario(@PathVariable long id, @RequestBody Usuario usuarioActualizado) {
+        for (Usuario u : usuarios) {
+            if (u.getId() == id) {
+                u.setNombre(usuarioActualizado.getNombre());
+                u.setPassword(usuarioActualizado.getPassword());
+                u.setRol(usuarioActualizado.getRol());
+                return u;
+            }
+        }
+        return null;
+    }
 
 
 }

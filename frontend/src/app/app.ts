@@ -10,12 +10,13 @@ import { UsuariosService, Usuario } from './usuarios';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App implements OnInit {
+export default class App implements OnInit {
   usuarios: Usuario[] = [];
 
   nombre: string = '';
   password: string = '';
   rol: string = '';
+  usuarioSeleccionado: any = null;
 
   constructor(private usuariosService: UsuariosService) {}
 
@@ -71,4 +72,21 @@ export class App implements OnInit {
       },
     });
   }
+  seleccionarUsuario(usuario: any){
+    this.usuarioSeleccionado = {...usuario}
+  }
+  cancelarEdicion(): void {
+    this.usuarioSeleccionado = null;
+    alert("Edicion cancelada")
+  }
+  actualizarUsuario(){
+    this.usuariosService.actualizarUsuario(this.usuarioSeleccionado.id, this.usuarioSeleccionado)
+      .subscribe(() =>{
+        this.cargarUsuarios();
+        this.usuarioSeleccionado = null;
+      });
+
+  }
 }
+
+

@@ -29,4 +29,7 @@ export class UsuariosService {
   eliminarUsuario(id : number): Observable<void>{
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+  actualizarUsuario(id: number, usuario: any):Observable<any>{
+    return this.http.put<void>(`${this.apiUrl}/${id}`, usuario);
+  }
 }

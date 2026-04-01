@@ -29,9 +29,11 @@
 <div *ngIf="usuarioLogueado">
 
   <h2 style="text-align: center;">
-    Bienvenido {{ usuarioLogueado.nombre }} - Rol: {{ usuarioLogueado.rol }}
+    Bienvenido {{ usuarioLogueado.nombre }}
   </h2>
-
+  <p style="text-align: center;">
+    Rol actual: {{usuarioLogueado.rol}}
+  </p>
   <div style="text-align: center; margin-bottom: 20px;">
     <button
       (click)="logout()"
@@ -41,39 +43,65 @@
     </button>
   </div>
 
-  <h1 style="text-align: center;">Usuarios</h1>
+  <!-- PANEL DEL SISTEMA -->
+  <div *ngIf="usuarioLogueado">
+    <h2 style="text-align: center;">
+      Bienvenido {{ usuarioLogueado.nombre }}
+    </h2>
+    <p style="text-align: center;">
+      Rol actual: {{ usuarioLogueado.rol }}
+    </p>
+    <div style="text-align: center; margin-bottom: 20px;">
+      <button
+        (click)="logout()"
+        style="padding: 8px 14px";
+        >
+          Cerrar sesion
+      </button>
+    </div>
+  </div>
 
-  <!-- FORMULARIO CREAR SOLO ADMIN -->
-  <div *ngIf="esAdmin()" style="text-align: center; margin-bottom: 20px;">
+  <!-- VISTA ADMIN --->
+  <div *ngIf="esAdmin()">
+    <H1 style="text-align: center;">Adminitardor de Usuarios</H1>
+    <div style="text-align: center; margin-bottom: 20px">
+      <input
+        [(ngModel)]="nombre"
+        placeholder="Nombre"
+        style="padding: 8px; margin-right: 10px;"
+      >
 
-    <input
-      [(ngModel)]="nombre"
-      placeholder="Nombre"
-      style="padding: 8px; margin-right: 10px;"
-    >
+      <input
+        [(ngModel)]="password"
+        placeholder="Password"
+        type="password"
+        style="padding: 8px; margin-right: 10px;"
+      >
 
-    <input
-      [(ngModel)]="password"
-      placeholder="Password"
-      type="password"
-      style="padding: 8px; margin-right: 10px;"
-    >
+      <select
+        [(ngModel)]="rol"
+        style="padding: 8px; margin-right: 10px;"
+      >
+        <option value="">Seleccione rol</option>
+        <option value="administrador">Administrador</option>
+        <option value="empleado">Empleado</option>
+      </select>
 
-    <select
-      [(ngModel)]="rol"
-      style="padding: 8px; margin-right: 10px;"
-    >
-      <option value="">Seleccione rol</option>
-      <option value="administrador">Administrador</option>
-      <option value="empleado">Empleado</option>
-    </select>
+      <button
+        (click)="crearUsuario()"
+        style="padding: 8px 14px;"
+      >
+        Crear
+      </button>
+    </div>
+  </div>
 
-    <button
-      (click)="crearUsuario()"
-      style="padding: 8px 14px;"
-    >
-      Crear
-    </button>
+  <!--- VISTA EMPELADO --->
+  <div *ngIf="esEmpleado()">
+    <h1 style="text-align: center;">Consulta de Usuario</h1>
+    <p style="text-align: center;">
+      Como empleado solo puede visualizar la informacion.
+    </p>
   </div>
 
   <!-- TABLA -->

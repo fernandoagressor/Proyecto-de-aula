@@ -22,13 +22,19 @@ export class App implements OnInit {
 
 
   usuarioSeleccionado: Usuario | null = null;
-
   usuarioLogueado: Usuario | null = null;
 
   constructor(private usuariosService: UsuariosService) {}
 
   ngOnInit(): void {
+    this.recuperarSesion();
     this.cargarUsuarios();
+  }
+  recuperarSesion(): void {
+    const usarioGuardado = localStorage.getItem('usuarioLogueado');
+    if (usarioGuardado) {
+      this.usuarioLogueado = JSON.parse(usarioGuardado);
+    }
   }
 
   cargarUsuarios(): void {
@@ -55,6 +61,7 @@ export class App implements OnInit {
         console.log('Respuesta Login: ', respuesta);
         if (respuesta) {
           this.usuarioLogueado = respuesta;
+          localStorage.setItem('usuarioLogueado', JSON.stringify(respuesta));
           this.loginNombre='';
           this.loginPassword='';
           alert('login correcto')
@@ -71,6 +78,7 @@ export class App implements OnInit {
   logout(): void {
     this.usuarioLogueado = null;
     this.usuarioSeleccionado = null;
+    localStorage.removeItem('usuarioLogueado');
   }
   esAdmin(): boolean{
     return this.usuarioLogueado?.rol === 'adminastrador';
@@ -115,19 +123,18 @@ export class App implements OnInit {
       alert('solo el administrador puede eliminar usuarios');
       return;
     }
+    const confirmar = confirm("¿Seguro que quieres eliminar este usuario?");
+    if (!confirmar) {
+      return;
+    }
     this.usuariosService.eliminarUsuario(id).subscribe({
       next: ():void => {
-        console.log('Usuario eliminado');
         this.cargarUsuarios();
       },
       error: (err: unknown):void => {
         console.error('Error al eliminar usuario', err);
       },
     });
-  }
-  logOut(): void {
-    this.usuarioLogueado = null;
-    this.usuarioSeleccionado = null;
   }
 
 

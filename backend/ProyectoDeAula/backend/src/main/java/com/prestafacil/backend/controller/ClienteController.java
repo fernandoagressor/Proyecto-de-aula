@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 @RestController
 @RequestMapping("/api/clientes")
-@CrossOrigin(origins = "httop://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ClienteController {
     private List<Cliente> clientes =  new ArrayList<>();
 
@@ -20,7 +20,7 @@ public class ClienteController {
         return clientes;
     }
     @PostMapping
-    public Cliente criarCliente(@RequestBody Cliente cliente){
+    public Cliente crearCliente(@RequestBody Cliente cliente){
         cliente.setId((long)(clientes.size() + 1));
         clientes.add(cliente);
         return cliente;

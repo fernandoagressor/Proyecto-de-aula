@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsuariosService, Usuario } from './usuarios';
+import { ClienteService, Cliente } from './clientes';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ import { UsuariosService, Usuario } from './usuarios';
 })
 export class App implements OnInit {
   usuarios: Usuario[] = [];
+  clientes: Cliente[] = [];
 
   nombre: string = '';
   password: string = '';
@@ -24,11 +26,18 @@ export class App implements OnInit {
   usuarioSeleccionado: Usuario | null = null;
   usuarioLogueado: Usuario | null = null;
 
-  constructor(private usuariosService: UsuariosService) {}
+  clienteNombre: string = '';
+  clienteCedula: string = '';
+  clienteTelefono: string = '';
+  clienteDireccion: string = '';
+
+  clienteSeleccionado: Cliente | null = null;
+  constructor(private usuariosService: UsuariosService, private clienteService: ClienteService) {}
 
   ngOnInit(): void {
     this.recuperarSesion();
     this.cargarUsuarios();
+    this.cargarClientes();
   }
   recuperarSesion(): void {
     const usarioGuardado = localStorage.getItem('usuarioLogueado');
@@ -47,7 +56,16 @@ export class App implements OnInit {
       },
     });
   }
-
+  cargarClientes(): void {
+    this.clienteService.obtenerClientes().subscribe({
+      next: (data: Cliente[]) => {
+        this.clientes = data;
+      },
+      error: (err: unknown) => {
+        console.error('Error al cargar clientes', err);
+      }
+    })
+  }
 
 
   login(): void {
@@ -81,7 +99,7 @@ export class App implements OnInit {
     localStorage.removeItem('usuarioLogueado');
   }
   esAdmin(): boolean{
-    return this.usuarioLogueado?.rol === 'adminastrador';
+    return this.usuarioLogueado?.rol === 'administrador';
   }
   esEmpleado(): boolean{
     return this.usuarioLogueado?.rol === 'empleado';
@@ -105,12 +123,11 @@ export class App implements OnInit {
     };
 
     this.usuariosService.crearUsuario(nuevoUsuario).subscribe({
-      next: (usuarioCreado: Usuario) => {
-        this.usuarios.push(usuarioCreado);
-
+      next: () => {
         this.nombre = '';
         this.password = '';
         this.rol = '';
+        this.cargarUsuarios();
       },
       error: (err: unknown) => {
         console.error('Error al crear usuario', err);
@@ -171,6 +188,87 @@ export class App implements OnInit {
    }
     cancelarEdicion(): void {
     this.usuarioSeleccionado = null;
+   }
+   crearCliente(): void {
+    if (!this.esAdmin()) {
+      alert('solo el administrador puede editar cliente');
+      return;
+    }
+    if (!this.clienteNombre ||!this.clienteCedula || !this.clienteTelefono || !this.clienteDireccion) {
+      alert("Todos los campos del cliente son obligatorios");
+      return;
+    }
+    const nuevoCliente: Cliente = {
+      id: 0,
+      nombre: this.clienteNombre,
+      cedula: this.clienteCedula,
+      telefono: this.clienteTelefono,
+      direccion: this.clienteDireccion
+    };
+    this.clienteService.crearCliente(nuevoCliente).subscribe({
+      next: () => {
+        this.clienteNombre = '';
+        this.clienteCedula = '';
+        this.clienteTelefono = '';
+        this.clienteDireccion = '';
+        this.cargarClientes();
+      },
+      error: (err: unknown) => {
+        console.error('Error al crear cliente', err);
+      }
+    });
+   }
+   eliminarCliente(id: number): void {
+    if (!this.esAdmin()) {
+      alert("solo el administrador puede eliminar clientes");
+      return;
+    }
+    const confirmar = confirm("¿Seguro que quieres eliminar este cliente?");
+    if (!confirmar) {
+      return;
+    }
+    this.clienteService.eliminarCliente(id).subscribe({
+      next: () => {
+        this.cargarClientes();
+      },
+      error: (err: unknown) => {
+        console.error('Error al eliminar eliminar cliente', err);
+      }
+    });
+   }
+   seleccionarCliente(cliente: Cliente): void {
+    if (!this.esAdmin()) {
+      alert("Solo el administrador puede editar clientes");
+      return;
+    }
+    this.clienteSeleccionado = { ...cliente };
+   }
+   actualizarCliente(): void {
+    if (!this.esAdmin()) {
+      alert("Solo el administrador puede actualizar clientes");
+      return;
+    }
+    if (!this.clienteSeleccionado) {
+      return;
+    }
+    if (!this.clienteSeleccionado.nombre || !this.clienteSeleccionado.cedula ||
+      !this.clienteSeleccionado.telefono || !this.clienteSeleccionado.direccion) {
+      alert("Todos los campos del cliente a editar son obligatorios");
+      return;
+    }
+    this.clienteService.actualizarCliente(this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe({
+      next: () => {
+        this.clienteSeleccionado = null;
+        this.cargarClientes();
+      },
+      error: (err: unknown) => {
+        console.error('Error al actualizar cliente', err);
+      }
+    });
+
+   }
+   cancelarEdicionCliente(): void {
+    this.clienteSeleccionado = null;
    }
 }
 

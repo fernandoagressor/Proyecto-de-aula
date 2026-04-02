@@ -1,6 +1,6 @@
 package com.prestafacil.backend.model;
 
-public class Cliente {
+public class Cliente{
     private Long id;
     private String nombre;
     private String cedula;

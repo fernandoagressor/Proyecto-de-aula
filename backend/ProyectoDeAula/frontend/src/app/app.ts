@@ -8,11 +8,12 @@ import { Usuario } from './services/usuario';
 
 import { UsuariosComponent } from './usuarios/usuarios';
 import { ClientesComponent } from './clientes/clientes';
+import {PrestamosComponent} from './prestamos/prestamos';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, UsuariosComponent, ClientesComponent],
+  imports: [CommonModule, FormsModule, UsuariosComponent, ClientesComponent, UsuariosComponent, PrestamosComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

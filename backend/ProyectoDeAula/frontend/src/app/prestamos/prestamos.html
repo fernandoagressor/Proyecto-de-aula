@@ -1,0 +1,49 @@
+<h2>Préstamos</h2>
+
+<div style="margin-bottom: 20px;">
+  <input type="text" [(ngModel)]="nuevoPrestamo.clienteId" placeholder="ID Cliente">
+  <input type="text" [(ngModel)]="nuevoPrestamo.monto" placeholder="Monto">
+  <input type="text" [(ngModel)]="nuevoPrestamo.plazoMeses" placeholder="Plazo en meses">
+  <input type="text" [(ngModel)]="nuevoPrestamo.interes" placeholder="Interés">
+  <button (click)="crearPrestamo()">Solicitar Préstamo</button>
+</div>
+
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Cliente</th>
+    <th>Monto</th>
+    <th>Plazo</th>
+    <th>Interés</th>
+    <th>Saldo Pendiente</th>
+    <th>Cuota Mensual</th>
+    <th>Estado</th>
+    <th>Abono</th>
+    <th>Acciones</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let prestamo of prestamos">
+    <td>{{ prestamo.id }}</td>
+    <td>{{ prestamo.cliente.nombre }}</td>
+    <td>{{ prestamo.monto }}</td>
+    <td>{{ prestamo.plazoMeses }}</td>
+    <td>{{ prestamo.interes }}</td>
+    <td>{{ prestamo.saldoPendiente }}</td>
+    <td>{{ prestamo.cuotaMensual }}</td>
+    <td>{{ prestamo.estado }}</td>
+    <td>
+      <input
+        type="text"
+        [(ngModel)]="abonos[prestamo.id!]"
+        placeholder="Valor abono">
+    </td>
+    <td>
+      <button (click)="aprobarPrestamo(prestamo.id!)">Aprobar</button>
+      <button (click)="rechazarPrestamo(prestamo.id!)">Rechazar</button>
+      <button (click)="abonarPrestamo(prestamo.id!)">Abonar</button>
+    </td>
+  </tr>
+  </tbody>
+</table>

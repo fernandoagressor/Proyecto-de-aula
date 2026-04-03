@@ -1,0 +1,27 @@
+h2 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+input {
+  margin: 5px;
+  padding: 8px;
+  width: 150px;
+}
+
+button {
+  margin: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+table {
+  width: 95%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+th, td {
+  padding: 10px;
+}

@@ -1,0 +1,106 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { PrestamoService } from '../services/prestamo.service';
+import { Prestamo } from '../services/prestamo';
+
+@Component({
+  selector: 'app-prestamos',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './prestamos.html',
+  styleUrl: './prestamos.css'
+})
+export class PrestamosComponent implements OnInit {
+
+  prestamos: Prestamo[] = [];
+
+  nuevoPrestamo = {
+    clienteId: '',
+    monto: '',
+    plazoMeses: '',
+    interes: ''
+  };
+
+  abonos: { [key: number]: string } = {};
+
+  constructor(private prestamoService: PrestamoService) {}
+
+  ngOnInit(): void {
+    this.cargarPrestamos();
+  }
+
+  cargarPrestamos(): void {
+    this.prestamoService.listarPrestamos().subscribe({
+      next: (data: Prestamo[]) => {
+        this.prestamos = data;
+      },
+      error: (err: any) => {
+        console.error('Error al cargar préstamos', err);
+      }
+    });
+  }
+
+  crearPrestamo(): void {
+    this.prestamoService.solicitarPrestamo(this.nuevoPrestamo).subscribe({
+      next: () => {
+        this.cargarPrestamos();
+        this.nuevoPrestamo = {
+          clienteId: '',
+          monto: '',
+          plazoMeses: '',
+          interes: ''
+        };
+      },
+      error: (err: any) => {
+        console.error('Error al crear préstamo', err);
+      }
+    });
+  }
+
+  aprobarPrestamo(id: number): void {
+    this.prestamoService.aprobarPrestamo(id).subscribe({
+      next: (prestamoActualizado: Prestamo) => {
+        this.prestamos = this.prestamos.map((p: Prestamo) =>
+          p.id === prestamoActualizado.id ? prestamoActualizado : p
+        );
+      },
+      error: (err: any) => {
+        console.error('Error al aprobar préstamo', err);
+      }
+    });
+  }
+
+  rechazarPrestamo(id: number): void {
+    this.prestamoService.rechazarPrestamo(id).subscribe({
+      next: (prestamoActualizado: Prestamo) => {
+        this.prestamos = this.prestamos.map((p: Prestamo) =>
+          p.id === prestamoActualizado.id ? prestamoActualizado : p
+        );
+      },
+      error: (err: any) => {
+        console.error('Error al rechazar préstamo', err);
+      }
+    });
+  }
+
+  abonarPrestamo(id: number): void {
+    const abono = this.abonos[id];
+
+    if (!abono || abono.trim() === '') {
+      return;
+    }
+
+    this.prestamoService.abonarPrestamo(id, abono).subscribe({
+      next: (prestamoActualizado: Prestamo) => {
+        this.prestamos = this.prestamos.map((p: Prestamo) =>
+          p.id === prestamoActualizado.id ? prestamoActualizado : p
+        );
+        this.abonos[id] = '';
+      },
+      error: (err: any) => {
+        console.error('Error al abonar préstamo', err);
+      }
+    });
+  }
+}

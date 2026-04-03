@@ -1,0 +1,46 @@
+<h2 style="text-align: center;">Clientes</h2>
+
+<div style="text-align: center; margin-bottom: 20px;">
+  <input [(ngModel)]="nuevoCliente.nombre" placeholder="Nombre" style="padding: 8px; margin-right: 10px;" />
+  <input [(ngModel)]="nuevoCliente.cedula" placeholder="Cédula" style="padding: 8px; margin-right: 10px;" />
+  <input [(ngModel)]="nuevoCliente.telefono" placeholder="Teléfono" style="padding: 8px; margin-right: 10px;" />
+  <input [(ngModel)]="nuevoCliente.direccion" placeholder="Dirección" style="padding: 8px; margin-right: 10px;" />
+  <button (click)="crearCliente()" style="padding: 8px 14px;">Crear Cliente</button>
+</div>
+
+<table border="1" style="margin: auto; border-collapse: collapse; min-width: 900px;">
+  <tr>
+    <th style="padding: 10px;">ID</th>
+    <th style="padding: 10px;">Nombre</th>
+    <th style="padding: 10px;">Cédula</th>
+    <th style="padding: 10px;">Teléfono</th>
+    <th style="padding: 10px;">Dirección</th>
+    <th style="padding: 10px;">Acciones</th>
+  </tr>
+
+  <tr *ngFor="let c of clientes">
+    <td style="padding: 10px;">{{ c.id }}</td>
+    <td style="padding: 10px;">{{ c.nombre }}</td>
+    <td style="padding: 10px;">{{ c.cedula }}</td>
+    <td style="padding: 10px;">{{ c.telefono }}</td>
+    <td style="padding: 10px;">{{ c.direccion }}</td>
+    <td style="padding: 10px;">
+      <button (click)="seleccionarCliente(c)" style="margin-right: 5px;">Editar</button>
+      <button (click)="eliminarCliente(c.id!)">Eliminar</button>
+    </td>
+  </tr>
+</table>
+
+<div *ngIf="clienteSeleccionado" style="text-align: center; margin-top: 30px;">
+  <h3>Editar Cliente</h3>
+
+  <input [(ngModel)]="clienteSeleccionado.nombre" placeholder="Nombre" style="padding: 8px; margin-right: 10px;" />
+  <input [(ngModel)]="clienteSeleccionado.cedula" placeholder="Cédula" style="padding: 8px; margin-right: 10px;" />
+  <input [(ngModel)]="clienteSeleccionado.telefono" placeholder="Teléfono" style="padding: 8px; margin-right: 10px;" />
+  <input [(ngModel)]="clienteSeleccionado.direccion" placeholder="Dirección" style="padding: 8px; margin-right: 10px;" />
+
+  <br /><br />
+
+  <button (click)="actualizarCliente()" style="padding: 8px 14px; margin-right: 10px;">Actualizar</button>
+  <button (click)="cancelarEdicionCliente()" style="padding: 8px 14px;">Cancelar</button>
+</div>

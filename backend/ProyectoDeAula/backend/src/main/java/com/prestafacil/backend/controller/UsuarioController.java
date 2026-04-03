@@ -1,58 +1,48 @@
 package com.prestafacil.backend.controller;
 
 import com.prestafacil.backend.model.Usuario;
+import com.prestafacil.backend.service.UsuarioService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/usuarios")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UsuarioController {
 
-    private List<Usuario> usuarios = new ArrayList<>();
+    private final UsuarioService usuarioService;
 
-    public UsuarioController() {
-        usuarios.add(new Usuario(1L, "admin", "1234", "administrador"));
-        usuarios.add(new Usuario(2L, "empleado1", "1234", "empleado"));
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping
     public List<Usuario> listarUsuarios() {
-        return usuarios;
+        return usuarioService.listarUsuarios();
     }
 
     @PostMapping
     public Usuario crearUsuario(@RequestBody Usuario usuario) {
-        usuario.setId((long) (usuarios.size() + 1));
-        usuarios.add(usuario);
-        return usuario;
+        return usuarioService.crearUsuario(usuario);
+    }
+    @PutMapping("/{id}")
+    public Usuario actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
+        return usuarioService.actualizarUsuario(id, usuario);
     }
     @DeleteMapping("/{id}")
     public void eliminarUsuario(@PathVariable Long id) {
-        usuarios.removeIf(usuario -> usuario.getId() == id);
+        usuarioService.eliminarUsuario(id);
     }
+
+
+    // Login
     @PostMapping("/login")
-    public Usuario login(@RequestBody Usuario loginData) {
-        for (Usuario u : usuarios) {
-            if (u.getNombre().trim().equalsIgnoreCase(loginData.getNombre().trim()) && u.getPassword().equals(loginData.getPassword())) {
-                return u;
-            }
-        }
-        return null;
-    }
-    @PutMapping("/{id}")
-    public Usuario atualizarUsuario(@PathVariable long id, @RequestBody Usuario usuarioActualizado) {
-        for (Usuario u : usuarios) {
-            if (u.getId() == id) {
-                u.setNombre(usuarioActualizado.getNombre());
-                u.setPassword(usuarioActualizado.getPassword());
-                u.setRol(usuarioActualizado.getRol());
-                return u;
-            }
-        }
-        return null;
+    public Usuario login(@RequestBody Map<String, String> datos) {
+        String nombre = datos.get("nombre");
+        String password = datos.get("password");
+        return usuarioService.login(nombre, password);
     }
 
 

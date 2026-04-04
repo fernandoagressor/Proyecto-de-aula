@@ -1,0 +1,27 @@
+<h2>Mis Préstamos</h2>
+
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Monto</th>
+    <th>Plazo</th>
+    <th>Interés</th>
+    <th>Saldo Pendiente</th>
+    <th>Cuota Mensual</th>
+    <th>Estado</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr *ngFor="let prestamo of prestamos">
+    <td>{{ prestamo.id }}</td>
+    <td>{{ prestamo.monto }}</td>
+    <td>{{ prestamo.plazoMeses }}</td>
+    <td>{{ prestamo.interes }}</td>
+    <td>{{ prestamo.saldoPendiente }}</td>
+    <td>{{ prestamo.cuotaMensual }}</td>
+    <td>{{ prestamo.estado }}</td>
+  </tr>
+  </tbody>
+</table>

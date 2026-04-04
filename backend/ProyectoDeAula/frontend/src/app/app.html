@@ -35,7 +35,10 @@
       </div>
     </div>
   </div>
-
+  <!-- VISTA CLIENTE -->
+  <section class="section-card"*ngIf="esCliente()">
+    <app-mis-prestamos></app-mis-prestamos>
+  </section>
   <!-- SISTEMA -->
   <div *ngIf="usuarioLogueado" class="dashboard-layout">
 

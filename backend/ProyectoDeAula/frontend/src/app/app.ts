@@ -8,6 +8,7 @@ import { DashboardComponent } from './dashboard/dashboard';
 import { UsuarioService } from './services/usuario.service';
 import { Usuario } from './services/usuario';
 import {ConfiguracionComponent} from './configuracion/configuracion';
+import {MisPrestamosComponent} from '././mis-prestamos/mis-Prestamos';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,8 @@ import {ConfiguracionComponent} from './configuracion/configuracion';
     ClientesComponent,
     PrestamosComponent,
     DashboardComponent,
-    ConfiguracionComponent
+    ConfiguracionComponent,
+    MisPrestamosComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
@@ -97,6 +99,9 @@ export class App implements OnInit {
   esEmpleado(): boolean {
     return this.usuarioLogueado !== null &&
       this.usuarioLogueado.rol === 'empleado';
+  }
+  esCliente(): boolean{
+    return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'cliente';
   }
 
 }

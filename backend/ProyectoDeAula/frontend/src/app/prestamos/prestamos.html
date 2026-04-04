@@ -40,9 +40,9 @@
         placeholder="Valor abono">
     </td>
     <td>
-      <button (click)="aprobarPrestamo(prestamo.id!)">Aprobar</button>
-      <button (click)="rechazarPrestamo(prestamo.id!)">Rechazar</button>
-      <button (click)="abonarPrestamo(prestamo.id!)">Abonar</button>
+      <button *ngIf="esAdmin()" (click)="aprobarPrestamo(prestamo.id!)">Aprobar</button>
+      <button *ngIf="esAdmin()" (click)="rechazarPrestamo(prestamo.id!)">Rechazar</button>
+      <button *ngIf="esAdmin() || esEmpleado()" (click)="abonarPrestamo(prestamo.id!)">Abonar</button>
     </td>
   </tr>
   </tbody>

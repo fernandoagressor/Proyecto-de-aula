@@ -1,33 +1,19 @@
-<div *ngIf="!usuarioLogueado" style="text-align: center; margin-top: 60px;">
-  <h1>PrestaFácil</h1>
+<div *ngIf="!usuarioLogueado">
   <h2>Iniciar Sesión</h2>
 
-  <input
-    [(ngModel)]="loginNombre"
-    placeholder="Nombre"
-    style="padding: 10px; margin: 10px; width: 220px;"
-  />
+  <input type="text" [(ngModel)]="loginNombre" placeholder="Nombre">
+  <input type="password" [(ngModel)]="loginPassword" placeholder="Password">
+  <button (click)="iniciarSesion()">Ingresar</button>
 
-  <input
-    [(ngModel)]="loginPassword"
-    type="password"
-    placeholder="Contraseña"
-    style="padding: 10px; margin: 10px; width: 220px;"
-  />
-
-  <br />
-
-  <button (click)="login()" style="padding: 10px 20px; margin-top: 10px;">
-    Ingresar
-  </button>
+  <p *ngIf="mensajeLogin">{{ mensajeLogin }}</p>
 </div>
 
-<div *ngIf="usuarioLogueado" style="margin-top: 20px;">
-  <div style="text-align: center; margin-bottom: 20px;">
-    <h2>Bienvenido {{ usuarioLogueado.nombre }}</h2>
-    <p>Rol actual: {{ usuarioLogueado.rol }}</p>
-    <button (click)="logout()">Cerrar sesión</button>
-  </div>
+<div *ngIf="usuarioLogueado">
+  <h2>Bienvenido {{ usuarioLogueado.nombre }}</h2>
+  <p>Rol actual: {{ usuarioLogueado.rol }}</p>
+  <button (click)="cerrarSesion()">Cerrar sesión</button>
+
+  <hr>
 
   <div *ngIf="esAdmin()">
     <app-usuarios></app-usuarios>
@@ -40,4 +26,3 @@
     <app-prestamos></app-prestamos>
   </div>
 </div>
-

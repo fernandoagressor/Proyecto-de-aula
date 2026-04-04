@@ -27,23 +27,25 @@ public class UsuarioController {
     public Usuario crearUsuario(@RequestBody Usuario usuario) {
         return usuarioService.crearUsuario(usuario);
     }
-    @PutMapping("/{id}")
-    public Usuario actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
-        return usuarioService.actualizarUsuario(id, usuario);
-    }
-    @DeleteMapping("/{id}")
-    public void eliminarUsuario(@PathVariable Long id) {
-        usuarioService.eliminarUsuario(id);
-    }
 
-
-    // Login
     @PostMapping("/login")
     public Usuario login(@RequestBody Map<String, String> datos) {
         String nombre = datos.get("nombre");
         String password = datos.get("password");
         return usuarioService.login(nombre, password);
     }
+    @GetMapping("/{id}")
+    public Usuario obtenerUsuarioPorId(@PathVariable Long id) {
+        return usuarioService.obtenerPorId(id);
+    }
 
+    @PutMapping("/{id}")
+    public Usuario actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
+        return usuarioService.actualizarUsuario(id, usuario);
+    }
 
+    @DeleteMapping("/{id}")
+    public void eliminarUsuario(@PathVariable Long id) {
+        usuarioService.eliminarUsuario(id);
+    }
 }

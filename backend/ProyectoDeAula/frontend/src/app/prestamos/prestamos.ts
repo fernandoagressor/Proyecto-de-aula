@@ -24,10 +24,19 @@ export class PrestamosComponent implements OnInit {
 
   abonos: { [key: number]: string } = {};
 
+  usuarioLogueado: any = null;
+
   constructor(private prestamoService: PrestamoService) {}
 
   ngOnInit(): void {
     this.cargarPrestamos();
+
+    if (typeof window !== 'undefined') {
+      const usuarioGuardado = localStorage.getItem('usuarioLogueado');
+      if (usuarioGuardado) {
+        this.usuarioLogueado = JSON.parse(usuarioGuardado);
+      }
+    }
   }
 
   cargarPrestamos(): void {
@@ -60,10 +69,8 @@ export class PrestamosComponent implements OnInit {
 
   aprobarPrestamo(id: number): void {
     this.prestamoService.aprobarPrestamo(id).subscribe({
-      next: (prestamoActualizado: Prestamo) => {
-        this.prestamos = this.prestamos.map((p: Prestamo) =>
-          p.id === prestamoActualizado.id ? prestamoActualizado : p
-        );
+      next: () => {
+        this.cargarPrestamos();
       },
       error: (err: any) => {
         console.error('Error al aprobar préstamo', err);
@@ -73,10 +80,8 @@ export class PrestamosComponent implements OnInit {
 
   rechazarPrestamo(id: number): void {
     this.prestamoService.rechazarPrestamo(id).subscribe({
-      next: (prestamoActualizado: Prestamo) => {
-        this.prestamos = this.prestamos.map((p: Prestamo) =>
-          p.id === prestamoActualizado.id ? prestamoActualizado : p
-        );
+      next: () => {
+        this.cargarPrestamos();
       },
       error: (err: any) => {
         console.error('Error al rechazar préstamo', err);
@@ -92,15 +97,21 @@ export class PrestamosComponent implements OnInit {
     }
 
     this.prestamoService.abonarPrestamo(id, abono).subscribe({
-      next: (prestamoActualizado: Prestamo) => {
-        this.prestamos = this.prestamos.map((p: Prestamo) =>
-          p.id === prestamoActualizado.id ? prestamoActualizado : p
-        );
+      next: () => {
+        this.cargarPrestamos();
         this.abonos[id] = '';
       },
       error: (err: any) => {
         console.error('Error al abonar préstamo', err);
       }
     });
+  }
+
+  esAdmin(): boolean {
+    return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'administrador';
+  }
+
+  esEmpleado(): boolean {
+    return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'empleado';
   }
 }

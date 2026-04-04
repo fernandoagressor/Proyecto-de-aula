@@ -5,6 +5,7 @@ import com.prestafacil.backend.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -23,25 +24,29 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public void eliminarUsuario(Long id) {
-        usuarioRepository.deleteById(id);
+    public Usuario login(String nombre, String password) {
+        Optional<Usuario> usuario = usuarioRepository.findByNombreAndPassword(nombre, password);
+        return usuario.orElse(null);
+    }
+    public Usuario obtenerPorId(Long id) {
+        return usuarioRepository.findById(id).orElse(null);
     }
 
     public Usuario actualizarUsuario(Long id, Usuario usuarioActualizado) {
-        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
 
-        if (usuario != null) {
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
             usuario.setNombre(usuarioActualizado.getNombre());
             usuario.setPassword(usuarioActualizado.getPassword());
             usuario.setRol(usuarioActualizado.getRol());
-
             return usuarioRepository.save(usuario);
         }
 
         return null;
     }
 
-    public Usuario login(String nombre, String password) {
-        return usuarioRepository.findByNombreAndPassword(nombre, password).orElse(null);
+    public void eliminarUsuario(Long id) {
+        usuarioRepository.deleteById(id);
     }
 }

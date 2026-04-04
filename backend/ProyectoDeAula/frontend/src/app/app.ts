@@ -4,8 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { UsuariosComponent } from './usuarios/usuarios';
 import { ClientesComponent } from './clientes/clientes';
 import { PrestamosComponent } from './prestamos/prestamos';
+import { DashboardComponent } from './dashboard/dashboard';
 import { UsuarioService } from './services/usuario.service';
 import { Usuario } from './services/usuario';
+import {ConfiguracionComponent} from './configuracion/configuracion';
 
 @Component({
   selector: 'app-root',
@@ -15,13 +17,16 @@ import { Usuario } from './services/usuario';
     FormsModule,
     UsuariosComponent,
     ClientesComponent,
-    PrestamosComponent
+    PrestamosComponent,
+    DashboardComponent,
+    ConfiguracionComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App implements OnInit {
 
+  // 🔐 LOGIN
   loginNombre: string = '';
   loginPassword: string = '';
 
@@ -34,6 +39,7 @@ export class App implements OnInit {
     this.recuperarSesion();
   }
 
+  // 🚀 LOGIN REAL
   iniciarSesion(): void {
     this.usuarioService.login({
       nombre: this.loginNombre,
@@ -42,7 +48,12 @@ export class App implements OnInit {
       next: (usuario: Usuario) => {
         if (usuario) {
           this.usuarioLogueado = usuario;
-          localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
+
+          // Guardar sesión
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
+          }
+
           this.mensajeLogin = '';
           this.loginNombre = '';
           this.loginPassword = '';
@@ -57,24 +68,35 @@ export class App implements OnInit {
     });
   }
 
+  // 🚪 CERRAR SESIÓN
   cerrarSesion(): void {
     this.usuarioLogueado = null;
-    localStorage.removeItem('usuarioLogueado');
-  }
 
-  recuperarSesion(): void {
-    const usuarioGuardado = localStorage.getItem('usuarioLogueado');
-
-    if (usuarioGuardado) {
-      this.usuarioLogueado = JSON.parse(usuarioGuardado);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('usuarioLogueado');
     }
   }
 
+  // 🔁 RECUPERAR SESIÓN
+  recuperarSesion(): void {
+    if (typeof window !== 'undefined') {
+      const usuarioGuardado = localStorage.getItem('usuarioLogueado');
+
+      if (usuarioGuardado) {
+        this.usuarioLogueado = JSON.parse(usuarioGuardado);
+      }
+    }
+  }
+
+  // 🔐 ROLES
   esAdmin(): boolean {
-    return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'administrador';
+    return this.usuarioLogueado !== null &&
+      this.usuarioLogueado.rol === 'administrador';
   }
 
   esEmpleado(): boolean {
-    return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'empleado';
+    return this.usuarioLogueado !== null &&
+      this.usuarioLogueado.rol === 'empleado';
   }
+
 }

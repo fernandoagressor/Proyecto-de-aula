@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PrestamoService } from '../services/prestamo.service';
 import { Prestamo } from '../services/prestamo';
+import {Abono} from '../services/abono';
+import {AbonoService} from '../services/abono.service';
 
 @Component({
   selector: 'app-prestamos',
@@ -14,7 +16,8 @@ import { Prestamo } from '../services/prestamo';
 export class PrestamosComponent implements OnInit {
 
   prestamos: Prestamo[] = [];
-
+  historialAbonos: Abono[] = [];
+  prestamoSeleccionadoHistorial: number| null = null;
   nuevoPrestamo = {
     clienteId: '',
     monto: '',
@@ -26,7 +29,20 @@ export class PrestamosComponent implements OnInit {
 
   usuarioLogueado: any = null;
 
-  constructor(private prestamoService: PrestamoService) {}
+  constructor(private prestamoService: PrestamoService, private abonoService: AbonoService) { }
+
+  verHistorial(prestamoId: number): void {
+    this.prestamoSeleccionadoHistorial = prestamoId;
+
+    this.abonoService.listarAbonosPorPrestamo(prestamoId).subscribe({
+      next: (data: Abono[]) => {
+        this.historialAbonos = data;
+      },
+      error: (err: any) => {
+        console.error('Error al cargar historial de abonos', err);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.cargarPrestamos();

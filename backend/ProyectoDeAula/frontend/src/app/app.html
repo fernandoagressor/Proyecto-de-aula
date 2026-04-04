@@ -1,28 +1,92 @@
-<div *ngIf="!usuarioLogueado">
-  <h2>Iniciar Sesión</h2>
+<div class="app-container">
 
-  <input type="text" [(ngModel)]="loginNombre" placeholder="Nombre">
-  <input type="password" [(ngModel)]="loginPassword" placeholder="Password">
-  <button (click)="iniciarSesion()">Ingresar</button>
+  <!-- LOGIN -->
+  <div *ngIf="!usuarioLogueado" class="login-wrapper">
+    <div class="login-card">
 
-  <p *ngIf="mensajeLogin">{{ mensajeLogin }}</p>
-</div>
+      <div class="login-header">
+        <h1>PrestaFácil</h1>
+        <p>Sistema de préstamos</p>
+      </div>
 
-<div *ngIf="usuarioLogueado">
-  <h2>Bienvenido {{ usuarioLogueado.nombre }}</h2>
-  <p>Rol actual: {{ usuarioLogueado.rol }}</p>
-  <button (click)="cerrarSesion()">Cerrar sesión</button>
+      <div class="login-form">
 
-  <hr>
+        <label>Usuario</label>
+        <input
+          [(ngModel)]="loginNombre"
+          placeholder="Ingrese su usuario"
+        />
 
-  <div *ngIf="esAdmin()">
-    <app-usuarios></app-usuarios>
-    <hr>
+        <label>Contraseña</label>
+        <input
+          [(ngModel)]="loginPassword"
+          type="password"
+          placeholder="Ingrese su contraseña"
+        />
+
+        <button class="btn-primary" (click)="iniciarSesion()">
+          Ingresar
+        </button>
+
+        <p class="error-text" *ngIf="mensajeLogin">
+          {{ mensajeLogin }}
+        </p>
+
+      </div>
+    </div>
   </div>
 
-  <div *ngIf="esAdmin() || esEmpleado()">
-    <app-clientes></app-clientes>
-    <hr>
-    <app-prestamos></app-prestamos>
+  <!-- SISTEMA -->
+  <div *ngIf="usuarioLogueado" class="dashboard-layout">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="brand">
+        <h2>PrestaFácil</h2>
+        <span>Panel financiero</span>
+      </div>
+
+      <div class="user-box">
+        <div class="user-info">
+          <strong>{{ usuarioLogueado.nombre }}</strong>
+          <span>{{ usuarioLogueado.rol }}</span>
+        </div>
+
+        <button class="btn-logout" (click)="cerrarSesion()">
+          Cerrar sesión
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENIDO -->
+    <main class="main-content">
+
+      <!-- DASHBOARD -->
+      <section class="section-card">
+        <app-dashboard></app-dashboard>
+      </section>
+
+      <!-- CONFIGURACIÓN (RF001 - SOLO ADMIN) -->
+      <section class="section-card" *ngIf="esAdmin()">
+        <app-configuracion></app-configuracion>
+      </section>
+
+      <!-- USUARIOS (SOLO ADMIN) -->
+      <section class="section-card" *ngIf="esAdmin()">
+        <app-usuarios></app-usuarios>
+      </section>
+
+      <!-- CLIENTES -->
+      <section class="section-card" *ngIf="esAdmin() || esEmpleado()">
+        <app-clientes></app-clientes>
+      </section>
+
+      <!-- PRÉSTAMOS -->
+      <section class="section-card" *ngIf="esAdmin() || esEmpleado()">
+        <app-prestamos></app-prestamos>
+      </section>
+
+    </main>
+
   </div>
 </div>

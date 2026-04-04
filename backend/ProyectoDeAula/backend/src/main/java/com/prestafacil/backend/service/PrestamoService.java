@@ -1,12 +1,13 @@
 package com.prestafacil.backend.service;
 
-import com.prestafacil.backend.model.Cliente;
-import com.prestafacil.backend.model.EstadoPrestamo;
-import com.prestafacil.backend.model.Prestamo;
+import com.prestafacil.backend.model.*;
+import com.prestafacil.backend.repository.AbonoRepository;
 import com.prestafacil.backend.repository.ClienteRepository;
+import com.prestafacil.backend.repository.ConfiguracionSistemaRepository;
 import com.prestafacil.backend.repository.PrestamoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,10 +16,15 @@ public class PrestamoService {
 
     private final PrestamoRepository prestamoRepository;
     private final ClienteRepository clienteRepository;
+    private final AbonoRepository abonoRepository;
+    private final ConfiguracionSistemaRepository configuracionSistemaRepository;
 
-    public PrestamoService(PrestamoRepository prestamoRepository, ClienteRepository clienteRepository) {
+    public PrestamoService(PrestamoRepository prestamoRepository, ClienteRepository clienteRepository,
+                           AbonoRepository abonoRepository, ConfiguracionSistemaRepository configuracionSistemaRepository) {
         this.prestamoRepository = prestamoRepository;
         this.clienteRepository = clienteRepository;
+        this.abonoRepository = abonoRepository;
+        this.configuracionSistemaRepository = configuracionSistemaRepository;
     }
 
     public List<Prestamo> listarPrestamos() {
@@ -32,7 +38,7 @@ public class PrestamoService {
         return prestamoRepository.findById(id).orElse(null);
     }
 
-    public Prestamo solicitarPrestamo(Long clienteId, Double monto, Integer plazoMeses, Double interes) {
+    public Prestamo solicitarPrestamo(Long clienteId, Double monto, Integer plazoMeses) {
         Optional<Cliente> clienteOptional = clienteRepository.findById(clienteId);
 
         if (clienteOptional.isEmpty()) {
@@ -40,6 +46,11 @@ public class PrestamoService {
         }
 
         Cliente cliente = clienteOptional.get();
+
+        ConfiguracionSistema configuracion = configuracionSistemaRepository.findById(1L)
+                .orElse(new ConfiguracionSistema(1L, 0.02));
+
+        Double interes = configuracion.getTasaInteres();
 
         double totalConInteres = monto + (monto * interes);
         double cuotaMensual = totalConInteres / plazoMeses;
@@ -90,6 +101,10 @@ public class PrestamoService {
                 return null;
             }
 
+            if (abono <= 0) {
+                return null;
+            }
+
             double nuevoSaldo = prestamo.getSaldoPendiente() - abono;
 
             if (nuevoSaldo < 0) {
@@ -97,7 +112,21 @@ public class PrestamoService {
             }
 
             prestamo.setSaldoPendiente(nuevoSaldo);
-            return prestamoRepository.save(prestamo);
+
+            if (nuevoSaldo == 0) {
+                prestamo.setEstado(EstadoPrestamo.PAGADO);
+            }
+
+            Prestamo prestamoGuardado = prestamoRepository.save(prestamo);
+
+            Abono nuevoAbono = new Abono();
+            nuevoAbono.setMonto(abono);
+            nuevoAbono.setFecha(LocalDateTime.now());
+            nuevoAbono.setPrestamo(prestamoGuardado);
+
+            abonoRepository.save(nuevoAbono);
+
+            return prestamoGuardado;
         }
 
         return null;

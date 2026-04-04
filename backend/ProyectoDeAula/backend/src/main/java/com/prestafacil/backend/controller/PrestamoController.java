@@ -25,12 +25,13 @@ public class PrestamoController {
         return prestamoService.listarPrestamosPorCliente(clienteId);
     }
     @PostMapping("/solicitar")
-    public Prestamo solicitarPrestamo(@RequestBody Map<String, String> datos) {
+    public Prestamo solicitar(@RequestBody Map<String, String> datos) {
+
         Long clienteId = Long.parseLong(datos.get("clienteId"));
         Double monto = Double.parseDouble(datos.get("monto"));
         Integer plazoMeses = Integer.parseInt(datos.get("plazoMeses"));
-        Double interes = Double.parseDouble(datos.get("interes"));
-        return  prestamoService.solicitarPrestamo(clienteId, monto, plazoMeses, interes);
+
+        return prestamoService.solicitarPrestamo(clienteId, monto, plazoMeses);
     }
     @PutMapping("/{id}/aprobar")
     public Prestamo aprobarPrestamo(@PathVariable Long id) {

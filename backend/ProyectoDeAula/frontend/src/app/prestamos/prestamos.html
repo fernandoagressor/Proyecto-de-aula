@@ -1,14 +1,28 @@
 <h2>Préstamos</h2>
 
-<div style="margin-bottom: 20px;">
-  <input type="text" [(ngModel)]="nuevoPrestamo.clienteId" placeholder="ID Cliente">
-  <input type="text" [(ngModel)]="nuevoPrestamo.monto" placeholder="Monto">
-  <input type="text" [(ngModel)]="nuevoPrestamo.plazoMeses" placeholder="Plazo en meses">
-  <input type="text" [(ngModel)]="nuevoPrestamo.interes" placeholder="Interés">
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+  <input
+    type="text"
+    [(ngModel)]="nuevoPrestamo.clienteId"
+    placeholder="ID Cliente"
+  />
+
+  <input
+    type="text"
+    [(ngModel)]="nuevoPrestamo.monto"
+    placeholder="Monto"
+  />
+
+  <input
+    type="text"
+    [(ngModel)]="nuevoPrestamo.plazoMeses"
+    placeholder="Plazo en meses"
+  />
+
   <button (click)="crearPrestamo()">Solicitar Préstamo</button>
 </div>
 
-<table border="1" cellpadding="8" cellspacing="0">
+<table>
   <thead>
   <tr>
     <th>ID</th>
@@ -23,6 +37,7 @@
     <th>Acciones</th>
   </tr>
   </thead>
+
   <tbody>
   <tr *ngFor="let prestamo of prestamos">
     <td>{{ prestamo.id }}</td>
@@ -32,18 +47,71 @@
     <td>{{ prestamo.interes }}</td>
     <td>{{ prestamo.saldoPendiente }}</td>
     <td>{{ prestamo.cuotaMensual }}</td>
-    <td>{{ prestamo.estado }}</td>
+
+    <td>
+        <span
+          [ngStyle]="{
+            'padding': '6px 10px',
+            'border-radius': '20px',
+            'font-weight': 'bold',
+            'color': 'white',
+            'background-color':
+              prestamo.estado === 'APROBADO' ? '#2e7d32' :
+              prestamo.estado === 'RECHAZADO' ? '#c62828' :
+              prestamo.estado === 'PENDIENTE' ? '#f9a825' :
+              prestamo.estado === 'PAGADO' ? '#1565c0' : '#757575'
+          }"
+        >
+          {{ prestamo.estado }}
+        </span>
+    </td>
+
     <td>
       <input
         type="text"
         [(ngModel)]="abonos[prestamo.id!]"
-        placeholder="Valor abono">
+        placeholder="Valor abono"
+      />
     </td>
-    <td>
-      <button *ngIf="esAdmin()" (click)="aprobarPrestamo(prestamo.id!)">Aprobar</button>
-      <button *ngIf="esAdmin()" (click)="rechazarPrestamo(prestamo.id!)">Rechazar</button>
-      <button *ngIf="esAdmin() || esEmpleado()" (click)="abonarPrestamo(prestamo.id!)">Abonar</button>
+
+    <td style="display: flex; flex-direction: column; gap: 6px; align-items: center;">
+      <button *ngIf="esAdmin()" (click)="aprobarPrestamo(prestamo.id!)">
+        Aprobar
+      </button>
+
+      <button *ngIf="esAdmin()" (click)="rechazarPrestamo(prestamo.id!)">
+        Rechazar
+      </button>
+
+      <button *ngIf="esAdmin() || esEmpleado()" (click)="abonarPrestamo(prestamo.id!)">
+        Abonar
+      </button>
+
+      <button (click)="verHistorial(prestamo.id!)">
+        Historial
+      </button>
     </td>
   </tr>
   </tbody>
 </table>
+
+<div *ngIf="prestamoSeleccionadoHistorial !== null" style="margin-top: 30px;">
+  <h3>Historial de abonos del préstamo {{ prestamoSeleccionadoHistorial }}</h3>
+
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Monto</th>
+      <th>Fecha</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let abono of historialAbonos">
+      <td>{{ abono.id }}</td>
+      <td>{{ abono.monto }}</td>
+      <td>{{ abono.fecha }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

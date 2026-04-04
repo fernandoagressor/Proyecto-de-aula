@@ -1,14 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+// COMPONENTES
 import { UsuariosComponent } from './usuarios/usuarios';
 import { ClientesComponent } from './clientes/clientes';
 import { PrestamosComponent } from './prestamos/prestamos';
 import { DashboardComponent } from './dashboard/dashboard';
+import { ConfiguracionComponent } from './configuracion/configuracion';
+import { MiPerfilComponent } from './mi-perfil/mi-perfil';
+import { MisPrestamosComponent } from './mis-prestamos/mis-prestamos';
+
+// SERVICE
 import { UsuarioService } from './services/usuario.service';
 import { Usuario } from './services/usuario';
-import {ConfiguracionComponent} from './configuracion/configuracion';
-import {MisPrestamosComponent} from '././mis-prestamos/mis-Prestamos';
 
 @Component({
   selector: 'app-root',
@@ -16,11 +21,14 @@ import {MisPrestamosComponent} from '././mis-prestamos/mis-Prestamos';
   imports: [
     CommonModule,
     FormsModule,
+
+    // COMPONENTES
     UsuariosComponent,
     ClientesComponent,
     PrestamosComponent,
     DashboardComponent,
     ConfiguracionComponent,
+    MiPerfilComponent,
     MisPrestamosComponent
   ],
   templateUrl: './app.html',
@@ -28,10 +36,11 @@ import {MisPrestamosComponent} from '././mis-prestamos/mis-Prestamos';
 })
 export class App implements OnInit {
 
-  // 🔐 LOGIN
+  // LOGIN
   loginNombre: string = '';
   loginPassword: string = '';
 
+  // SESIÓN
   usuarioLogueado: Usuario | null = null;
   mensajeLogin: string = '';
 
@@ -41,7 +50,7 @@ export class App implements OnInit {
     this.recuperarSesion();
   }
 
-  // 🚀 LOGIN REAL
+  // 🔐 LOGIN
   iniciarSesion(): void {
     this.usuarioService.login({
       nombre: this.loginNombre,
@@ -51,14 +60,17 @@ export class App implements OnInit {
         if (usuario) {
           this.usuarioLogueado = usuario;
 
-          // Guardar sesión
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
-          }
+          // guardar sesión
+          localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
 
+          // limpiar
           this.mensajeLogin = '';
           this.loginNombre = '';
           this.loginPassword = '';
+
+          // forzar recarga para que los componentes lean la sesión
+          location.reload();
+
         } else {
           this.mensajeLogin = 'Usuario o contraseña incorrectos';
         }
@@ -70,27 +82,22 @@ export class App implements OnInit {
     });
   }
 
-  // 🚪 CERRAR SESIÓN
+  // 🚪 LOGOUT
   cerrarSesion(): void {
     this.usuarioLogueado = null;
-
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('usuarioLogueado');
-    }
+    localStorage.removeItem('usuarioLogueado');
   }
 
-  // 🔁 RECUPERAR SESIÓN
+  // 🔄 RECUPERAR SESIÓN
   recuperarSesion(): void {
-    if (typeof window !== 'undefined') {
-      const usuarioGuardado = localStorage.getItem('usuarioLogueado');
+    const usuarioGuardado = localStorage.getItem('usuarioLogueado');
 
-      if (usuarioGuardado) {
-        this.usuarioLogueado = JSON.parse(usuarioGuardado);
-      }
+    if (usuarioGuardado) {
+      this.usuarioLogueado = JSON.parse(usuarioGuardado);
     }
   }
 
-  // 🔐 ROLES
+  // 🔑 ROLES
   esAdmin(): boolean {
     return this.usuarioLogueado !== null &&
       this.usuarioLogueado.rol === 'administrador';
@@ -100,8 +107,9 @@ export class App implements OnInit {
     return this.usuarioLogueado !== null &&
       this.usuarioLogueado.rol === 'empleado';
   }
-  esCliente(): boolean{
-    return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'cliente';
-  }
 
+  esCliente(): boolean {
+    return this.usuarioLogueado !== null &&
+      this.usuarioLogueado.rol === 'cliente';
+  }
 }

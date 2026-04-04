@@ -35,10 +35,7 @@
       </div>
     </div>
   </div>
-  <!-- VISTA CLIENTE -->
-  <section class="section-card"*ngIf="esCliente()">
-    <app-mis-prestamos></app-mis-prestamos>
-  </section>
+
   <!-- SISTEMA -->
   <div *ngIf="usuarioLogueado" class="dashboard-layout">
 
@@ -69,24 +66,30 @@
         <app-dashboard></app-dashboard>
       </section>
 
-      <!-- CONFIGURACIÓN (RF001 - SOLO ADMIN) -->
+      <!-- ADMIN -->
       <section class="section-card" *ngIf="esAdmin()">
         <app-configuracion></app-configuracion>
       </section>
 
-      <!-- USUARIOS (SOLO ADMIN) -->
       <section class="section-card" *ngIf="esAdmin()">
         <app-usuarios></app-usuarios>
       </section>
 
-      <!-- CLIENTES -->
       <section class="section-card" *ngIf="esAdmin() || esEmpleado()">
         <app-clientes></app-clientes>
       </section>
 
-      <!-- PRÉSTAMOS -->
       <section class="section-card" *ngIf="esAdmin() || esEmpleado()">
         <app-prestamos></app-prestamos>
+      </section>
+
+      <!-- CLIENTE -->
+      <section class="section-card" *ngIf="esCliente()">
+        <app-mi-perfil></app-mi-perfil>
+      </section>
+
+      <section class="section-card" *ngIf="esCliente()">
+        <app-mis-prestamos></app-mis-prestamos>
       </section>
 
     </main>

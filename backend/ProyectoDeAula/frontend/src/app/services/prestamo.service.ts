@@ -18,8 +18,8 @@ export class PrestamoService {
   }
 
   // 🔹 Listar préstamos por cliente
-  listarPrestamosPorCliente(clienteId: number): Observable<Prestamo[]> {
-    return this.http.get<Prestamo[]>(`${this.apiUrl}/cliente/${clienteId}`);
+  listarPorCliente(clienteId: number) {
+    return this.http.get<Prestamo[]>(`http://localhost:8080/api/prestamos/cliente/${clienteId}`);
   }
 
   // 🔹 Obtener préstamo por ID
@@ -53,4 +53,5 @@ export class PrestamoService {
       abono: abono
     });
   }
+
 }

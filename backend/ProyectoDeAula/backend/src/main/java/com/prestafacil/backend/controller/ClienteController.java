@@ -18,19 +18,27 @@ public class ClienteController {
     }
 
     @GetMapping
-    public List<Cliente> listarClientes(){
+    public List<Cliente> listarClientes() {
         return clienteService.listarClientes();
     }
+
+    @GetMapping("/{id}")
+    public Cliente obtenerClientePorId(@PathVariable Long id) {
+        return clienteService.obtenerPorId(id);
+    }
+
     @PostMapping
-    public Cliente crearCliente(@RequestBody Cliente cliente){
+    public Cliente crearCliente(@RequestBody Cliente cliente) {
         return clienteService.crearCliente(cliente);
     }
-    @DeleteMapping("/{id}")
-    public void eliminarCliente(@PathVariable Long id){
-        clienteService.eliminarCliente(id);
-    }
+
     @PutMapping("/{id}")
-    public Cliente atualizarCliente(@PathVariable Long id, @RequestBody Cliente clienteAtualizado){
-        return clienteService.actualizarCliente(id, clienteAtualizado);
+    public Cliente actualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
+        return clienteService.actualizarCliente(id, cliente);
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminarCliente(@PathVariable Long id) {
+        clienteService.eliminarCliente(id);
     }
 }

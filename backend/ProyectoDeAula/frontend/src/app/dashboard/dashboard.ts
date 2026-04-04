@@ -1,52 +1,82 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrestamoService } from '../services/prestamo.service';
-import { AbonoService } from '../services/abono.service';
 import { Prestamo } from '../services/prestamo';
-import { Abono } from '../services/abono';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css'
+  styleUrls: ['./dashboard.css']
 })
 export class DashboardComponent implements OnInit {
 
+  prestamos: Prestamo[] = [];
+
   totalPrestamos: number = 0;
-  totalMontoPrestado: number = 0;
-  totalSaldoPendiente: number = 0;
+  totalPrestado: number = 0;
+  saldoPendiente: number = 0;
   totalAbonado: number = 0;
 
   constructor(
     private prestamoService: PrestamoService,
-    private abonoService: AbonoService
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.cargarDashboard();
+    this.cargarDatos();
   }
 
-  cargarDashboard(): void {
-    this.prestamoService.listarPrestamos().subscribe({
-      next: (prestamos: Prestamo[]) => {
-        this.totalPrestamos = prestamos.length;
-        this.totalMontoPrestado = prestamos.reduce((sum, p) => sum + p.monto, 0);
-        this.totalSaldoPendiente = prestamos.reduce((sum, p) => sum + p.saldoPendiente, 0);
-      },
-      error: (err: any) => {
-        console.error('Error al cargar préstamos del dashboard', err);
-      }
-    });
+  cargarDatos(): void {
+    const usuario = localStorage.getItem('usuarioLogueado');
 
-    this.abonoService.listarAbonos().subscribe({
-      next: (abonos: Abono[]) => {
-        this.totalAbonado = abonos.reduce((sum, a) => sum + a.monto, 0);
-      },
-      error: (err: any) => {
-        console.error('Error al cargar abonos del dashboard', err);
-      }
-    });
+    if (!usuario) return;
+
+    const usuarioObj = JSON.parse(usuario);
+
+    if (usuarioObj.rol === 'cliente' && usuarioObj.clienteId) {
+      this.prestamoService.listarPorCliente(usuarioObj.clienteId)
+        .subscribe({
+          next: (data: Prestamo[]) => {
+            this.prestamos = data;
+
+            this.totalPrestamos = data.length;
+            this.totalPrestado = data.reduce((sum, p) => sum + p.monto, 0);
+            this.saldoPendiente = data.reduce((sum, p) => sum + p.saldoPendiente, 0);
+
+            this.totalAbonado = data.reduce((sum, p) => {
+              const total = p.monto + (p.monto * p.interes);
+              return sum + (total - p.saldoPendiente);
+            }, 0);
+
+            this.cd.detectChanges();
+          },
+          error: (err: any) => {
+            console.error('Error cargando dashboard cliente', err);
+          }
+        });
+    } else {
+      this.prestamoService.listarPrestamos()
+        .subscribe({
+          next: (data: Prestamo[]) => {
+            this.prestamos = data;
+
+            this.totalPrestamos = data.length;
+            this.totalPrestado = data.reduce((sum, p) => sum + p.monto, 0);
+            this.saldoPendiente = data.reduce((sum, p) => sum + p.saldoPendiente, 0);
+
+            this.totalAbonado = data.reduce((sum, p) => {
+              const total = p.monto + (p.monto * p.interes);
+              return sum + (total - p.saldoPendiente);
+            }, 0);
+
+            this.cd.detectChanges();
+          },
+          error: (err: any) => {
+            console.error('Error cargando dashboard general', err);
+          }
+        });
+    }
   }
 }

@@ -42,8 +42,8 @@ public class PrestamoController {
         return prestamoService.rechazarPrestamo(id);
     }
     @PutMapping("/{id}/abonar")
-    public Prestamo abonar(@PathVariable Long id, @RequestBody Map<String, String> datos) {
-        Double abono = Double.parseDouble(datos.get("abono"));
+    public Prestamo abonar(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+        Double abono = Double.valueOf(body.get("abono").toString());
         return prestamoService.abonarPrestamo(id, abono);
     }
     @GetMapping("/{id}")

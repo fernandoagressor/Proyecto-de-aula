@@ -7,9 +7,11 @@ import com.prestafacil.backend.repository.ConfiguracionSistemaRepository;
 import com.prestafacil.backend.repository.PrestamoRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import static com.prestafacil.backend.model.EstadoPrestamo.PAGADO;
 
 @Service
 public class PrestamoService {
@@ -92,43 +94,29 @@ public class PrestamoService {
     }
 
     public Prestamo abonarPrestamo(Long id, Double abono) {
-        Optional<Prestamo> prestamoOptional = prestamoRepository.findById(id);
 
-        if (prestamoOptional.isPresent()) {
-            Prestamo prestamo = prestamoOptional.get();
+        Prestamo prestamo = prestamoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Préstamo no encontrado"));
 
-            if (prestamo.getEstado() != EstadoPrestamo.APROBADO) {
-                return null;
-            }
+        Double saldo = prestamo.getSaldoPendiente();
 
-            if (abono <= 0) {
-                return null;
-            }
-
-            double nuevoSaldo = prestamo.getSaldoPendiente() - abono;
-
-            if (nuevoSaldo < 0) {
-                nuevoSaldo = 0;
-            }
-
-            prestamo.setSaldoPendiente(nuevoSaldo);
-
-            if (nuevoSaldo == 0) {
-                prestamo.setEstado(EstadoPrestamo.PAGADO);
-            }
-
-            Prestamo prestamoGuardado = prestamoRepository.save(prestamo);
-
-            Abono nuevoAbono = new Abono();
-            nuevoAbono.setMonto(abono);
-            nuevoAbono.setFecha(LocalDateTime.now());
-            nuevoAbono.setPrestamo(prestamoGuardado);
-
-            abonoRepository.save(nuevoAbono);
-
-            return prestamoGuardado;
+        if (abono <= 0) {
+            throw new RuntimeException("El abono debe ser mayor a 0");
         }
 
-        return null;
+        if (abono > saldo) {
+            abono = saldo; // 🔥 evita error
+        }
+
+        Double nuevoSaldo = saldo - abono;
+
+        prestamo.setSaldoPendiente(nuevoSaldo);
+
+        // 🔥 si ya pagó todo
+        if (nuevoSaldo == 0) {
+            prestamo.setEstado(PAGADO);
+        }
+
+        return prestamoRepository.save(prestamo);
     }
 }

@@ -1,0 +1,28 @@
+<h2>Mi Perfil</h2>
+
+<div *ngIf="cliente" class="perfil-card">
+
+  <div class="campo">
+    <label>Nombre</label>
+    <input [value]="cliente.nombre" disabled />
+  </div>
+
+  <div class="campo">
+    <label>Cédula</label>
+    <input [value]="cliente.cedula" disabled />
+  </div>
+
+  <div class="campo">
+    <label>Teléfono</label>
+    <input [(ngModel)]="cliente.telefono" />
+  </div>
+
+  <div class="campo">
+    <label>Dirección</label>
+    <input [(ngModel)]="cliente.direccion" />
+  </div>
+
+  <button (click)="guardarCambios()">Guardar cambios</button>
+
+  <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+</div>

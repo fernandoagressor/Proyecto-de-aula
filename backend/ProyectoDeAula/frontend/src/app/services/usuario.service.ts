@@ -33,6 +33,6 @@ export class UsuarioService {
   }
 
   login(datos: { nombre: string; password: string }): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.apiUrl}/login`, datos);
+    return this.http.post<any>('http://localhost:8080/api/usuarios/login', datos);
   }
 }

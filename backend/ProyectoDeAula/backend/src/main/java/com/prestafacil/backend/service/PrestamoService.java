@@ -1,17 +1,18 @@
 package com.prestafacil.backend.service;
 
-import com.prestafacil.backend.model.*;
+import com.prestafacil.backend.model.Abono;
+import com.prestafacil.backend.model.Cliente;
+import com.prestafacil.backend.model.ConfiguracionSistema;
+import com.prestafacil.backend.model.EstadoPrestamo;
+import com.prestafacil.backend.model.Prestamo;
 import com.prestafacil.backend.repository.AbonoRepository;
 import com.prestafacil.backend.repository.ClienteRepository;
 import com.prestafacil.backend.repository.ConfiguracionSistemaRepository;
 import com.prestafacil.backend.repository.PrestamoRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
-import static com.prestafacil.backend.model.EstadoPrestamo.PAGADO;
 
 @Service
 public class PrestamoService {
@@ -21,8 +22,10 @@ public class PrestamoService {
     private final AbonoRepository abonoRepository;
     private final ConfiguracionSistemaRepository configuracionSistemaRepository;
 
-    public PrestamoService(PrestamoRepository prestamoRepository, ClienteRepository clienteRepository,
-                           AbonoRepository abonoRepository, ConfiguracionSistemaRepository configuracionSistemaRepository) {
+    public PrestamoService(PrestamoRepository prestamoRepository,
+                           ClienteRepository clienteRepository,
+                           AbonoRepository abonoRepository,
+                           ConfiguracionSistemaRepository configuracionSistemaRepository) {
         this.prestamoRepository = prestamoRepository;
         this.clienteRepository = clienteRepository;
         this.abonoRepository = abonoRepository;
@@ -36,6 +39,7 @@ public class PrestamoService {
     public List<Prestamo> listarPrestamosPorCliente(Long clienteId) {
         return prestamoRepository.findByClienteId(clienteId);
     }
+
     public Prestamo obtenerPorId(Long id) {
         return prestamoRepository.findById(id).orElse(null);
     }
@@ -64,59 +68,74 @@ public class PrestamoService {
         prestamo.setInteres(interes);
         prestamo.setSaldoPendiente(totalConInteres);
         prestamo.setCuotaMensual(cuotaMensual);
+        prestamo.setCuotasRestantes(plazoMeses);
         prestamo.setEstado(EstadoPrestamo.PENDIENTE);
 
         return prestamoRepository.save(prestamo);
     }
 
     public Prestamo aprobarPrestamo(Long id) {
-        Optional<Prestamo> prestamoOptional = prestamoRepository.findById(id);
+        Prestamo prestamo = prestamoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prestamo no encontrado"));
 
-        if (prestamoOptional.isPresent()) {
-            Prestamo prestamo = prestamoOptional.get();
-            prestamo.setEstado(EstadoPrestamo.APROBADO);
-            return prestamoRepository.save(prestamo);
-        }
-
-        return null;
+        prestamo.setEstado(EstadoPrestamo.APROBADO);
+        return prestamoRepository.save(prestamo);
     }
 
     public Prestamo rechazarPrestamo(Long id) {
-        Optional<Prestamo> prestamoOptional = prestamoRepository.findById(id);
+        Prestamo prestamo = prestamoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prestamo no encontrado"));
 
-        if (prestamoOptional.isPresent()) {
-            Prestamo prestamo = prestamoOptional.get();
-            prestamo.setEstado(EstadoPrestamo.RECHAZADO);
-            return prestamoRepository.save(prestamo);
-        }
-
-        return null;
+        prestamo.setEstado(EstadoPrestamo.RECHAZADO);
+        return prestamoRepository.save(prestamo);
     }
 
     public Prestamo abonarPrestamo(Long id, Double abono) {
-
         Prestamo prestamo = prestamoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Préstamo no encontrado"));
 
-        Double saldo = prestamo.getSaldoPendiente();
+        if (prestamo.getEstado() != EstadoPrestamo.APROBADO) {
+            throw new RuntimeException("Solo se puede abonar a prestamos aprobados");
+        }
 
-        if (abono <= 0) {
+        if (abono == null || abono <= 0) {
             throw new RuntimeException("El abono debe ser mayor a 0");
         }
 
-        if (abono > saldo) {
-            abono = saldo; // 🔥 evita error
+        Double saldoActual = prestamo.getSaldoPendiente();
+
+        if (abono > saldoActual) {
+            abono = saldoActual;
         }
 
-        Double nuevoSaldo = saldo - abono;
-
+        Double nuevoSaldo = saldoActual - abono;
         prestamo.setSaldoPendiente(nuevoSaldo);
 
-        // 🔥 si ya pagó todo
         if (nuevoSaldo == 0) {
-            prestamo.setEstado(PAGADO);
+            prestamo.setEstado(EstadoPrestamo.PAGADO);
+            prestamo.setCuotaMensual(0.0);
+            prestamo.setCuotasRestantes(0);
+        } else {
+            Integer cuotasRestantes = prestamo.getCuotasRestantes();
+
+            if (cuotasRestantes == null || cuotasRestantes <= 0) {
+                cuotasRestantes = 1;
+            } else if (cuotasRestantes > 1) {
+                cuotasRestantes = cuotasRestantes - 1;
+            }
+
+            prestamo.setCuotasRestantes(cuotasRestantes);
+            prestamo.setCuotaMensual(nuevoSaldo / cuotasRestantes);
         }
 
-        return prestamoRepository.save(prestamo);
+        Prestamo prestamoGuardado = prestamoRepository.save(prestamo);
+
+        Abono nuevoAbono = new Abono();
+        nuevoAbono.setPrestamo(prestamoGuardado);
+        nuevoAbono.setMonto(abono);
+        nuevoAbono.setFecha(java.time.LocalDateTime.now());
+        abonoRepository.save(nuevoAbono);
+
+        return prestamoGuardado;
     }
 }

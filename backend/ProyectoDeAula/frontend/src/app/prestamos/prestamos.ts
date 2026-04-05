@@ -58,6 +58,7 @@ export class PrestamosComponent implements OnInit {
   cargarPrestamos(): void {
     this.prestamoService.listarPrestamos().subscribe({
       next: (data: Prestamo[]) => {
+        console.log("PRESTAMOS FRONT:",data);
         this.prestamos = data;
       },
       error: (err: any) => {
@@ -104,15 +105,24 @@ export class PrestamosComponent implements OnInit {
       }
     });
   }
+  calcularProgreso(prestamo: any): number {
+    const total = prestamo.monto + (prestamo.monto * prestamo.interes);
+    if(total === 0) return 0;
+    const pagado = total - prestamo.saldoPendiente;
+    return (pagado / total) * 100;
+  }
+  formatearDinero(valor: number): string {
+    return '$' + valor.toLocaleString('es-CO',{})
+  }
 
   abonarPrestamo(id: number): void {
-    const abono = this.abonos[id];
+    const abono = Number(this.abonos[id]);
 
-    if (!abono || abono.trim() === '') {
+    if (!abono || abono <= 0) {
+      alert("El abono debe ser mayor a 0")
       return;
     }
-
-    this.prestamoService.abonarPrestamo(id, abono).subscribe({
+    this.prestamoService.abonarPrestamo(id, abono.toString()).subscribe({
       next: () => {
         this.cargarPrestamos();
         this.abonos[id] = '';

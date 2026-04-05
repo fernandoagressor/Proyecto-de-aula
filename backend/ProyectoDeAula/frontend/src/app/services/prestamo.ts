@@ -13,4 +13,5 @@ export interface Prestamo {
   saldoPendiente: number;
   cuotaMensual: number;
   estado: string;
+  cuotasRestantes?: number;
 }

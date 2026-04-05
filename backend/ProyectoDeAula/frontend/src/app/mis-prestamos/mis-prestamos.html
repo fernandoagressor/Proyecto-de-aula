@@ -9,6 +9,7 @@
     <th>Interés</th>
     <th>Saldo Pendiente</th>
     <th>Cuota Mensual</th>
+    <th>Cuotas Restantes</th>
     <th>Estado</th>
     <th>Abono</th>
     <th>Acciones</th>
@@ -23,34 +24,18 @@
     <td>{{ prestamo.interes }}</td>
     <td>{{ prestamo.saldoPendiente }}</td>
     <td>{{ prestamo.cuotaMensual }}</td>
-    <td>
-        <span
-          [ngStyle]="{
-            'padding': '6px 10px',
-            'border-radius': '20px',
-            'font-weight': 'bold',
-            'color': 'white',
-            'background-color':
-              prestamo.estado === 'APROBADO' ? '#2e7d32' :
-              prestamo.estado === 'RECHAZADO' ? '#c62828' :
-              prestamo.estado === 'PENDIENTE' ? '#f9a825' :
-              prestamo.estado === 'PAGADO' ? '#1565c0' : '#757575'
-          }"
-        >
-          {{ prestamo.estado }}
-        </span>
-    </td>
+    <td>{{ prestamo.cuotasRestantes }}</td>
 
     <td>
       <input
-        type="text"
+        type="number"
         [(ngModel)]="abonos[prestamo.id!]"
         placeholder="Valor abono"
         [disabled]="!puedeAbonar(prestamo.estado)"
       />
     </td>
 
-    <td style="display: flex; flex-direction: column; gap: 6px; align-items: center;">
+    <td>
       <button
         (click)="abonarPrestamo(prestamo.id!)"
         [disabled]="!puedeAbonar(prestamo.estado)"
@@ -66,20 +51,7 @@
   </tbody>
 </table>
 
-<div *ngIf="prestamoSeleccionadoHistorial !== null" style="margin-top: 30px;">
-  <h3>Prueba manual</h3>
-
-  <input
-    type="number"
-    [(ngModel)]="clientePrueba"
-    placeholder="Escribe clienteId"
-  />
-
-  <button (click)="cargarPrueba()">
-    Cargar Préstamos
-  </button>
-
-  <hr>
+<div *ngIf="prestamoSeleccionadoHistorial !== null" style="margin-top: 20px;">
   <h3>Historial de abonos del préstamo {{ prestamoSeleccionadoHistorial }}</h3>
 
   <table>

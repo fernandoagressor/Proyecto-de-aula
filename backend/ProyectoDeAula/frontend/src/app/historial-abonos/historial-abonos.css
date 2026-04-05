@@ -1,0 +1,46 @@
+.historial-container {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.historial-container h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.cargando {
+  padding: 20px 0;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.tabla-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+thead {
+  background: #f4f6f9;
+}
+
+th, td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+th {
+  color: #1f3e82;
+  font-weight: 700;
+}
+
+td {
+  color: #334155;
+}

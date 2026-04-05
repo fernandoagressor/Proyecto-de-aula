@@ -9,17 +9,21 @@
 
     <div class="card">
       <h3>Total Prestado</h3>
-      <p>{{ totalPrestado }}</p>
+      <p>{{ formatearDinero(totalPrestado) }}</p>
     </div>
 
     <div class="card">
       <h3>Saldo Pendiente</h3>
-      <p>{{ saldoPendiente }}</p>
+      <p>{{ formatearDinero(saldoPendiente) }}</p>
     </div>
 
     <div class="card">
       <h3>Total Abonado</h3>
-      <p>{{ totalAbonado }}</p>
+      <p>{{ formatearDinero(totalAbonado) }}</p>
     </div>
+  </div>
+
+  <div class="grafico-seccion">
+    <app-grafico></app-grafico>
   </div>
 </div>

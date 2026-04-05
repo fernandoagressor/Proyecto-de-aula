@@ -1,0 +1,33 @@
+<div class="historial-container">
+  <h2>Historial de Abonos</h2>
+
+  <div *ngIf="cargando" class="cargando">
+    Cargando historial...
+  </div>
+
+  <div class="tabla-wrapper" *ngIf="!cargando">
+    <table>
+      <thead>
+      <tr>
+        <th>ID Abono</th>
+        <th>Monto</th>
+        <th>Fecha</th>
+        <th>ID Préstamo</th>
+        <th>Cliente</th>
+        <th>Cédula</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let abono of abonos">
+        <td>{{ abono.id }}</td>
+        <td>{{ formatearDinero(abono.monto) }}</td>
+        <td>{{ abono.fecha }}</td>
+        <td>{{ abono.prestamo?.id }}</td>
+        <td>{{ abono.prestamo?.cliente?.nombre }}</td>
+        <td>{{ abono.prestamo?.cliente?.cedula }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

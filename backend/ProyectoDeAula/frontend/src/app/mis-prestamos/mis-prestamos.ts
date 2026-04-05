@@ -17,7 +17,6 @@ export class MisPrestamosComponent implements OnInit {
 
   prestamos: Prestamo[] = [];
   usuarioLogueado: any = null;
-  clientePrueba: number = 0;
 
   abonos: { [key: number]: string } = {};
   historialAbonos: Abono[] = [];
@@ -39,21 +38,6 @@ export class MisPrestamosComponent implements OnInit {
         this.cargarMisPrestamos(this.usuarioLogueado.clienteId);
       }
     }
-  }
-  cargarPrueba(): void {
-    if (!this.clientePrueba) return;
-
-    console.log('Probando clienteId:', this.clientePrueba);
-
-    this.prestamoService.listarPorCliente(this.clientePrueba).subscribe({
-      next: (data) => {
-        console.log('DATA PRUEBA:', data);
-        this.prestamos = data;
-      },
-      error: (err) => {
-        console.error('Error prueba:', err);
-      }
-    });
   }
 
   cargarMisPrestamos(clienteId: number): void {
@@ -102,13 +86,5 @@ export class MisPrestamosComponent implements OnInit {
 
   puedeAbonar(estado: string): boolean {
     return estado === 'APROBADO';
-  }
-
-  calcularCuotasRestantes(prestamo: Prestamo): number {
-    if (!prestamo.cuotaMensual || prestamo.cuotaMensual <= 0) {
-      return 0;
-    }
-
-    return Math.ceil(prestamo.saldoPendiente / prestamo.cuotaMensual);
   }
 }

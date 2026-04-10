@@ -11,6 +11,8 @@ import com.prestafacil.backend.repository.ConfiguracionSistemaRepository;
 import com.prestafacil.backend.repository.PrestamoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +50,20 @@ public class PrestamoService {
         Optional<Cliente> clienteOptional = clienteRepository.findById(clienteId);
 
         if (clienteOptional.isEmpty()) {
-            return null;
+            throw new RuntimeException("Cliente no encontrado");
+        }
+
+        List<Prestamo> prestamosActivos = prestamoRepository.findByClienteIdAndEstadoIn(
+                clienteId,
+                Arrays.asList(
+                        EstadoPrestamo.PENDIENTE,
+                        EstadoPrestamo.APROBADO,
+                        EstadoPrestamo.ABONO_PENDIENTE
+                )
+        );
+
+        if (!prestamosActivos.isEmpty()) {
+            throw new RuntimeException("El cliente ya tiene un préstamo activo o en proceso");
         }
 
         Cliente cliente = clienteOptional.get();
@@ -68,8 +83,13 @@ public class PrestamoService {
         prestamo.setInteres(interes);
         prestamo.setSaldoPendiente(totalConInteres);
         prestamo.setCuotaMensual(cuotaMensual);
-        prestamo.setCuotasRestantes(plazoMeses);
         prestamo.setEstado(EstadoPrestamo.PENDIENTE);
+
+        if (prestamo.getCuotaMensual() != null && prestamo.getCuotaMensual() > 0) {
+            prestamo.setCuotasRestantes((int) Math.ceil(prestamo.getSaldoPendiente() / prestamo.getCuotaMensual()));
+        } else {
+            prestamo.setCuotasRestantes(0);
+        }
 
         return prestamoRepository.save(prestamo);
     }
@@ -90,52 +110,87 @@ public class PrestamoService {
         return prestamoRepository.save(prestamo);
     }
 
-    public Prestamo abonarPrestamo(Long id, Double abono) {
+    public Abono abonarPrestamo(Long id, Double abono) {
         Prestamo prestamo = prestamoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Préstamo no encontrado"));
 
         if (prestamo.getEstado() != EstadoPrestamo.APROBADO) {
-            throw new RuntimeException("Solo se puede abonar a prestamos aprobados");
+            throw new RuntimeException("Solo se puede solicitar abono a préstamos aprobados");
         }
 
         if (abono == null || abono <= 0) {
             throw new RuntimeException("El abono debe ser mayor a 0");
         }
 
-        Double saldoActual = prestamo.getSaldoPendiente();
-
-        if (abono > saldoActual) {
-            abono = saldoActual;
+        if (abono > prestamo.getSaldoPendiente()) {
+            abono = prestamo.getSaldoPendiente();
         }
-
-        Double nuevoSaldo = saldoActual - abono;
-        prestamo.setSaldoPendiente(nuevoSaldo);
-
-        if (nuevoSaldo == 0) {
-            prestamo.setEstado(EstadoPrestamo.PAGADO);
-            prestamo.setCuotaMensual(0.0);
-            prestamo.setCuotasRestantes(0);
-        } else {
-            Integer cuotasRestantes = prestamo.getCuotasRestantes();
-
-            if (cuotasRestantes == null || cuotasRestantes <= 0) {
-                cuotasRestantes = 1;
-            } else if (cuotasRestantes > 1) {
-                cuotasRestantes = cuotasRestantes - 1;
-            }
-
-            prestamo.setCuotasRestantes(cuotasRestantes);
-            prestamo.setCuotaMensual(nuevoSaldo / cuotasRestantes);
-        }
-
-        Prestamo prestamoGuardado = prestamoRepository.save(prestamo);
 
         Abono nuevoAbono = new Abono();
-        nuevoAbono.setPrestamo(prestamoGuardado);
+        nuevoAbono.setPrestamo(prestamo);
         nuevoAbono.setMonto(abono);
-        nuevoAbono.setFecha(java.time.LocalDateTime.now());
-        abonoRepository.save(nuevoAbono);
+        nuevoAbono.setFecha(LocalDateTime.now());
+        nuevoAbono.setEstado("PENDIENTE");
 
-        return prestamoGuardado;
+        prestamo.setEstado(EstadoPrestamo.ABONO_PENDIENTE);
+        prestamoRepository.save(prestamo);
+
+        return abonoRepository.save(nuevoAbono);
+    }
+
+    public Abono aprobarAbono(Long abonoId) {
+        Abono abono = abonoRepository.findById(abonoId)
+                .orElseThrow(() -> new RuntimeException("Abono no encontrado"));
+
+        if (!"PENDIENTE".equals(abono.getEstado())) {
+            throw new RuntimeException("Este abono ya fue procesado");
+        }
+
+        Prestamo prestamo = abono.getPrestamo();
+
+        Double saldoActual = prestamo.getSaldoPendiente();
+        Double montoAbono = abono.getMonto();
+
+        if (montoAbono > saldoActual) {
+            montoAbono = saldoActual;
+        }
+
+        Double nuevoSaldo = saldoActual - montoAbono;
+        prestamo.setSaldoPendiente(nuevoSaldo);
+
+        if (nuevoSaldo <= 0) {
+            prestamo.setSaldoPendiente(0.0);
+            prestamo.setCuotaMensual(0.0);
+            prestamo.setCuotasRestantes(0);
+            prestamo.setEstado(EstadoPrestamo.PAGADO);
+        } else {
+            if (prestamo.getCuotaMensual() != null && prestamo.getCuotaMensual() > 0) {
+                prestamo.setCuotasRestantes((int) Math.ceil(nuevoSaldo / prestamo.getCuotaMensual()));
+            } else {
+                prestamo.setCuotasRestantes(0);
+            }
+            prestamo.setEstado(EstadoPrestamo.APROBADO);
+        }
+
+        prestamoRepository.save(prestamo);
+
+        abono.setEstado("APROBADO");
+        return abonoRepository.save(abono);
+    }
+
+    public Abono rechazarAbono(Long abonoId) {
+        Abono abono = abonoRepository.findById(abonoId)
+                .orElseThrow(() -> new RuntimeException("Abono no encontrado"));
+
+        if (!"PENDIENTE".equals(abono.getEstado())) {
+            throw new RuntimeException("Este abono ya fue procesado");
+        }
+
+        Prestamo prestamo = abono.getPrestamo();
+        prestamo.setEstado(EstadoPrestamo.APROBADO);
+        prestamoRepository.save(prestamo);
+
+        abono.setEstado("RECHAZADO");
+        return abonoRepository.save(abono);
     }
 }

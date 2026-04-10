@@ -1,3 +1,136 @@
-h2{
-  color: #333;
+.page-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  margin: 20px;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.input-modern,
+.select-modern {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  outline: none;
+  font-size: 15px;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.input-modern:focus,
+.select-modern:focus {
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.btn-main {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #2563eb;
+  color: white;
+}
+
+.btn-main:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.btn-edit {
+  background: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-edit:hover {
+  background: #0284c7;
+}
+
+.btn-delete {
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-delete:hover {
+  background: #dc2626;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 16px;
+}
+
+.table-modern {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  min-width: 700px;
+  background: white;
+  border-radius: 16px;
+}
+
+.table-modern thead {
+  background: linear-gradient(90deg, #1d4ed8, #2563eb);
+  color: white;
+}
+
+.table-modern th {
+  padding: 16px 14px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.table-modern td {
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 14px;
+}
+
+.table-modern tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.table-modern tbody tr:hover {
+  background: #eff6ff;
+}
+
+.actions-box {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }

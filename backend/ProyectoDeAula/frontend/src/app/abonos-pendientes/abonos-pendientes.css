@@ -1,0 +1,88 @@
+.page-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  margin: 20px;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 24px;
+}
+
+.mensaje {
+  margin-bottom: 16px;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 16px;
+}
+
+.table-modern {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+  background: white;
+}
+
+.table-modern thead {
+  background: linear-gradient(90deg, #1d4ed8, #2563eb);
+  color: white;
+}
+
+.table-modern th {
+  padding: 16px 14px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.table-modern td {
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 14px;
+}
+
+.table-modern tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.table-modern tbody tr:hover {
+  background: #eff6ff;
+}
+
+.actions-box {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-main {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #16a34a;
+  color: white;
+}
+
+.btn-delete {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #ef4444;
+  color: white;
+}

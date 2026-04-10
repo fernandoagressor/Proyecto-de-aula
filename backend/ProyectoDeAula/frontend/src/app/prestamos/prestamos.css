@@ -204,3 +204,7 @@
 .historial-tabla {
   min-width: 500px;
 }
+.btn-pagar-total {
+  background: #7c3aed;
+  color: white;
+}

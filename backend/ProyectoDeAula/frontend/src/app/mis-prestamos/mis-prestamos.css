@@ -1,49 +1,116 @@
-h2, h3 {
-  margin-top: 0;
-  color: #1f3552;
+.contenedor-prestamos {
+  padding: 20px;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 18px;
-  background: white;
+.titulo {
+  margin-bottom: 20px;
+  color: #1f3e82;
 }
 
-th {
-  background: #eaf1f8;
-  color: #1f3552;
-  font-weight: bold;
-}
-
-th, td {
-  border: 1px solid #d9e2ec;
-  padding: 12px;
-  text-align: center;
-}
-
-input {
-  padding: 8px 10px;
-  border: 1px solid #ccd6e0;
-  border-radius: 8px;
-  width: 140px;
-}
-
-button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 8px;
-  background: #2c5d91;
-  color: white;
-  cursor: pointer;
+.mensaje {
+  margin-bottom: 16px;
+  color: #2563eb;
   font-weight: 600;
 }
 
-button:hover {
-  background: #234b75;
+.grid-prestamos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
 }
 
-button:disabled {
-  background: #b0b7c3;
+.card-prestamo {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
+}
+
+.card-header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.estado {
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.aprobado { background: #d1fae5; color: #065f46; }
+.pendiente { background: #fef3c7; color: #92400e; }
+.rechazado { background: #fee2e2; color: #991b1b; }
+.pagado { background: #e0e7ff; color: #3730a3; }
+
+.card-body p {
+  margin: 6px 0;
+}
+
+.progreso {
+  margin-top: 10px;
+}
+
+.barra {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 10px;
+}
+
+.relleno {
+  height: 8px;
+  background: #2563eb;
+  border-radius: 10px;
+}
+
+.acciones {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.acciones input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.acciones button {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.acciones button:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
+}
+
+.btn-pagar-total {
+  background: #7c3aed;
+}
+
+.historial-box {
+  margin-top: 30px;
+  background: white;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+}
+
+.historial-box table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.historial-box th,
+.historial-box td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px;
+  text-align: center;
 }

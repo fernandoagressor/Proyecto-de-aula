@@ -108,6 +108,14 @@
               </button>
 
               <button
+                class="btn btn-pagar-total"
+                (click)="pagarTotal(prestamo)"
+                [disabled]="prestamo.estado !== 'APROBADO'"
+              >
+                Pagar total
+              </button>
+
+              <button
                 class="btn btn-historial"
                 (click)="verHistorial(prestamo.id!)"
               >

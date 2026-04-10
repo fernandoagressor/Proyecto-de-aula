@@ -24,7 +24,7 @@ public class ClienteController {
 
     @GetMapping("/{id}")
     public Cliente obtenerClientePorId(@PathVariable Long id) {
-        return clienteService.obtenerPorId(id);
+        return clienteService.obtenerClientePorId(id);
     }
 
     @PostMapping

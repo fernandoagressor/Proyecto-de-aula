@@ -1,89 +1,147 @@
 <div class="layout">
+
   <header class="topbar">
     <div class="logo-box">
       <div class="logo-text">
-        <span>Presta Fácil</span>
-        <strong>App</strong>
+        <strong>Presta Fácil</strong>
+        <span>App</span>
       </div>
     </div>
 
-    <div class="topbar-right">
+    <div class="topbar-right" *ngIf="usuarioLogueado">
       <span class="user-name">
-        {{ usuarioLogueado?.nombre }} ({{ usuarioLogueado?.rol }})
+        {{ usuarioLogueado.nombre }} ({{ usuarioLogueado.rol }})
       </span>
 
       <div class="perfil-menu">
         <button class="avatar-btn" (click)="toggleMenuPerfil()">
-          <span class="avatar-circle">👤</span>
+          <span class="avatar-icon">👤</span>
         </button>
 
         <div class="dropdown" *ngIf="menuPerfilAbierto">
-          <button (click)="cambiarPassword()">Cambiar contraseña</button>
-          <button (click)="verInformacion()">Ver información</button>
-          <button (click)="cerrarSesion()">Cerrar sesión</button>
+          <button class="dropdown-item" (click)="cambiarPassword()">
+            Cambiar contraseña
+          </button>
+
+          <button class="dropdown-item" (click)="verInformacion()">
+            Ver información
+          </button>
+
+          <button class="dropdown-item logout" (click)="cerrarSesion()">
+            Cerrar sesión
+          </button>
         </div>
       </div>
     </div>
   </header>
 
   <div class="contenido-principal">
+
     <aside class="sidebar">
-      <h2>{{ esCliente() ? 'Cliente' : esEmpleado() ? 'Empleado' : 'Administrador' }}</h2>
+      <h2 class="sidebar-title">
+        <ng-container *ngIf="esAdmin()">Administrador</ng-container>
+        <ng-container *ngIf="esEmpleado()">Empleado</ng-container>
+        <ng-container *ngIf="esCliente()">Cliente</ng-container>
+      </h2>
 
-      <div *ngIf="esAdmin()">
-        <div class="menu-grupo">
-          <button class="menu-titulo" (click)="toggleSeccion('usuarios')">Administrar Usuarios</button>
-          <div class="submenu" *ngIf="seccionActiva === 'usuarios'">
-            <button (click)="irRuta('/panel/usuarios')">Ver Usuarios</button>
-            <button (click)="irRuta('/panel/historial-abonos')">Historial Abonos</button>
+      <div class="menu-lista">
+
+        <!-- ADMIN -->
+        <ng-container *ngIf="esAdmin()">
+
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/usuarios')">
+              Administrar Usuarios
+            </button>
           </div>
-        </div>
 
-        <div class="menu-grupo">
-          <button class="menu-titulo" (click)="toggleSeccion('clientes')">Administrar Clientes</button>
-          <div class="submenu" *ngIf="seccionActiva === 'clientes'">
-            <button (click)="irRuta('/panel/clientes')">Ver Clientes</button>
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/clientes')">
+              Administrar Clientes
+            </button>
           </div>
-        </div>
 
-        <div class="menu-grupo">
-          <button class="menu-titulo" (click)="toggleSeccion('prestamos')">Administrar Préstamos</button>
-          <div class="submenu" *ngIf="seccionActiva === 'prestamos'">
-            <button (click)="irRuta('/panel/prestamos')">Ver Préstamos</button>
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/prestamos')">
+              Administrar Préstamos
+            </button>
           </div>
-        </div>
 
-        <div class="menu-grupo">
-          <button class="menu-titulo" (click)="toggleSeccion('informes')">Ver Informes</button>
-          <div class="submenu" *ngIf="seccionActiva === 'informes'">
-            <button (click)="irRuta('/panel/configuracion')">Configurar Tasa</button>
-            <button (click)="irRuta('/panel/dashboard')">Panel de Estadísticas</button>
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/abonos-pendientes')">
+              Abonos Pendientes
+            </button>
           </div>
-        </div>
-      </div>
 
-      <div *ngIf="esEmpleado()">
-        <div class="menu-grupo">
-          <button class="menu-titulo" (click)="irRuta('/panel/clientes')">Administrar Clientes</button>
-        </div>
-        <div class="menu-grupo">
-          <button class="menu-titulo" (click)="irRuta('/panel/prestamos')">Administrar Préstamos</button>
-        </div>
-        <div class="menu-grupo">
-          <button class="menu-titulo" (click)="irRuta('/panel/dashboard')">Dashboard</button>
-        </div>
-      </div>
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/configuracion')">
+              Configurar Tasa
+            </button>
+          </div>
 
-      <div *ngIf="esCliente()">
-        <div class="menu-grupo">
-          <button class="menu-titulo" (click)="irRuta('/panel/mi-perfil')">Mi Perfil</button>
-        </div>
-        <div class="menu-grupo">
-          <button class="menu-titulo" (click)="irRuta('/panel/mis-prestamos')">Mis Préstamos</button>
-        </div>
-        <div class="menu-grupo">
-          <button class="menu-titulo" (click)="irRuta('/panel/dashboard')">Dashboard</button>
-        </div>
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/dashboard')">
+              Panel de Estadísticas
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- EMPLEADO -->
+        <ng-container *ngIf="esEmpleado()">
+
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/clientes')">
+              Clientes
+            </button>
+          </div>
+
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/prestamos')">
+              Préstamos
+            </button>
+          </div>
+
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/abonos-pendientes')">
+              Abonos Pendientes
+            </button>
+          </div>
+
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/dashboard')">
+              Dashboard
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- CLIENTE -->
+        <ng-container *ngIf="esCliente()">
+
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/mi-perfil')">
+              Mi Perfil
+            </button>
+          </div>
+
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/mis-prestamos')">
+              Mis Préstamos
+            </button>
+          </div>
+
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/solicitar-prestamo')">
+              Solicitar Préstamo
+            </button>
+          </div>
+
+          <div class="menu-grupo">
+            <button class="menu-titulo" (click)="irRuta('/panel/dashboard')">
+              Dashboard
+            </button>
+          </div>
+        </ng-container>
+
       </div>
     </aside>
 

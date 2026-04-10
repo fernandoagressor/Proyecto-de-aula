@@ -105,6 +105,24 @@ export class PrestamosComponent implements OnInit {
       }
     });
   }
+  pagarTotal(prestamo: Prestamo): void {
+    if (prestamo.estado !== 'APROBADO') {
+      return;
+    }
+
+    const saldoTotal = prestamo.saldoPendiente;
+
+    this.prestamoService.abonarPrestamo(prestamo.id!, String(saldoTotal)).subscribe({
+      next: () => {
+        this.cargarPrestamos();
+        this.abonos[prestamo.id!] = '';
+        alert('Préstamo pagado completamente');
+      },
+      error: (err: any) => {
+        console.error('Error al pagar total del préstamo', err);
+      }
+    });
+  }
   calcularProgreso(prestamo: any): number {
     const total = prestamo.monto + (prestamo.monto * prestamo.interes);
     if(total === 0) return 0;

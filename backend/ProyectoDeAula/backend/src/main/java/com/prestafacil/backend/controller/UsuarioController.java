@@ -28,17 +28,6 @@ public class UsuarioController {
         return usuarioService.crearUsuario(usuario);
     }
 
-    @PostMapping("/login")
-    public Usuario login(@RequestBody Map<String, String> datos) {
-        String nombre = datos.get("nombre");
-        String password = datos.get("password");
-        return usuarioService.login(nombre, password);
-    }
-    @GetMapping("/{id}")
-    public Usuario obtenerUsuarioPorId(@PathVariable Long id) {
-        return usuarioService.obtenerPorId(id);
-    }
-
     @PutMapping("/{id}")
     public Usuario actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
         return usuarioService.actualizarUsuario(id, usuario);
@@ -47,5 +36,10 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     public void eliminarUsuario(@PathVariable Long id) {
         usuarioService.eliminarUsuario(id);
+    }
+
+    @PostMapping("/login")
+    public Usuario login(@RequestBody Map<String, String> datos) {
+        return usuarioService.login(datos.get("nombre"), datos.get("password"));
     }
 }

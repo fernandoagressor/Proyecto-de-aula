@@ -2,55 +2,58 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClienteService } from '../services/cliente.service';
-import { Cliente } from '../services/cliente';
 
 @Component({
   selector: 'app-clientes',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './clientes.html',
-  styleUrl: './clientes.css'
+  styleUrls: ['./clientes.css']
 })
 export class ClientesComponent implements OnInit {
 
-  clientes: Cliente[] = [];
+  clientes: any[] = [];
 
-  nuevoCliente: Cliente = {
+  nuevoCliente = {
     nombre: '',
     cedula: '',
     telefono: '',
     direccion: ''
   };
 
-  clienteSeleccionado: Cliente | null = null;
+  clienteEditando: any = null;
 
   constructor(private clienteService: ClienteService) {}
 
   ngOnInit(): void {
-    this.obtenerClientes();
+    this.cargarClientes();
   }
 
-  obtenerClientes(): void {
+  cargarClientes(): void {
     this.clienteService.listarClientes().subscribe({
-      next: (data: Cliente[]) => {
+      next: (data: any[]) => {
         this.clientes = data;
       },
       error: (err: any) => {
-        console.error('Error al obtener clientes', err);
+        console.error('Error al cargar clientes', err);
       }
     });
   }
 
   crearCliente(): void {
+    if (
+      !this.nuevoCliente.nombre ||
+      !this.nuevoCliente.cedula ||
+      !this.nuevoCliente.telefono ||
+      !this.nuevoCliente.direccion
+    ) {
+      return;
+    }
+
     this.clienteService.crearCliente(this.nuevoCliente).subscribe({
       next: () => {
-        this.obtenerClientes();
-        this.nuevoCliente = {
-          nombre: '',
-          cedula: '',
-          telefono: '',
-          direccion: ''
-        };
+        this.cargarClientes();
+        this.limpiarFormulario();
       },
       error: (err: any) => {
         console.error('Error al crear cliente', err);
@@ -58,19 +61,34 @@ export class ClientesComponent implements OnInit {
     });
   }
 
-  seleccionarCliente(cliente: Cliente): void {
-    this.clienteSeleccionado = { ...cliente };
+  editarCliente(cliente: any): void {
+    this.clienteEditando = cliente;
+
+    this.nuevoCliente = {
+      nombre: cliente.nombre,
+      cedula: cliente.cedula,
+      telefono: cliente.telefono,
+      direccion: cliente.direccion
+    };
   }
 
   actualizarCliente(): void {
-    if (!this.clienteSeleccionado || this.clienteSeleccionado.id == null) {
+    if (!this.clienteEditando) {
       return;
     }
 
-    this.clienteService.actualizarCliente(this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe({
+    const clienteActualizado = {
+      id: this.clienteEditando.id,
+      nombre: this.nuevoCliente.nombre,
+      cedula: this.nuevoCliente.cedula,
+      telefono: this.nuevoCliente.telefono,
+      direccion: this.nuevoCliente.direccion
+    };
+
+    this.clienteService.actualizarCliente(clienteActualizado.id, clienteActualizado).subscribe({
       next: () => {
-        this.obtenerClientes();
-        this.clienteSeleccionado = null;
+        this.cargarClientes();
+        this.cancelarEdicion();
       },
       error: (err: any) => {
         console.error('Error al actualizar cliente', err);
@@ -81,7 +99,7 @@ export class ClientesComponent implements OnInit {
   eliminarCliente(id: number): void {
     this.clienteService.eliminarCliente(id).subscribe({
       next: () => {
-        this.obtenerClientes();
+        this.cargarClientes();
       },
       error: (err: any) => {
         console.error('Error al eliminar cliente', err);
@@ -89,7 +107,17 @@ export class ClientesComponent implements OnInit {
     });
   }
 
-  cancelarEdicionCliente(): void {
-    this.clienteSeleccionado = null;
+  cancelarEdicion(): void {
+    this.clienteEditando = null;
+    this.limpiarFormulario();
+  }
+
+  limpiarFormulario(): void {
+    this.nuevoCliente = {
+      nombre: '',
+      cedula: '',
+      telefono: '',
+      direccion: ''
+    };
   }
 }

@@ -7,45 +7,48 @@ import { Router, RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterOutlet],
   templateUrl: './main-layout.component.html',
-  styleUrl: './main-layout.component.css'
+  styleUrls: ['./main-layout.component.css']
 })
 export class MainLayoutComponent implements OnInit {
+
   usuarioLogueado: any = null;
-  seccionActiva: string = '';
   menuPerfilAbierto: boolean = false;
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const usuario = localStorage.getItem('usuarioLogueado');
-    if (usuario) {
-      this.usuarioLogueado = JSON.parse(usuario);
+    const usuarioGuardado = localStorage.getItem('usuarioLogueado');
+
+    if (usuarioGuardado) {
+      this.usuarioLogueado = JSON.parse(usuarioGuardado);
     }
-  }
-
-  toggleSeccion(seccion: string): void {
-    this.seccionActiva = this.seccionActiva === seccion ? '' : seccion;
-  }
-
-  toggleMenuPerfil(): void {
-    this.menuPerfilAbierto = !this.menuPerfilAbierto;
   }
 
   irRuta(ruta: string): void {
     this.router.navigate([ruta]);
   }
 
-  cambiarPassword(): void {
-    alert('Aquí va cambiar contraseña');
-  }
-
-  verInformacion(): void {
-    alert('Aquí va ver información');
+  toggleMenuPerfil(): void {
+    this.menuPerfilAbierto = !this.menuPerfilAbierto;
   }
 
   cerrarSesion(): void {
     localStorage.removeItem('usuarioLogueado');
     this.router.navigate(['/']);
+  }
+
+  cambiarPassword(): void {
+    alert('Aquí luego conectamos cambio de contraseña');
+  }
+
+  verInformacion(): void {
+    if (this.esCliente()) {
+      this.router.navigate(['/panel/mi-perfil']);
+      this.menuPerfilAbierto = false;
+      return;
+    }
+
+    alert('Información del usuario');
   }
 
   esAdmin(): boolean {

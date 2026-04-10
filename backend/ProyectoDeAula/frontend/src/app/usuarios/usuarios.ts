@@ -2,53 +2,56 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsuarioService } from '../services/usuario.service';
-import { Usuario } from '../services/usuario';
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './usuarios.html',
-  styleUrl: './usuarios.css'
+  styleUrls: ['./usuarios.css']
 })
 export class UsuariosComponent implements OnInit {
 
-  usuarios: Usuario[] = [];
+  usuarios: any[] = [];
 
-  nuevoUsuario: Usuario = {
+  nuevoUsuario = {
     nombre: '',
     password: '',
     rol: ''
   };
 
-  usuarioSeleccionado: Usuario | null = null;
+  usuarioEditando: any = null;
 
   constructor(private usuarioService: UsuarioService) {}
 
   ngOnInit(): void {
-    this.obtenerUsuarios();
+    this.cargarUsuarios();
   }
 
-  obtenerUsuarios(): void {
+  cargarUsuarios(): void {
     this.usuarioService.listarUsuarios().subscribe({
-      next: (data: Usuario[]) => {
+      next: (data: any[]) => {
         this.usuarios = data;
       },
       error: (err: any) => {
-        console.error('Error al obtener usuarios', err);
+        console.error('Error al cargar usuarios', err);
       }
     });
   }
 
   crearUsuario(): void {
+    if (
+      !this.nuevoUsuario.nombre ||
+      !this.nuevoUsuario.password ||
+      !this.nuevoUsuario.rol
+    ) {
+      return;
+    }
+
     this.usuarioService.crearUsuario(this.nuevoUsuario).subscribe({
       next: () => {
-        this.obtenerUsuarios();
-        this.nuevoUsuario = {
-          nombre: '',
-          password: '',
-          rol: ''
-        };
+        this.cargarUsuarios();
+        this.limpiarFormulario();
       },
       error: (err: any) => {
         console.error('Error al crear usuario', err);
@@ -56,19 +59,32 @@ export class UsuariosComponent implements OnInit {
     });
   }
 
-  seleccionarUsuario(usuario: Usuario): void {
-    this.usuarioSeleccionado = { ...usuario };
+  editarUsuario(usuario: any): void {
+    this.usuarioEditando = usuario;
+
+    this.nuevoUsuario = {
+      nombre: usuario.nombre,
+      password: '',
+      rol: usuario.rol
+    };
   }
 
   actualizarUsuario(): void {
-    if (!this.usuarioSeleccionado || this.usuarioSeleccionado.id == null) {
+    if (!this.usuarioEditando) {
       return;
     }
 
-    this.usuarioService.actualizarUsuario(this.usuarioSeleccionado.id, this.usuarioSeleccionado).subscribe({
+    const usuarioActualizado = {
+      id: this.usuarioEditando.id,
+      nombre: this.nuevoUsuario.nombre,
+      password: this.nuevoUsuario.password,
+      rol: this.nuevoUsuario.rol
+    };
+
+    this.usuarioService.actualizarUsuario(usuarioActualizado.id, usuarioActualizado).subscribe({
       next: () => {
-        this.obtenerUsuarios();
-        this.usuarioSeleccionado = null;
+        this.cargarUsuarios();
+        this.cancelarEdicionUsuario();
       },
       error: (err: any) => {
         console.error('Error al actualizar usuario', err);
@@ -79,7 +95,7 @@ export class UsuariosComponent implements OnInit {
   eliminarUsuario(id: number): void {
     this.usuarioService.eliminarUsuario(id).subscribe({
       next: () => {
-        this.obtenerUsuarios();
+        this.cargarUsuarios();
       },
       error: (err: any) => {
         console.error('Error al eliminar usuario', err);
@@ -88,6 +104,15 @@ export class UsuariosComponent implements OnInit {
   }
 
   cancelarEdicionUsuario(): void {
-    this.usuarioSeleccionado = null;
+    this.usuarioEditando = null;
+    this.limpiarFormulario();
+  }
+
+  limpiarFormulario(): void {
+    this.nuevoUsuario = {
+      nombre: '',
+      password: '',
+      rol: ''
+    };
   }
 }

@@ -5,7 +5,6 @@ import com.prestafacil.backend.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -24,29 +23,26 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public Usuario login(String nombre, String password) {
-        Optional<Usuario> usuario = usuarioRepository.findByNombreAndPassword(nombre, password);
-        return usuario.orElse(null);
-    }
-    public Usuario obtenerPorId(Long id) {
-        return usuarioRepository.findById(id).orElse(null);
-    }
-
     public Usuario actualizarUsuario(Long id, Usuario usuarioActualizado) {
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (usuarioOptional.isPresent()) {
-            Usuario usuario = usuarioOptional.get();
-            usuario.setNombre(usuarioActualizado.getNombre());
+        usuario.setNombre(usuarioActualizado.getNombre());
+
+        if (usuarioActualizado.getPassword() != null && !usuarioActualizado.getPassword().isEmpty()) {
             usuario.setPassword(usuarioActualizado.getPassword());
-            usuario.setRol(usuarioActualizado.getRol());
-            return usuarioRepository.save(usuario);
         }
 
-        return null;
+        usuario.setRol(usuarioActualizado.getRol());
+
+        return usuarioRepository.save(usuario);
     }
 
     public void eliminarUsuario(Long id) {
         usuarioRepository.deleteById(id);
+    }
+
+    public Usuario login(String nombre, String password) {
+        return usuarioRepository.findByNombreAndPassword(nombre, password).orElse(null);
     }
 }

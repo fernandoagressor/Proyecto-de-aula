@@ -21,6 +21,7 @@ export class MisPrestamosComponent implements OnInit {
   abonos: { [key: number]: string } = {};
   historialAbonos: Abono[] = [];
   prestamoSeleccionadoHistorial: number | null = null;
+  mensaje: string = '';
 
   constructor(
     private prestamoService: PrestamoService,
@@ -53,19 +54,49 @@ export class MisPrestamosComponent implements OnInit {
   }
 
   abonarPrestamo(id: number): void {
-    const abono = this.abonos[id];
+    const valorAbono = this.abonos[id];
 
-    if (!abono || abono.trim() === '') {
+    if (!valorAbono || valorAbono.trim() === '') {
+      this.mensaje = 'Debes escribir un valor para abonar';
       return;
     }
 
-    this.prestamoService.abonarPrestamo(id, abono).subscribe({
+    const abonoNumero = Number(valorAbono);
+
+    if (isNaN(abonoNumero) || abonoNumero <= 0) {
+      this.mensaje = 'El abono debe ser mayor a 0';
+      return;
+    }
+
+    this.prestamoService.abonarPrestamo(id, valorAbono).subscribe({
       next: () => {
-        this.cargarMisPrestamos(this.usuarioLogueado.clienteId);
+        this.mensaje = 'Abono enviado. Queda pendiente de aprobación del administrador';
         this.abonos[id] = '';
+        this.cargarMisPrestamos(this.usuarioLogueado.clienteId);
       },
       error: (err: any) => {
         console.error('Error al abonar préstamo', err);
+        this.mensaje = err?.error?.message || 'No se pudo realizar el abono';
+      }
+    });
+  }
+
+  pagarTotal(prestamo: Prestamo): void {
+    if (!this.puedeAbonar(prestamo.estado)) {
+      return;
+    }
+
+    const saldoTotal = prestamo.saldoPendiente;
+
+    this.prestamoService.abonarPrestamo(prestamo.id!, String(saldoTotal)).subscribe({
+      next: () => {
+        this.mensaje = 'Solicitud de pago total enviada. Queda pendiente de aprobación del administrador';
+        this.abonos[prestamo.id!] = '';
+        this.cargarMisPrestamos(this.usuarioLogueado.clienteId);
+      },
+      error: (err: any) => {
+        console.error('Error al pagar total del préstamo', err);
+        this.mensaje = err?.error?.message || 'No se pudo pagar el préstamo completo';
       }
     });
   }
@@ -79,12 +110,30 @@ export class MisPrestamosComponent implements OnInit {
         this.cd.detectChanges();
       },
       error: (err: any) => {
-        console.error('Error al cargar historial', err);
+        console.error('Error al cargar historial de abonos', err);
       }
     });
   }
 
   puedeAbonar(estado: string): boolean {
     return estado === 'APROBADO';
+  }
+
+  calcularProgreso(prestamo: Prestamo): number {
+    const total = prestamo.monto + (prestamo.monto * prestamo.interes);
+
+    if (total <= 0) {
+      return 0;
+    }
+
+    const pagado = total - prestamo.saldoPendiente;
+    return Math.max(0, Math.min(100, (pagado / total) * 100));
+  }
+
+  formatearDinero(valor: number): string {
+    return '$ ' + valor.toLocaleString('es-CO', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    });
   }
 }

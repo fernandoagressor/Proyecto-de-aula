@@ -4,5 +4,6 @@ public enum EstadoPrestamo {
     PENDIENTE,
     APROBADO,
     RECHAZADO,
-    PAGADO
+    PAGADO,
+    ABONO_PENDIENTE
 }

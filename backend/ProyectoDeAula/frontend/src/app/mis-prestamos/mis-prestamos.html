@@ -1,73 +1,87 @@
-<h2>Mis Préstamos</h2>
+<div class="contenedor-prestamos">
 
-<table>
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Monto</th>
-    <th>Plazo</th>
-    <th>Interés</th>
-    <th>Saldo Pendiente</th>
-    <th>Cuota Mensual</th>
-    <th>Cuotas Restantes</th>
-    <th>Estado</th>
-    <th>Abono</th>
-    <th>Acciones</th>
-  </tr>
-  </thead>
+  <h2 class="titulo">Mis Préstamos</h2>
 
-  <tbody>
-  <tr *ngFor="let prestamo of prestamos">
-    <td>{{ prestamo.id }}</td>
-    <td>{{ prestamo.monto }}</td>
-    <td>{{ prestamo.plazoMeses }}</td>
-    <td>{{ prestamo.interes }}</td>
-    <td>{{ prestamo.saldoPendiente }}</td>
-    <td>{{ prestamo.cuotaMensual }}</td>
-    <td>{{ prestamo.cuotasRestantes }}</td>
+  <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
 
-    <td>
-      <input
-        type="number"
-        [(ngModel)]="abonos[prestamo.id!]"
-        placeholder="Valor abono"
-        [disabled]="!puedeAbonar(prestamo.estado)"
-      />
-    </td>
+  <div class="grid-prestamos">
 
-    <td>
-      <button
-        (click)="abonarPrestamo(prestamo.id!)"
-        [disabled]="!puedeAbonar(prestamo.estado)"
-      >
-        Abonar
-      </button>
+    <div class="card-prestamo" *ngFor="let prestamo of prestamos">
 
-      <button (click)="verHistorial(prestamo.id!)">
-        Historial
-      </button>
-    </td>
-  </tr>
-  </tbody>
-</table>
+      <div class="card-header">
+        <span class="estado" [ngClass]="prestamo.estado.toLowerCase()">
+          {{ prestamo.estado }}
+        </span>
+      </div>
 
-<div *ngIf="prestamoSeleccionadoHistorial !== null" style="margin-top: 20px;">
-  <h3>Historial de abonos del préstamo {{ prestamoSeleccionadoHistorial }}</h3>
+      <div class="card-body">
+        <p><strong>Monto:</strong> {{ formatearDinero(prestamo.monto) }}</p>
+        <p><strong>Saldo:</strong> {{ formatearDinero(prestamo.saldoPendiente) }}</p>
+        <p><strong>Cuota:</strong> {{ formatearDinero(prestamo.cuotaMensual) }}</p>
+        <p><strong>Cuotas restantes:</strong> {{ prestamo.cuotasRestantes }}</p>
+      </div>
 
-  <table>
-    <thead>
-    <tr>
-      <th>ID</th>
-      <th>Monto</th>
-      <th>Fecha</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let abono of historialAbonos">
-      <td>{{ abono.id }}</td>
-      <td>{{ abono.monto }}</td>
-      <td>{{ abono.fecha }}</td>
-    </tr>
-    </tbody>
-  </table>
+      <div class="progreso">
+        <div class="barra">
+          <div
+            class="relleno"
+            [style.width.%]="calcularProgreso(prestamo)"
+          ></div>
+        </div>
+        <span>{{ calcularProgreso(prestamo) | number:'1.0-0' }}%</span>
+      </div>
+
+      <div class="acciones">
+        <input
+          type="text"
+          [(ngModel)]="abonos[prestamo.id!]"
+          placeholder="Valor del abono"
+          [disabled]="!puedeAbonar(prestamo.estado)"
+        />
+
+        <button
+          (click)="abonarPrestamo(prestamo.id!)"
+          [disabled]="!puedeAbonar(prestamo.estado)"
+        >
+          Abonar
+        </button>
+
+        <button
+          class="btn-pagar-total"
+          (click)="pagarTotal(prestamo)"
+          [disabled]="!puedeAbonar(prestamo.estado)"
+        >
+          Pagar total
+        </button>
+
+        <button (click)="verHistorial(prestamo.id!)">
+          Historial
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="historial-box" *ngIf="prestamoSeleccionadoHistorial !== null">
+    <h3>Historial del préstamo #{{ prestamoSeleccionadoHistorial }}</h3>
+
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Monto</th>
+        <th>Fecha</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let abono of historialAbonos">
+        <td>{{ abono.id }}</td>
+        <td>{{ formatearDinero(abono.monto) }}</td>
+        <td>{{ abono.fecha }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
 </div>

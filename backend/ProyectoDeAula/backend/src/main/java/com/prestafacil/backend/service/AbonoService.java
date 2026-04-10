@@ -22,4 +22,8 @@ public class AbonoService {
     public List<Abono> listarAbonosPorPrestamo(Long prestamoId) {
         return abonoRepository.findByPrestamoId(prestamoId);
     }
+
+    public List<Abono> listarAbonosPendientes() {
+        return abonoRepository.findByEstado("PENDIENTE");
+    }
 }

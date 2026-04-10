@@ -1,0 +1,25 @@
+<div class="solicitud-container">
+  <div class="solicitud-card">
+    <h2>Solicitar Préstamo</h2>
+
+    <div class="formulario">
+      <input
+        type="number"
+        [(ngModel)]="monto"
+        placeholder="Monto solicitado"
+      />
+
+      <input
+        type="number"
+        [(ngModel)]="plazoMeses"
+        placeholder="Plazo en meses"
+      />
+
+      <button (click)="solicitarPrestamo()">
+        Enviar solicitud
+      </button>
+    </div>
+
+    <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+  </div>
+</div>

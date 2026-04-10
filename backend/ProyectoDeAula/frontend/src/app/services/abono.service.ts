@@ -19,4 +19,8 @@ export class AbonoService {
   listarAbonosPorPrestamo(prestamoId: number): Observable<Abono[]> {
     return this.http.get<Abono[]>(`${this.apiUrl}/prestamo/${prestamoId}`);
   }
+
+  listarPendientes(): Observable<Abono[]> {
+    return this.http.get<Abono[]>(`${this.apiUrl}/pendientes`);
+  }
 }

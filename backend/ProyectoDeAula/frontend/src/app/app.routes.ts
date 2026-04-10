@@ -10,6 +10,8 @@ import { MisPrestamosComponent } from './mis-prestamos/mis-prestamos';
 import { ConfiguracionComponent } from './configuracion/configuracion';
 import { authGuard } from './auth.guard';
 import {HistorialAbonosComponent} from './historial-abonos/historial-abonos';
+import {SolicitarPrestamoComponent} from './solicitar-prestamo/solicitar-prestamo';
+import {AbonosPendientesComponent} from './abonos-pendientes/abonos-pendientes';
 
 export const routes: Routes = [
   {
@@ -30,6 +32,8 @@ export const routes: Routes = [
       { path: 'configuracion', component: ConfiguracionComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'historial-abonos', component: HistorialAbonosComponent },
+      { path: 'solicitar-prestamo', component: SolicitarPrestamoComponent },
+      { path: 'abonos-pendientes', component: AbonosPendientesComponent }
     ]
   },
   {

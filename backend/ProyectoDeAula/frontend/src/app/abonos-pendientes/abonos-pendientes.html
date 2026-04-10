@@ -1,0 +1,40 @@
+<div class="page-card">
+  <h2 class="page-title">Abonos Pendientes</h2>
+
+  <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+
+  <div class="table-wrapper">
+    <table class="table-modern">
+      <thead>
+      <tr>
+        <th>ID Abono</th>
+        <th>Cliente</th>
+        <th>Cédula</th>
+        <th>ID Préstamo</th>
+        <th>Monto</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let abono of abonosPendientes">
+        <td>{{ abono.id }}</td>
+        <td>{{ abono.prestamo?.cliente?.nombre }}</td>
+        <td>{{ abono.prestamo?.cliente?.cedula }}</td>
+        <td>{{ abono.prestamo?.id }}</td>
+        <td>{{ formatearDinero(abono.monto) }}</td>
+        <td>{{ abono.fecha }}</td>
+        <td>{{ abono.estado }}</td>
+        <td>
+          <div class="actions-box">
+            <button class="btn-main" (click)="aprobarAbono(abono.id!)">Aprobar</button>
+            <button class="btn-delete" (click)="rechazarAbono(abono.id!)">Rechazar</button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

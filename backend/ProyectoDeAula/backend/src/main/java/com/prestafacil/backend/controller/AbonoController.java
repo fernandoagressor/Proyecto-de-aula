@@ -26,4 +26,9 @@ public class AbonoController {
     public List<Abono> listarAbonosPorPrestamo(@PathVariable Long prestamoId) {
         return abonoService.listarAbonosPorPrestamo(prestamoId);
     }
+
+    @GetMapping("/pendientes")
+    public List<Abono> listarPendientes() {
+        return abonoService.listarAbonosPendientes();
+    }
 }

@@ -1,32 +1,59 @@
+<!-- Contenedor general del panel -->
+<!-- Agrupa todo: barra superior, menú lateral y contenido central -->
 <div class="layout">
 
+  <!-- Barra superior del sistema -->
   <header class="topbar">
+
+    <!-- Caja donde está el logo o nombre del sistema -->
     <div class="logo-box">
+
+      <!-- Texto del logo -->
       <div class="logo-text">
+
+        <!-- <strong> pone el texto en negrita -->
         <strong>Presta Fácil</strong>
+
+        <!-- <span> sirve para texto pequeño o complementario -->
         <span>App</span>
       </div>
     </div>
 
+    <!-- Parte derecha de la barra superior -->
+    <!-- *ngIf="usuarioLogueado" muestra esta zona solo si hay usuario iniciado -->
     <div class="topbar-right" *ngIf="usuarioLogueado">
+
+      <!-- Muestra el nombre y rol del usuario -->
       <span class="user-name">
         {{ usuarioLogueado.nombre }} ({{ usuarioLogueado.rol }})
       </span>
 
+      <!-- Contenedor del menú de perfil -->
       <div class="perfil-menu">
+
+        <!-- Botón del avatar -->
+        <!-- (click) ejecuta toggleMenuPerfil() al presionar -->
         <button class="avatar-btn" (click)="toggleMenuPerfil()">
+
+          <!-- Icono visual del usuario -->
           <span class="avatar-icon">👤</span>
         </button>
 
+        <!-- Menú desplegable -->
+        <!-- Solo aparece si menuPerfilAbierto es true -->
         <div class="dropdown" *ngIf="menuPerfilAbierto">
+
+          <!-- Opción para cambiar contraseña -->
           <button class="dropdown-item" (click)="cambiarPassword()">
             Cambiar contraseña
           </button>
 
+          <!-- Opción para ver información del usuario -->
           <button class="dropdown-item" (click)="verInformacion()">
             Ver información
           </button>
 
+          <!-- Opción para cerrar sesión -->
           <button class="dropdown-item logout" (click)="cerrarSesion()">
             Cerrar sesión
           </button>
@@ -35,58 +62,77 @@
     </div>
   </header>
 
+  <!-- Contenedor de menú lateral + contenido central -->
   <div class="contenido-principal">
 
+    <!-- Menú lateral -->
     <aside class="sidebar">
+
+      <!-- Título del menú según el rol -->
       <h2 class="sidebar-title">
+
+        <!-- Si el usuario es administrador, muestra Administrador -->
         <ng-container *ngIf="esAdmin()">Administrador</ng-container>
+
+        <!-- Si el usuario es empleado, muestra Empleado -->
         <ng-container *ngIf="esEmpleado()">Empleado</ng-container>
+
+        <!-- Si el usuario es cliente, muestra Cliente -->
         <ng-container *ngIf="esCliente()">Cliente</ng-container>
       </h2>
 
+      <!-- Lista de opciones del menú -->
       <div class="menu-lista">
 
-        <!-- ADMIN -->
+        <!-- MENÚ DEL ADMIN -->
+        <!-- Solo aparece si esAdmin() devuelve true -->
         <ng-container *ngIf="esAdmin()">
 
           <div class="menu-grupo">
+            <!-- Al hacer clic navega a usuarios -->
             <button class="menu-titulo" (click)="irRuta('/panel/usuarios')">
               Administrar Usuarios
             </button>
           </div>
 
           <div class="menu-grupo">
+            <!-- Navega a clientes -->
             <button class="menu-titulo" (click)="irRuta('/panel/clientes')">
               Administrar Clientes
             </button>
           </div>
 
           <div class="menu-grupo">
+            <!-- Navega a préstamos -->
             <button class="menu-titulo" (click)="irRuta('/panel/prestamos')">
               Administrar Préstamos
             </button>
           </div>
 
           <div class="menu-grupo">
+            <!-- Navega a abonos pendientes -->
             <button class="menu-titulo" (click)="irRuta('/panel/abonos-pendientes')">
               Abonos Pendientes
             </button>
           </div>
 
           <div class="menu-grupo">
+            <!-- Navega a configuración de tasa -->
             <button class="menu-titulo" (click)="irRuta('/panel/configuracion')">
               Configurar Tasa
             </button>
           </div>
 
           <div class="menu-grupo">
+            <!-- Navega al dashboard -->
             <button class="menu-titulo" (click)="irRuta('/panel/dashboard')">
               Panel de Estadísticas
             </button>
           </div>
         </ng-container>
 
-        <!-- EMPLEADO -->
+        <!-- MENÚ DEL EMPLEADO -->
+        <!-- Solo aparece si esEmpleado() devuelve true -->
         <ng-container *ngIf="esEmpleado()">
 
           <div class="menu-grupo">
@@ -114,7 +160,8 @@
           </div>
         </ng-container>
 
-        <!-- CLIENTE -->
+        <!-- MENÚ DEL CLIENTE -->
+        <!-- Solo aparece si esCliente() devuelve true -->
         <ng-container *ngIf="esCliente()">
 
           <div class="menu-grupo">
@@ -145,7 +192,12 @@
       </div>
     </aside>
 
+    <!-- Zona central donde se cargan las páginas -->
     <main class="panel-central">
+
+      <!-- router-outlet es de Angular -->
+      <!-- Aquí se muestra el componente según la ruta seleccionada -->
+      <!-- Ejemplo: /panel/clientes muestra ClientesComponent -->
       <router-outlet></router-outlet>
     </main>
   </div>

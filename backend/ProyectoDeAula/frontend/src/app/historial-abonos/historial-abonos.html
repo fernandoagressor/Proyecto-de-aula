@@ -1,14 +1,34 @@
+<!-- Contenedor principal -->
+<!-- <div> agrupa todo el contenido -->
+<!-- class="historial-container" aplica estilos generales -->
 <div class="historial-container">
+
+  <!-- Título de la página -->
+  <!-- <h2> es un encabezado -->
   <h2>Historial de Abonos</h2>
 
+  <!-- Mensaje de carga -->
+  <!-- *ngIf="cargando" significa:
+       este bloque SOLO se muestra cuando la variable cargando es true -->
   <div *ngIf="cargando" class="cargando">
+
+    <!-- Texto que se muestra mientras se cargan los datos -->
     Cargando historial...
   </div>
 
+  <!-- Contenedor de la tabla -->
+  <!-- *ngIf="!cargando" significa:
+       este bloque SOLO se muestra cuando ya terminó de cargar -->
   <div class="tabla-wrapper" *ngIf="!cargando">
+
+    <!-- Tabla -->
     <table>
+
+      <!-- Encabezado -->
       <thead>
       <tr>
+
+        <!-- Columnas -->
         <th>ID Abono</th>
         <th>Monto</th>
         <th>Fecha</th>
@@ -18,15 +38,33 @@
       </tr>
       </thead>
 
+      <!-- Cuerpo de la tabla -->
       <tbody>
+
+      <!-- *ngFor recorre la lista de abonos -->
+      <!-- Por cada abono crea una fila -->
       <tr *ngFor="let abono of abonos">
+
+        <!-- Muestra el id del abono -->
         <td>{{ abono.id }}</td>
+
+        <!-- Llama a una función del TS para formatear el dinero -->
         <td>{{ formatearDinero(abono.monto) }}</td>
+
+        <!-- Muestra la fecha -->
         <td>{{ abono.fecha }}</td>
+
+        <!-- Accede al préstamo asociado -->
+        <!-- ?. evita errores si el dato es null -->
         <td>{{ abono.prestamo?.id }}</td>
+
+        <!-- Accede al nombre del cliente -->
         <td>{{ abono.prestamo?.cliente?.nombre }}</td>
+
+        <!-- Accede a la cédula del cliente -->
         <td>{{ abono.prestamo?.cliente?.cedula }}</td>
       </tr>
+
       </tbody>
     </table>
   </div>

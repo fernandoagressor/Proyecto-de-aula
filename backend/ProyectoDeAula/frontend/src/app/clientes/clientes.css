@@ -1,136 +1,275 @@
+/* Contenedor principal tipo tarjeta */
 .page-card {
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Bordes redondeados */
   border-radius: 18px;
+
+  /* Espacio interno */
   padding: 28px;
+
+  /* Sombra para dar efecto de elevación */
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+  /* Margen externo */
   margin: 20px;
 }
 
+/* Título de la página */
 .page-title {
+
+  /* Centra el texto */
   text-align: center;
+
+  /* Tamaño grande */
   font-size: 34px;
+
+  /* Texto en negrita */
   font-weight: 700;
+
+  /* Color azul oscuro */
   color: #1e3a8a;
+
+  /* Espacio debajo del título */
   margin-bottom: 24px;
 }
 
+/* Contenedor del formulario */
 .form-grid {
+
+  /* Usa CSS Grid */
   display: grid;
+
+  /* Crea columnas automáticas adaptables */
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  /* Espacio entre elementos */
   gap: 14px;
+
+  /* Espacio inferior */
   margin-bottom: 24px;
 }
 
+/* Inputs y select */
 .input-modern,
 .select-modern {
+
+  /* Ocupan todo el ancho */
   width: 100%;
+
+  /* Espaciado interno */
   padding: 12px 14px;
+
+  /* Borde gris claro */
   border: 1px solid #cbd5e1;
+
+  /* Bordes redondeados */
   border-radius: 12px;
+
+  /* Quita borde azul por defecto */
   outline: none;
+
+  /* Tamaño del texto */
   font-size: 15px;
+
+  /* Fondo gris claro */
   background: #f8fafc;
+
+  /* Animación suave */
   transition: all 0.2s ease;
+
+  /* Evita que padding afecte el tamaño */
   box-sizing: border-box;
 }
 
+/* Efecto cuando el usuario hace clic en input */
 .input-modern:focus,
 .select-modern:focus {
+
+  /* Cambia color del borde */
   border-color: #2563eb;
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Resplandor azul */
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
+/* Botón principal */
 .btn-main {
+
+  /* Sin borde */
   border: none;
+
+  /* Bordes redondeados */
   border-radius: 12px;
+
+  /* Espaciado interno */
   padding: 12px 18px;
+
+  /* Texto en negrita */
   font-weight: 600;
+
+  /* Tamaño de texto */
   font-size: 15px;
+
+  /* Cursor tipo mano */
   cursor: pointer;
+
+  /* Animación */
   transition: all 0.2s ease;
+
+  /* Fondo azul */
   background: #2563eb;
+
+  /* Texto blanco */
   color: white;
 }
 
+/* Efecto hover (cuando pasas el mouse) */
 .btn-main:hover {
+
+  /* Azul más oscuro */
   background: #1d4ed8;
+
+  /* Se mueve ligeramente hacia arriba */
   transform: translateY(-1px);
 }
 
+/* Botón editar */
 .btn-edit {
+
   background: #0ea5e9;
   color: white;
+
   border: none;
   border-radius: 10px;
+
   padding: 8px 14px;
+
   cursor: pointer;
+
   font-weight: 600;
 }
 
+/* Hover del botón editar */
 .btn-edit:hover {
   background: #0284c7;
 }
 
+/* Botón eliminar */
 .btn-delete {
+
   background: #ef4444;
   color: white;
+
   border: none;
   border-radius: 10px;
+
   padding: 8px 14px;
+
   cursor: pointer;
+
   font-weight: 600;
 }
 
+/* Hover del botón eliminar */
 .btn-delete:hover {
   background: #dc2626;
 }
 
+/* Contenedor de tabla */
 .table-wrapper {
+
+  /* Permite scroll horizontal */
   overflow-x: auto;
+
+  /* Bordes redondeados */
   border-radius: 16px;
 }
 
+/* Tabla moderna */
 .table-modern {
+
+  /* Ocupa todo el ancho */
   width: 100%;
+
+  /* Quita espacios entre celdas */
   border-collapse: collapse;
+
+  /* Oculta desbordes */
   overflow: hidden;
+
+  /* Ancho mínimo */
   min-width: 700px;
+
+  /* Fondo blanco */
   background: white;
+
+  /* Bordes redondeados */
   border-radius: 16px;
 }
 
+/* Encabezado de tabla */
 .table-modern thead {
+
+  /* Degradado azul */
   background: linear-gradient(90deg, #1d4ed8, #2563eb);
+
+  /* Texto blanco */
   color: white;
 }
 
+/* Celdas de encabezado */
 .table-modern th {
+
   padding: 16px 14px;
   text-align: center;
+
   font-size: 15px;
   font-weight: 700;
 }
 
+/* Celdas normales */
 .table-modern td {
+
   padding: 14px 12px;
+
   text-align: center;
+
+  /* Línea divisoria */
   border-bottom: 1px solid #e2e8f0;
+
   color: #334155;
+
   font-size: 14px;
 }
 
+/* Filas pares (efecto cebra) */
 .table-modern tbody tr:nth-child(even) {
   background: #f8fafc;
 }
 
+/* Hover en filas */
 .table-modern tbody tr:hover {
   background: #eff6ff;
 }
 
+/* Contenedor de botones */
 .actions-box {
+
+  /* Flexbox */
   display: flex;
+
+  /* Centra botones */
   justify-content: center;
+
+  /* Espacio entre ellos */
   gap: 8px;
+
+  /* Permite que bajen de línea */
   flex-wrap: wrap;
 }

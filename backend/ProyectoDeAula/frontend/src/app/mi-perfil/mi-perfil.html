@@ -1,28 +1,61 @@
+<!-- Título de la vista -->
+<!-- <h2> es un encabezado -->
 <h2>Mi Perfil</h2>
 
+<!-- Contenedor del perfil -->
+<!-- *ngIf="cliente" → SOLO muestra esta sección si el objeto cliente existe -->
+<!-- Evita errores si los datos aún no han llegado del backend -->
 <div *ngIf="cliente" class="perfil-card">
 
+  <!-- Campo: Nombre -->
   <div class="campo">
+
+    <!-- Etiqueta descriptiva -->
     <label>Nombre</label>
+
+    <!-- Input que muestra el nombre -->
+    <!-- [value]="cliente.nombre" → binding de una sola vía (solo muestra el dato) -->
+    <!-- disabled → el usuario NO puede modificarlo -->
     <input [value]="cliente.nombre" disabled />
   </div>
 
+  <!-- Campo: Cédula -->
   <div class="campo">
+
     <label>Cédula</label>
+
+    <!-- Muestra la cédula -->
+    <!-- También está bloqueado (no editable) -->
     <input [value]="cliente.cedula" disabled />
   </div>
 
+  <!-- Campo: Teléfono -->
   <div class="campo">
+
     <label>Teléfono</label>
+
+    <!-- [(ngModel)] → binding bidireccional -->
+    <!-- Permite editar el teléfono -->
+    <!-- Lo que el usuario escriba se guarda en cliente.telefono -->
     <input [(ngModel)]="cliente.telefono" />
   </div>
 
+  <!-- Campo: Dirección -->
   <div class="campo">
+
     <label>Dirección</label>
+
+    <!-- También editable -->
+    <!-- Se guarda directamente en cliente.direccion -->
     <input [(ngModel)]="cliente.direccion" />
   </div>
 
+  <!-- Botón para guardar cambios -->
+  <!-- (click)="guardarCambios()" → ejecuta la función en el .ts -->
   <button (click)="guardarCambios()">Guardar cambios</button>
 
+  <!-- Mensaje dinámico -->
+  <!-- *ngIf="mensaje" → solo se muestra si hay mensaje -->
+  <!-- {{ mensaje }} muestra el texto -->
   <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
 </div>

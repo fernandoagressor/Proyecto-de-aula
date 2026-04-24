@@ -1,116 +1,238 @@
+/* Contenedor general de la vista */
 .contenedor-prestamos {
+
+  /* Espacio interno alrededor de todo */
   padding: 20px;
 }
 
+/* Título principal */
 .titulo {
+
+  /* Espacio debajo */
   margin-bottom: 20px;
+
+  /* Color azul oscuro */
   color: #1f3e82;
 }
 
+/* Mensajes informativos */
 .mensaje {
+
+  /* Separación inferior */
   margin-bottom: 16px;
+
+  /* Azul informativo */
   color: #2563eb;
+
+  /* Resalta el texto */
   font-weight: 600;
 }
 
+/* Grid de tarjetas de préstamos */
 .grid-prestamos {
+
+  /* Layout en grid */
   display: grid;
+
+  /* Columnas adaptables (mín 300px por tarjeta) */
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+  /* Espacio entre tarjetas */
   gap: 20px;
 }
 
+/* Tarjeta de cada préstamo */
 .card-prestamo {
+
+  /* Fondo blanco */
   background: white;
+
+  /* Bordes redondeados */
   border-radius: 16px;
+
+  /* Espaciado interno */
   padding: 18px;
+
+  /* Sombra suave */
   box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
 }
 
+/* Cabecera de la tarjeta (estado) */
 .card-header {
+
+  /* Flex para alinear contenido */
   display: flex;
+
+  /* Alinea a la derecha */
   justify-content: flex-end;
 }
 
+/* Etiqueta de estado */
 .estado {
+
+  /* Espaciado interno */
   padding: 6px 10px;
+
+  /* Bordes redondeados */
   border-radius: 10px;
+
+  /* Tamaño pequeño */
   font-size: 12px;
+
+  /* Negrita */
   font-weight: bold;
 }
 
-.aprobado { background: #d1fae5; color: #065f46; }
-.pendiente { background: #fef3c7; color: #92400e; }
-.rechazado { background: #fee2e2; color: #991b1b; }
-.pagado { background: #e0e7ff; color: #3730a3; }
+/* Estados con colores distintos */
+.aprobado {
+  background: #d1fae5;  /* Verde claro */
+  color: #065f46;       /* Verde oscuro */
+}
 
+.pendiente {
+  background: #fef3c7;  /* Amarillo claro */
+  color: #92400e;       /* Marrón */
+}
+
+.rechazado {
+  background: #fee2e2;  /* Rojo claro */
+  color: #991b1b;       /* Rojo oscuro */
+}
+
+.pagado {
+  background: #e0e7ff;  /* Azul claro */
+  color: #3730a3;       /* Azul oscuro */
+}
+
+/* Texto dentro de la tarjeta */
 .card-body p {
+
+  /* Espacio entre líneas */
   margin: 6px 0;
 }
 
+/* Sección de progreso */
 .progreso {
+
+  /* Separación superior */
   margin-top: 10px;
 }
 
+/* Barra base */
 .barra {
+
+  /* Altura */
   height: 8px;
+
+  /* Fondo gris */
   background: #e5e7eb;
+
+  /* Bordes redondeados */
   border-radius: 10px;
 }
 
+/* Barra de progreso (relleno) */
 .relleno {
+
+  /* Altura igual a la barra */
   height: 8px;
+
+  /* Color azul */
   background: #2563eb;
+
+  /* Bordes redondeados */
   border-radius: 10px;
 }
 
+/* Sección de acciones (botones + input) */
 .acciones {
+
   margin-top: 12px;
+
+  /* Flex en columna */
   display: flex;
+
   flex-direction: column;
+
+  /* Espacio entre elementos */
   gap: 8px;
 }
 
+/* Input de abono */
 .acciones input {
+
   padding: 8px;
+
   border-radius: 8px;
+
   border: 1px solid #ccc;
 }
 
+/* Botones */
 .acciones button {
+
   padding: 8px;
+
   border-radius: 8px;
+
   border: none;
+
+  /* Azul principal */
   background: #2563eb;
+
   color: white;
+
   cursor: pointer;
 }
 
+/* Botón deshabilitado */
 .acciones button:disabled {
+
+  /* Opacidad baja */
   opacity: 0.6;
+
+  /* Cursor bloqueado */
   cursor: not-allowed;
 }
 
+/* Botón especial: pagar total */
 .btn-pagar-total {
+
+  /* Color morado */
   background: #7c3aed;
 }
 
+/* Contenedor del historial */
 .historial-box {
+
   margin-top: 30px;
+
   background: white;
+
   padding: 18px;
+
   border-radius: 14px;
+
   box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
 }
 
+/* Tabla del historial */
 .historial-box table {
+
   width: 100%;
+
   border-collapse: collapse;
+
   margin-top: 12px;
 }
 
+/* Celdas del historial */
 .historial-box th,
 .historial-box td {
+
   border-bottom: 1px solid #e5e7eb;
+
   padding: 10px;
+
   text-align: center;
 }

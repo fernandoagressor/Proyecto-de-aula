@@ -1,29 +1,67 @@
+<!-- Contenedor principal del dashboard -->
+<!-- <div> agrupa todos los elementos -->
+<!-- class="dashboard-container" aplica estilos generales -->
 <div class="dashboard-container">
+
+  <!-- Título de la pantalla -->
+  <!-- <h2> es un encabezado -->
+  <!-- class="titulo" aplica estilos (tamaño, color, etc) -->
   <h2 class="titulo">Dashboard</h2>
 
+  <!-- Contenedor de tarjetas -->
+  <!-- Aquí se agrupan las estadísticas -->
   <div class="cards">
+
+    <!-- Tarjeta 1 -->
     <div class="card">
+
+      <!-- Título de la tarjeta -->
       <h3>Total Préstamos</h3>
+
+      <!-- {{ totalPrestamos }} -->
+      <!-- Muestra el valor de la variable totalPrestamos -->
+      <!-- Este valor viene del archivo .ts -->
       <p>{{ totalPrestamos }}</p>
     </div>
 
+    <!-- Tarjeta 2 -->
     <div class="card">
+
       <h3>Total Prestado</h3>
+
+      <!-- Llama función del TS -->
+      <!-- formatearDinero() convierte número en formato moneda -->
       <p>{{ formatearDinero(totalPrestado) }}</p>
     </div>
 
+    <!-- Tarjeta 3 -->
     <div class="card">
+
       <h3>Saldo Pendiente</h3>
+
+      <!-- Muestra el dinero que aún deben los clientes -->
       <p>{{ formatearDinero(saldoPendiente) }}</p>
     </div>
 
+    <!-- Tarjeta 4 -->
     <div class="card">
+
       <h3>Total Abonado</h3>
+
+      <!-- Muestra cuánto han pagado los clientes -->
       <p>{{ formatearDinero(totalAbonado) }}</p>
     </div>
+
   </div>
 
+  <!-- Sección del gráfico -->
   <div class="grafico-seccion">
+
+    <!-- Componente Angular personalizado -->
+    <!-- <app-grafico> NO es HTML normal -->
+    <!-- Es un componente creado por ti en Angular -->
+    <!-- Este componente dibuja el gráfico (probablemente con datos de préstamos) -->
     <app-grafico></app-grafico>
+
   </div>
 </div>

@@ -1,177 +1,293 @@
+/* Contenedor principal de toda la app */
 .layout {
+
+  /* Ocupa toda la altura de la pantalla */
   min-height: 100vh;
+
+  /* Fondo general gris claro */
   background: #edf2f8;
 }
 
+/* Barra superior */
 .topbar {
+
+  /* Altura fija */
   height: 82px;
+
+  /* Fondo blanco */
   background: white;
+
+  /* Usa flexbox */
   display: flex;
+
+  /* Espacio entre logo y usuario */
   justify-content: space-between;
+
+  /* Centra verticalmente */
   align-items: center;
+
+  /* Espaciado lateral */
   padding: 0 24px;
+
+  /* Sombra */
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+
+  /* Permite superposición */
   position: relative;
+
+  /* Prioridad visual */
   z-index: 10;
 }
 
+/* Contenedor del logo */
 .logo-box {
   display: flex;
   align-items: center;
 }
 
+/* Texto del logo */
 .logo-text {
+
   display: flex;
+
+  /* Organiza en columna */
   flex-direction: column;
+
   color: #173f8a;
+
   line-height: 1.1;
 }
 
+/* Texto principal del logo */
 .logo-text strong {
   font-size: 24px;
   font-weight: 800;
 }
 
+/* Texto secundario */
 .logo-text span {
   font-size: 16px;
   font-weight: 600;
 }
 
+/* Parte derecha del topbar */
 .topbar-right {
+
   display: flex;
   align-items: center;
+
+  /* Espacio entre elementos */
   gap: 18px;
 }
 
+/* Nombre del usuario */
 .user-name {
+
   font-size: 18px;
   color: #3b4a67;
   font-weight: 600;
 }
 
+/* Contenedor del menú perfil */
 .perfil-menu {
   position: relative;
 }
 
+/* Botón del avatar */
 .avatar-btn {
+
   background: transparent;
   border: none;
+
   cursor: pointer;
+
   font-size: 24px;
 }
 
+/* Icono del avatar */
 .avatar-icon {
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
+/* Menú desplegable */
 .dropdown {
+
+  /* Posición absoluta respecto al padre */
   position: absolute;
+
+  /* Ubicación */
   top: 50px;
   right: 0;
+
   width: 230px;
+
   background: white;
+
   border-radius: 14px;
+
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+
   padding: 10px;
+
   display: flex;
   flex-direction: column;
+
   gap: 8px;
 }
 
+/* Opciones del menú */
 .dropdown-item {
+
   width: 100%;
+
   border: none;
+
   background: #f8fafc;
+
   border-radius: 10px;
+
   padding: 12px 14px;
+
   text-align: left;
+
   font-size: 15px;
+
   cursor: pointer;
+
   transition: background 0.2s ease;
 }
 
+/* Hover del menú */
 .dropdown-item:hover {
   background: #e2e8f0;
 }
 
+/* Opción cerrar sesión */
 .dropdown-item.logout {
   background: #fee2e2;
   color: #b91c1c;
 }
 
+/* Hover cerrar sesión */
 .dropdown-item.logout:hover {
   background: #fecaca;
 }
 
+/* Contenedor principal (sidebar + contenido) */
 .contenido-principal {
+
   display: flex;
+
+  /* Altura restante (pantalla - topbar) */
   min-height: calc(100vh - 82px);
 }
 
+/* Menú lateral */
 .sidebar {
+
+  /* Ancho fijo */
   width: 320px;
+
+  /* Fondo degradado */
   background: linear-gradient(180deg, #142d8f 0%, #4da0f0 100%);
+
   color: white;
+
   padding: 28px 22px;
+
   box-sizing: border-box;
 }
 
+/* Título del sidebar */
 .sidebar-title {
+
   font-size: 34px;
   font-weight: 800;
+
   margin-bottom: 32px;
 }
 
+/* Lista de menú */
 .menu-lista {
+
   display: flex;
   flex-direction: column;
+
   gap: 14px;
 }
 
+/* Grupo de botón */
 .menu-grupo {
   width: 100%;
 }
 
+/* Botones del menú */
 .menu-titulo {
+
   width: 100%;
+
   background: rgba(255, 255, 255, 0.08);
+
   border: none;
+
   border-radius: 14px;
+
   color: white;
+
   text-align: left;
+
   padding: 16px 18px;
+
   font-size: 18px;
   font-weight: 700;
+
   cursor: pointer;
+
   transition: all 0.2s ease;
 }
 
+/* Hover del menú */
 .menu-titulo:hover {
+
   background: rgba(255, 255, 255, 0.18);
+
+  /* Se mueve ligeramente */
   transform: translateX(3px);
 }
 
+/* Panel central */
 .panel-central {
+
+  /* Ocupa todo el espacio restante */
   flex: 1;
+
   padding: 22px;
+
   box-sizing: border-box;
 }
 
+/* RESPONSIVE (pantallas pequeñas) */
 @media (max-width: 900px) {
+
+  /* Cambia a vertical */
   .contenido-principal {
     flex-direction: column;
   }
 
+  /* Sidebar ocupa todo */
   .sidebar {
     width: 100%;
   }
 
+  /* Panel también */
   .panel-central {
     width: 100%;
   }
 
+  /* Reduce tamaño del nombre */
   .user-name {
     font-size: 14px;
   }

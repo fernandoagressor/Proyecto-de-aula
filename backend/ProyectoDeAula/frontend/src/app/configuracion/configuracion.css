@@ -1,65 +1,152 @@
+/* Contenedor principal tipo tarjeta */
 .page-card {
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Bordes redondeados */
   border-radius: 18px;
+
+  /* Espacio interno */
   padding: 28px;
+
+  /* Sombra suave (efecto elevación) */
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+  /* Margen externo */
   margin: 20px;
 }
 
+/* Título de la página */
 .page-title {
+
+  /* Centra el texto */
   text-align: center;
+
+  /* Tamaño grande */
   font-size: 34px;
+
+  /* Texto en negrita */
   font-weight: 700;
+
+  /* Color azul oscuro */
   color: #1e3a8a;
+
+  /* Espacio debajo */
   margin-bottom: 24px;
 }
 
+/* Estilo para inputs */
 .input-modern {
+
+  /* Ocupa todo el ancho disponible */
   width: 100%;
+
+  /* Espaciado interno */
   padding: 12px 14px;
+
+  /* Borde gris claro */
   border: 1px solid #cbd5e1;
+
+  /* Bordes redondeados */
   border-radius: 12px;
+
+  /* Quita el borde azul por defecto del navegador */
   outline: none;
+
+  /* Tamaño de texto */
   font-size: 15px;
+
+  /* Fondo gris claro */
   background: #f8fafc;
+
+  /* Transición suave (animación) */
   transition: all 0.2s ease;
+
+  /* Mantiene tamaño correcto incluyendo padding */
   box-sizing: border-box;
 }
 
+/* Estilo cuando el input está activo (focus) */
 .input-modern:focus {
+
+  /* Borde azul */
   border-color: #2563eb;
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Sombra azul alrededor */
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
+/* Botón principal */
 .btn-main {
+
+  /* Sin borde */
   border: none;
+
+  /* Bordes redondeados */
   border-radius: 12px;
+
+  /* Espaciado interno */
   padding: 12px 18px;
+
+  /* Texto en negrita */
   font-weight: 600;
+
+  /* Tamaño de texto */
   font-size: 15px;
+
+  /* Cursor tipo mano */
   cursor: pointer;
+
+  /* Transición suave */
   transition: all 0.2s ease;
+
+  /* Fondo azul */
   background: #2563eb;
+
+  /* Texto blanco */
   color: white;
 }
 
+/* Efecto hover del botón */
 .btn-main:hover {
+
+  /* Azul más oscuro */
   background: #1d4ed8;
+
+  /* Movimiento ligero hacia arriba */
   transform: translateY(-1px);
 }
 
+/* Contenedor específico para configuración */
 .config-box {
+
+  /* Limita el ancho máximo */
   max-width: 700px;
 }
 
+/* Formulario de configuración */
 .config-form {
+
+  /* Usa flexbox */
   display: flex;
+
+  /* Espacio entre elementos */
   gap: 12px;
+
+  /* Permite que los elementos bajen de línea si no caben */
   flex-wrap: wrap;
 }
 
+/* Estilo especial para inputs dentro del formulario */
 .config-form .input-modern {
+
+  /* Hace que el input crezca y ocupe espacio disponible */
   flex: 1;
+
+  /* Ancho mínimo */
   min-width: 220px;
 }

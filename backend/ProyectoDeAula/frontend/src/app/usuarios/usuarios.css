@@ -1,158 +1,309 @@
+/* Tarjeta principal de cada página (contenedor general) */
 .page-card {
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Bordes redondeados */
   border-radius: 18px;
+
+  /* Espacio interno */
   padding: 28px;
+
+  /* Sombra para efecto de tarjeta */
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+  /* Espacio externo */
   margin: 20px;
 }
 
+
+/* Título principal de la página */
 .page-title {
+
+  /* Centrar el texto */
   text-align: center;
+
+  /* Tamaño grande */
   font-size: 34px;
+
+  /* Negrita */
   font-weight: 700;
+
+  /* Color azul */
   color: #1e3a8a;
+
+  /* Espacio inferior */
   margin-bottom: 24px;
 }
 
+
+/* Grid para formularios (inputs organizados automáticamente) */
 .form-grid {
+
+  /* Activa sistema grid */
   display: grid;
+
+  /* Columnas automáticas adaptables */
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  /* Espacio entre elementos */
   gap: 14px;
+
+  /* Margen inferior */
   margin-bottom: 24px;
 }
 
+
+/* Inputs y select con estilo moderno */
 .input-modern,
 .select-modern {
+
+  /* Ocupa todo el ancho */
   width: 100%;
+
+  /* Espacio interno */
   padding: 12px 14px;
+
+  /* Borde gris claro */
   border: 1px solid #cbd5e1;
+
+  /* Bordes redondeados */
   border-radius: 12px;
+
+  /* Quita borde azul por defecto */
   outline: none;
+
+  /* Tamaño de texto */
   font-size: 15px;
+
+  /* Fondo claro */
   background: #f8fafc;
+
+  /* Animación suave */
   transition: all 0.2s ease;
+
+  /* Ajuste de tamaño */
   box-sizing: border-box;
 }
 
+
+/* Efecto cuando haces clic en input */
 .input-modern:focus,
 .select-modern:focus {
+
+  /* Borde azul */
   border-color: #2563eb;
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Sombra azul suave */
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
+
+/* Botón principal */
 .btn-main {
+
   border: none;
   border-radius: 12px;
   padding: 12px 18px;
+
+  /* Texto seminegrita */
   font-weight: 600;
+
   font-size: 15px;
+
   cursor: pointer;
+
   transition: all 0.2s ease;
+
+  /* Color azul */
   background: #2563eb;
+
   color: white;
 }
 
+
+/* Efecto hover del botón principal */
 .btn-main:hover {
+
+  /* Azul más oscuro */
   background: #1d4ed8;
+
+  /* Levanta el botón */
   transform: translateY(-1px);
 }
 
+
+/* Botón editar */
 .btn-edit {
+
   background: #0ea5e9;
   color: white;
+
   border: none;
   border-radius: 10px;
+
   padding: 8px 14px;
+
   cursor: pointer;
+
   font-weight: 600;
 }
 
+
+/* Hover editar */
 .btn-edit:hover {
   background: #0284c7;
 }
 
+
+/* Botón eliminar */
 .btn-delete {
+
   background: #ef4444;
   color: white;
+
   border: none;
   border-radius: 10px;
+
   padding: 8px 14px;
+
   cursor: pointer;
+
   font-weight: 600;
 }
 
+
+/* Hover eliminar */
 .btn-delete:hover {
   background: #dc2626;
 }
 
+
+/* Contenedor de tabla con scroll horizontal */
 .table-wrapper {
+
   overflow-x: auto;
+
   border-radius: 16px;
 }
 
+
+/* Tabla moderna */
 .table-modern {
+
   width: 100%;
+
+  /* Quita espacios entre bordes */
   border-collapse: collapse;
+
   overflow: hidden;
+
+  /* Ancho mínimo */
   min-width: 700px;
+
   background: white;
+
   border-radius: 16px;
 }
 
+
+/* Encabezado de la tabla */
 .table-modern thead {
+
+  /* Degradado azul */
   background: linear-gradient(90deg, #1d4ed8, #2563eb);
+
   color: white;
 }
 
+
+/* Encabezados */
 .table-modern th {
+
   padding: 16px 14px;
+
   text-align: center;
+
   font-size: 15px;
+
   font-weight: 700;
 }
 
+
+/* Celdas */
 .table-modern td {
+
   padding: 14px 12px;
+
   text-align: center;
+
   border-bottom: 1px solid #e2e8f0;
+
   color: #334155;
+
   font-size: 14px;
 }
 
+
+/* Filas pares con color diferente */
 .table-modern tbody tr:nth-child(even) {
   background: #f8fafc;
 }
 
+
+/* Hover en filas */
 .table-modern tbody tr:hover {
   background: #eff6ff;
 }
 
+
+/* Contenedor de botones de acciones */
 .actions-box {
+
   display: flex;
+
   justify-content: center;
+
   gap: 8px;
+
   flex-wrap: wrap;
 }
 
+
+/* Badge de rol (etiquetas tipo pill) */
 .badge-role {
+
   display: inline-block;
+
   padding: 6px 10px;
+
   border-radius: 999px;
+
   font-size: 12px;
+
   font-weight: 700;
 }
 
+
+/* Rol administrador */
 .role-admin {
   background: #dbeafe;
   color: #1d4ed8;
 }
 
+
+/* Rol empleado */
 .role-empleado {
   background: #dcfce7;
   color: #15803d;
 }
 
+
+/* Rol cliente */
 .role-cliente {
   background: #fef3c7;
   color: #b45309;

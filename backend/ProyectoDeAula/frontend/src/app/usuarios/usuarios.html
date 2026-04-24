@@ -1,7 +1,15 @@
+<!-- Contenedor principal tipo tarjeta -->
 <div class="page-card">
+
+  <!-- Título de la vista -->
   <h2 class="page-title">Usuarios</h2>
 
+  <!-- Formulario para crear o editar usuarios -->
   <div class="form-grid">
+
+    <!-- Input para el nombre -->
+    <!-- [(ngModel)] conecta el campo con nuevoUsuario.nombre -->
+    <!-- Todo lo que escriba el usuario se guarda en esa variable -->
     <input
       class="input-modern"
       type="text"
@@ -9,6 +17,9 @@
       placeholder="Nombre"
     />
 
+    <!-- Input para la contraseña -->
+    <!-- type="password" oculta lo que se escribe -->
+    <!-- Se guarda en nuevoUsuario.password -->
     <input
       class="input-modern"
       type="password"
@@ -16,16 +27,25 @@
       placeholder="Password"
     />
 
+    <!-- Select para elegir el rol -->
+    <!-- [(ngModel)] guarda el valor en nuevoUsuario.rol -->
     <select
       class="select-modern"
       [(ngModel)]="nuevoUsuario.rol"
     >
+
+      <!-- Opción vacía por defecto -->
       <option value="">Seleccione rol</option>
+
+      <!-- Opciones disponibles -->
       <option value="administrador">Administrador</option>
       <option value="empleado">Empleado</option>
       <option value="cliente">Cliente</option>
     </select>
 
+    <!-- Botón crear usuario -->
+    <!-- Solo aparece cuando NO se está editando -->
+    <!-- Ejecuta crearUsuario() -->
     <button
       class="btn-main"
       *ngIf="!usuarioEditando"
@@ -34,6 +54,9 @@
       Crear Usuario
     </button>
 
+    <!-- Botón actualizar usuario -->
+    <!-- Solo aparece cuando se está editando -->
+    <!-- Ejecuta actualizarUsuario() -->
     <button
       class="btn-main"
       *ngIf="usuarioEditando"
@@ -42,6 +65,9 @@
       Actualizar Usuario
     </button>
 
+    <!-- Botón cancelar edición -->
+    <!-- Solo aparece en modo edición -->
+    <!-- Limpia el formulario -->
     <button
       class="btn-delete"
       *ngIf="usuarioEditando"
@@ -51,8 +77,13 @@
     </button>
   </div>
 
+  <!-- Contenedor de la tabla -->
   <div class="table-wrapper">
+
+    <!-- Tabla de usuarios -->
     <table class="table-modern">
+
+      <!-- Encabezado -->
       <thead>
       <tr>
         <th>ID</th>
@@ -62,25 +93,48 @@
       </tr>
       </thead>
 
+      <!-- Cuerpo -->
       <tbody>
+
+      <!-- Recorre la lista usuarios -->
+      <!-- Por cada usuario crea una fila -->
       <tr *ngFor="let usuario of usuarios">
+
+        <!-- Muestra ID -->
         <td>{{ usuario.id }}</td>
+
+        <!-- Muestra nombre -->
         <td>{{ usuario.nombre }}</td>
+
+        <!-- Muestra rol con estilo dinámico -->
         <td>
-            <span
-              class="badge-role"
-              [ngClass]="{
+
+          <!-- span para mostrar el rol -->
+          <!-- [ngClass] aplica estilos según el rol -->
+          <span
+            class="badge-role"
+            [ngClass]="{
                 'role-admin': usuario.rol === 'administrador',
                 'role-empleado': usuario.rol === 'empleado',
                 'role-cliente': usuario.rol === 'cliente'
               }"
-            >
+          >
               {{ usuario.rol }}
             </span>
         </td>
+
+        <!-- Acciones -->
         <td>
+
+          <!-- Contenedor de botones -->
           <div class="actions-box">
+
+            <!-- Botón editar -->
+            <!-- Envía el usuario completo al método editarUsuario() -->
             <button class="btn-edit" (click)="editarUsuario(usuario)">Editar</button>
+
+            <!-- Botón eliminar -->
+            <!-- Envía el ID al método eliminarUsuario() -->
             <button class="btn-delete" (click)="eliminarUsuario(usuario.id)">Eliminar</button>
           </div>
         </td>

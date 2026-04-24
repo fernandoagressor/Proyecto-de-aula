@@ -1,7 +1,26 @@
+<!-- Contenedor principal -->
+<!-- <div> agrupa todos los elementos -->
+<!-- class="page-card config-box" aplica estilos (tarjeta + diseño específico de configuración) -->
 <div class="page-card config-box">
+
+  <!-- Título de la sección -->
+  <!-- <h2> es un encabezado -->
+  <!-- class="page-title" aplica estilo visual (tamaño, color, centrado) -->
   <h2 class="page-title">Configuración de Tasa de Interés</h2>
 
+  <!-- Contenedor del formulario -->
+  <!-- Aquí se agrupan los elementos para ingresar la tasa -->
   <div class="config-form">
+
+    <!-- Campo de entrada -->
+    <!-- <input> permite al usuario escribir datos -->
+    <!-- type="number" → solo permite números -->
+    <!-- step="0.01" → permite decimales (ej: 0.05, 1.25) -->
+
+    <!-- [(ngModel)]="tasaInteres" -->
+    <!-- Esto es binding bidireccional -->
+    <!-- Lo que el usuario escribe se guarda en la variable tasaInteres -->
+    <!-- Y si tasaInteres cambia en el TS, se refleja en el input -->
     <input
       class="input-modern"
       type="number"
@@ -10,8 +29,14 @@
       placeholder="Ingrese la tasa"
     />
 
+    <!-- Botón para guardar -->
+    <!-- (click)="guardarTasa()" -->
+    <!-- Cuando el usuario hace clic, se ejecuta la función guardarTasa() en el archivo .ts -->
     <button class="btn-main" (click)="guardarTasa()">
+
+      <!-- Texto del botón -->
       Guardar Tasa
     </button>
+
   </div>
 </div>

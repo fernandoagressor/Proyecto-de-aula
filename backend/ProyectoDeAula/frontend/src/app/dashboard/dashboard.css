@@ -1,74 +1,143 @@
+/* Contenedor principal del dashboard */
 .dashboard-container {
+
+  /* Espacio interno */
   padding: 30px;
+
+  /* Color de fondo general */
   background-color: #f4f6f9;
+
+  /* Ocupa toda la altura de la pantalla */
   min-height: 100vh;
+
+  /* Fuente del sistema */
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* Título */
+/* Título principal */
 .titulo {
+
+  /* Tamaño del texto */
   font-size: 26px;
+
+  /* Grosor del texto */
   font-weight: 600;
+
+  /* Espacio debajo */
   margin-bottom: 25px;
+
+  /* Color oscuro */
   color: #2c3e50;
 }
 
 /* Contenedor de tarjetas */
 .cards {
+
+  /* Usa grid para organizar */
   display: grid;
+
+  /* Crea columnas automáticas adaptables */
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  /* Espacio entre tarjetas */
   gap: 20px;
 }
 
-/* Tarjetas */
+/* Tarjeta individual */
 .card {
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Bordes redondeados */
   border-radius: 12px;
+
+  /* Espaciado interno */
   padding: 20px;
+
+  /* Sombra ligera */
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
+
+  /* Animación suave */
   transition: transform 0.2s ease;
 }
 
+/* Efecto al pasar el mouse */
 .card:hover {
+
+  /* Se levanta un poco */
   transform: translateY(-4px);
 }
 
-/* Títulos de tarjeta */
+/* Títulos dentro de tarjetas */
 .card h3 {
+
+  /* Tamaño pequeño */
   font-size: 14px;
+
+  /* Color gris */
   color: #7f8c8d;
+
+  /* Espacio inferior */
   margin-bottom: 10px;
 }
 
-/* Valores */
+/* Valores dentro de tarjetas */
 .card p {
+
+  /* Tamaño grande */
   font-size: 22px;
+
+  /* Negrita */
   font-weight: bold;
+
+  /* Color oscuro */
   color: #2c3e50;
 }
 
-/* Colores especiales */
+/* Primera tarjeta (ej: Total Préstamos) */
 .card:nth-child(1) {
+
+  /* Borde lateral azul */
   border-left: 5px solid #3498db;
 }
 
+/* Segunda tarjeta (ej: Total Prestado) */
 .card:nth-child(2) {
+
+  /* Verde */
   border-left: 5px solid #2ecc71;
 }
 
+/* Tercera tarjeta (ej: Saldo Pendiente) */
 .card:nth-child(3) {
+
+  /* Rojo */
   border-left: 5px solid #e74c3c;
 }
 
+/* Cuarta tarjeta (ej: Total Abonado) */
 .card:nth-child(4) {
+
+  /* Morado */
   border-left: 5px solid #9b59b6;
 }
 
-/* Sección del gráfico */
+/* Sección donde está el gráfico */
 .grafico-seccion {
+
+  /* Espacio arriba */
   margin-top: 40px;
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Espaciado interno */
   padding: 20px;
+
+  /* Bordes redondeados */
   border-radius: 12px;
+
+  /* Sombra */
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
 }

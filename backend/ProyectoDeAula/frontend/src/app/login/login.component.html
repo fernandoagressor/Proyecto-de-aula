@@ -1,22 +1,52 @@
+<!-- Contenedor principal del login -->
+<!-- <div> agrupa todo el formulario -->
+<!-- class="login-container" aplica estilos (centrado en pantalla, fondo, etc.) -->
 <div class="login-container">
+
+  <!-- Tarjeta del login -->
+  <!-- class="login-card" crea una caja visual tipo formulario -->
   <div class="login-card">
+
+    <!-- Título principal del sistema -->
+    <!-- <h1> es el encabezado más importante -->
     <h1>PrestaFácil</h1>
+
+    <!-- Descripción o subtítulo -->
+    <!-- <p> es un párrafo -->
     <p>Sistema de préstamos</p>
 
+    <!-- Campo para ingresar el usuario -->
+    <!-- type="text" permite escribir texto -->
+    <!-- placeholder muestra un texto guía dentro del input -->
+
+    <!-- [(ngModel)]="loginNombre" -->
+    <!-- Conecta este input con la variable loginNombre del archivo .ts -->
+    <!-- Lo que el usuario escriba se guarda automáticamente en loginNombre -->
     <input
       type="text"
       placeholder="Usuario"
       [(ngModel)]="loginNombre"
     />
 
+    <!-- Campo para ingresar contraseña -->
+    <!-- type="password" oculta los caracteres -->
+    <!-- [(ngModel)]="loginPassword" guarda el valor en la variable loginPassword -->
     <input
       type="password"
       placeholder="Contraseña"
       [(ngModel)]="loginPassword"
     />
 
+    <!-- Botón para iniciar sesión -->
+    <!-- (click)="iniciarSesion()" -->
+    <!-- Cuando el usuario hace clic, se ejecuta la función iniciarSesion() en el .ts -->
     <button (click)="iniciarSesion()">Ingresar</button>
 
+    <!-- Mensaje de error -->
+    <!-- *ngIf="mensajeLogin" -->
+    <!-- Solo se muestra si la variable mensajeLogin tiene contenido -->
+    <!-- {{ mensajeLogin }} muestra el texto del error -->
     <p class="error" *ngIf="mensajeLogin">{{ mensajeLogin }}</p>
+
   </div>
 </div>

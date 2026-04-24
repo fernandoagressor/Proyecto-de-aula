@@ -1,209 +1,394 @@
+/* Contenedor principal de préstamos */
 .prestamos-container {
+  /* Organiza los elementos en columna */
   display: flex;
+
+  /* Coloca una sección debajo de la otra */
   flex-direction: column;
+
+  /* Espacio entre tarjetas */
   gap: 24px;
 }
 
+/* Tarjeta visual */
 .prestamos-card {
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Bordes redondeados */
   border-radius: 18px;
+
+  /* Espacio interno */
   padding: 24px;
+
+  /* Sombra suave */
   box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+
+  /* Borde gris claro */
   border: 1px solid #e5e7eb;
 }
 
+/* Título y subtítulo */
 .titulo,
 .subtitulo {
+  /* Centra el texto */
   text-align: center;
+
+  /* Espacio inferior */
   margin-bottom: 22px;
+
+  /* Color azul oscuro */
   color: #1e3a5f;
 }
 
+/* Formulario para solicitar préstamo */
 .formulario-prestamo {
+  /* Usa grid para organizar los inputs y botón */
   display: grid;
+
+  /* Define 4 columnas con tamaños fijos */
   grid-template-columns: 180px 180px 180px 200px;
+
+  /* Espacio entre elementos */
   gap: 12px;
+
+  /* Centra el formulario */
   justify-content: center;
+
+  /* Espacio inferior */
   margin-bottom: 24px;
 }
 
+/* Inputs del formulario */
 .formulario-prestamo input {
+  /* Espacio interno */
   padding: 11px 12px;
+
+  /* Borde gris */
   border: 1px solid #cbd5e1;
+
+  /* Bordes redondeados */
   border-radius: 10px;
+
+  /* Quita borde por defecto */
   outline: none;
+
+  /* Tamaño de letra */
   font-size: 14px;
+
+  /* Fondo blanco */
   background: white;
 }
 
+/* Efecto al seleccionar input */
 .formulario-prestamo input:focus,
 .input-abono:focus {
+  /* Borde azul */
   border-color: #2563eb;
+
+  /* Sombra azul */
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
+/* Contenedor de tabla */
 .tabla-wrapper {
+  /* Ocupa todo el ancho */
   width: 100%;
+
+  /* Permite scroll horizontal */
   overflow-x: auto;
 }
 
+/* Tabla de préstamos */
 .tabla-prestamos {
+  /* Ocupa todo el ancho */
   width: 100%;
+
+  /* Evita que la tabla se comprima */
   min-width: 1500px;
+
+  /* Une los bordes de las celdas */
   border-collapse: collapse;
+
+  /* Ajusta columnas automáticamente */
   table-layout: auto;
 }
 
+/* Fila del encabezado */
 .tabla-prestamos thead tr {
+  /* Fondo gris claro */
   background: #f1f5f9;
 }
 
+/* Celdas de la tabla */
 .tabla-prestamos th,
 .tabla-prestamos td {
+  /* Espaciado interno */
   padding: 14px 12px;
+
+  /* Centra texto */
   text-align: center;
+
+  /* Centra verticalmente */
   vertical-align: middle;
+
+  /* Línea inferior */
   border-bottom: 1px solid #e5e7eb;
+
+  /* Evita saltos de línea */
   white-space: nowrap;
 }
 
+/* Encabezados */
 .tabla-prestamos th {
+  /* Color azul oscuro */
   color: #1e3a5f;
+
+  /* Negrita */
   font-weight: 700;
 }
 
+/* Datos */
 .tabla-prestamos td {
+  /* Color gris oscuro */
   color: #334155;
 }
 
+/* Efecto al pasar mouse en filas */
 .tabla-prestamos tbody tr:hover {
+  /* Fondo azul muy claro */
   background: #f8fbff;
 }
 
+/* Input para abonos */
 .input-abono {
+  /* Ancho fijo */
   width: 140px;
+
+  /* Espacio interno */
   padding: 9px 10px;
+
+  /* Borde gris */
   border: 1px solid #cbd5e1;
+
+  /* Bordes redondeados */
   border-radius: 10px;
+
+  /* Quita borde por defecto */
   outline: none;
+
+  /* Fondo blanco */
   background: white;
 }
 
+/* Contenedor de botones */
 .acciones {
+  /* Usa flexbox */
   display: flex;
+
+  /* Organiza botones en columna */
   flex-direction: column;
+
+  /* Espacio entre botones */
   gap: 8px;
+
+  /* Centra botones */
   align-items: center;
+
+  /* Ancho mínimo */
   min-width: 120px;
 }
 
+/* Estilo general de botones */
 .btn {
+  /* Sin borde */
   border: none;
+
+  /* Bordes redondeados */
   border-radius: 10px;
+
+  /* Espacio interno */
   padding: 9px 14px;
+
+  /* Tamaño de letra */
   font-size: 13px;
+
+  /* Negrita */
   font-weight: 600;
+
+  /* Cursor tipo mano */
   cursor: pointer;
+
+  /* Animación suave */
   transition: 0.2s ease;
+
+  /* Ancho mínimo */
   min-width: 95px;
 }
 
+/* Hover de botones */
 .btn:hover {
+  /* Se mueve un poco hacia arriba */
   transform: translateY(-1px);
+
+  /* Baja un poco la opacidad */
   opacity: 0.95;
 }
 
+/* Botón deshabilitado */
 .btn:disabled {
+  /* Se ve más apagado */
   opacity: 0.55;
+
+  /* Cursor bloqueado */
   cursor: not-allowed;
+
+  /* No se mueve */
   transform: none;
 }
 
+/* Botón solicitar préstamo */
 .btn-solicitar {
   background: #2563eb;
   color: white;
 }
 
+/* Botón aprobar */
 .btn-aprobar {
   background: #16a34a;
   color: white;
 }
 
+/* Botón rechazar */
 .btn-rechazar {
   background: #dc2626;
   color: white;
 }
 
+/* Botón abonar */
 .btn-abonar {
   background: #0f766e;
   color: white;
 }
 
+/* Botón historial */
 .btn-historial {
   background: #475569;
   color: white;
 }
 
+/* Etiqueta de estado */
 .badge {
+  /* Se comporta como bloque pequeño */
   display: inline-block;
+
+  /* Espacio interno */
   padding: 7px 12px;
+
+  /* Forma redondeada tipo píldora */
   border-radius: 999px;
+
+  /* Letra pequeña */
   font-size: 12px;
+
+  /* Negrita */
   font-weight: 700;
 }
 
+/* Estado pendiente */
 .badge-pendiente {
   background: #fff7ed;
   color: #c2410c;
 }
 
+/* Estado aprobado */
 .badge-aprobado {
   background: #ecfdf5;
   color: #15803d;
 }
 
+/* Estado rechazado */
 .badge-rechazado {
   background: #fef2f2;
   color: #b91c1c;
 }
 
+/* Estado pagado */
 .badge-pagado {
   background: #eff6ff;
   color: #1d4ed8;
 }
 
+/* Caja del progreso */
 .progress-box {
+  /* Usa flexbox */
   display: flex;
+
+  /* Organiza en columna */
   flex-direction: column;
+
+  /* Centra elementos */
   align-items: center;
+
+  /* Espacio entre barra y porcentaje */
   gap: 6px;
+
+  /* Ancho mínimo */
   min-width: 140px;
 }
 
+/* Barra base del progreso */
 .progress-bar {
+  /* Ancho */
   width: 120px;
+
+  /* Alto */
   height: 10px;
+
+  /* Fondo gris */
   background: #e2e8f0;
+
+  /* Bordes redondeados */
   border-radius: 999px;
+
+  /* Oculta lo que se salga */
   overflow: hidden;
 }
 
+/* Relleno de progreso */
 .progress-fill {
+  /* Ocupa toda la altura */
   height: 100%;
+
+  /* Degradado azul a verde */
   background: linear-gradient(90deg, #2563eb, #16a34a);
+
+  /* Bordes redondeados */
   border-radius: 999px;
+
+  /* Animación cuando cambia el ancho */
   transition: width 0.3s ease;
 }
 
+/* Texto del porcentaje */
 .progress-text {
+  /* Tamaño pequeño */
   font-size: 12px;
+
+  /* Negrita */
   font-weight: 700;
+
+  /* Color gris oscuro */
   color: #334155;
 }
 
+/* Tabla del historial */
 .historial-tabla {
+  /* Ancho mínimo menor */
   min-width: 500px;
 }
+
+/* Botón pagar total */
 .btn-pagar-total {
   background: #7c3aed;
   color: white;

@@ -1,25 +1,57 @@
+/* Contenedor principal de los gráficos */
 .graficos-grid {
+
+  /* Usa CSS Grid para organizar los gráficos */
   display: grid;
+
+  /* Crea 2 columnas iguales */
   grid-template-columns: 1fr 1fr;
+
+  /* Espacio entre los gráficos */
   gap: 20px;
+
+  /* Espacio arriba */
   margin-top: 20px;
 }
 
+/* Tarjeta individual de cada gráfico */
 .grafico-card {
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Bordes redondeados */
   border-radius: 14px;
+
+  /* Espacio interno */
   padding: 20px;
+
+  /* Sombra para efecto de elevación */
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+/* Título dentro de cada gráfico */
 .grafico-card h3 {
+
+  /* Espacio debajo del título */
   margin-bottom: 12px;
+
+  /* Color del texto */
   color: #2c3e50;
+
+  /* Tamaño del texto */
   font-size: 18px;
 }
 
+/* Contenedor del canvas (gráfico) */
 .canvas-box {
+
+  /* Posición relativa (importante para gráficos como Chart.js) */
   position: relative;
+
+  /* Ocupa todo el ancho */
   width: 100%;
+
+  /* Altura fija del gráfico */
   height: 320px;
 }

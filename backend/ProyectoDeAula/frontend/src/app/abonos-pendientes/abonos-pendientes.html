@@ -1,12 +1,34 @@
+<!-- Contenedor principal -->
+<!-- <div> agrupa todo el contenido de la vista -->
+<!-- class="page-card" aplica estilos CSS (tarjeta blanca con sombra) -->
 <div class="page-card">
+
+  <!-- Título de la página -->
+  <!-- <h2> es un encabezado (título) -->
+  <!-- class="page-title" aplica estilo (tamaño, color, centrado) -->
   <h2 class="page-title">Abonos Pendientes</h2>
 
+  <!-- Mensaje dinámico -->
+  <!-- <p> es un párrafo -->
+  <!-- *ngIf="mensaje" → SOLO muestra este elemento si la variable mensaje tiene valor -->
+  <!-- {{ mensaje }} → imprime el contenido de la variable mensaje -->
   <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
 
+  <!-- Contenedor de la tabla -->
+  <!-- Permite scroll horizontal si la tabla es muy grande -->
   <div class="table-wrapper">
+
+    <!-- Tabla -->
+    <!-- <table> se usa para mostrar datos en filas y columnas -->
     <table class="table-modern">
+
+      <!-- Encabezado de la tabla -->
       <thead>
+
+      <!-- <tr> = fila de la tabla -->
       <tr>
+
+        <!-- <th> = celda de encabezado -->
         <th>ID Abono</th>
         <th>Cliente</th>
         <th>Cédula</th>
@@ -18,21 +40,63 @@
       </tr>
       </thead>
 
+      <!-- Cuerpo de la tabla -->
       <tbody>
+
+      <!-- *ngFor recorre una lista -->
+      <!-- "let abono of abonosPendientes" significa:
+           por cada abono dentro de la lista abonosPendientes -->
+      <!-- Angular crea una fila <tr> por cada elemento -->
       <tr *ngFor="let abono of abonosPendientes">
+
+        <!-- {{ }} muestra datos dinámicos -->
+        <!-- Muestra el id del abono -->
         <td>{{ abono.id }}</td>
+
+        <!-- ?. evita errores si algún dato es null -->
+        <!-- Accede a:
+             abono → prestamo → cliente → nombre -->
         <td>{{ abono.prestamo?.cliente?.nombre }}</td>
+
+        <!-- Muestra la cédula del cliente -->
         <td>{{ abono.prestamo?.cliente?.cedula }}</td>
+
+        <!-- Muestra el id del préstamo -->
         <td>{{ abono.prestamo?.id }}</td>
+
+        <!-- Llama a una función del archivo .ts -->
+        <!-- formatearDinero() convierte número a formato moneda -->
         <td>{{ formatearDinero(abono.monto) }}</td>
+
+        <!-- Muestra la fecha -->
         <td>{{ abono.fecha }}</td>
+
+        <!-- Muestra el estado del abono -->
         <td>{{ abono.estado }}</td>
+
+        <!-- Columna de acciones -->
         <td>
+
+          <!-- Contenedor de botones -->
           <div class="actions-box">
-            <button class="btn-main" (click)="aprobarAbono(abono.id!)">Aprobar</button>
-            <button class="btn-delete" (click)="rechazarAbono(abono.id!)">Rechazar</button>
+
+            <!-- Botón aprobar -->
+            <!-- (click) es un evento -->
+            <!-- Cuando se hace clic, ejecuta la función aprobarAbono() -->
+            <!-- abono.id! → ! asegura que el id no es null -->
+            <button class="btn-main" (click)="aprobarAbono(abono.id!)">
+              Aprobar
+            </button>
+
+            <!-- Botón rechazar -->
+            <!-- Llama a la función rechazarAbono() -->
+            <button class="btn-delete" (click)="rechazarAbono(abono.id!)">
+              Rechazar
+            </button>
+
           </div>
         </td>
+
       </tr>
       </tbody>
     </table>

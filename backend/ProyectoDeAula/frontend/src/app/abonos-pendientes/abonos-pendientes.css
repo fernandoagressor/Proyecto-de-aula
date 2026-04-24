@@ -1,88 +1,201 @@
+/* Contenedor principal tipo tarjeta */
 .page-card {
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Bordes redondeados */
   border-radius: 18px;
+
+  /* Espacio interno */
   padding: 28px;
+
+  /* Sombra suave para efecto de tarjeta */
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+  /* Margen externo */
   margin: 20px;
 }
 
+/* Título de la página */
 .page-title {
+
+  /* Centra el texto */
   text-align: center;
+
+  /* Tamaño grande */
   font-size: 34px;
+
+  /* Texto grueso */
   font-weight: 700;
+
+  /* Color azul oscuro */
   color: #1e3a8a;
+
+  /* Espacio inferior */
   margin-bottom: 24px;
 }
 
+/* Mensajes (ej: confirmaciones o avisos) */
 .mensaje {
+
+  /* Espacio inferior */
   margin-bottom: 16px;
+
+  /* Color azul */
   color: #2563eb;
+
+  /* Texto en negrita */
   font-weight: 600;
 }
 
+/* Contenedor de la tabla (para scroll horizontal si es grande) */
 .table-wrapper {
+
+  /* Permite desplazamiento horizontal */
   overflow-x: auto;
+
+  /* Bordes redondeados */
   border-radius: 16px;
 }
 
+/* Estilo general de la tabla */
 .table-modern {
+
+  /* Ocupa todo el ancho */
   width: 100%;
+
+  /* Elimina espacios entre celdas */
   border-collapse: collapse;
+
+  /* Ancho mínimo para evitar que se comprima */
   min-width: 900px;
+
+  /* Fondo blanco */
   background: white;
 }
 
+/* Cabecera de la tabla */
 .table-modern thead {
+
+  /* Fondo con degradado azul */
   background: linear-gradient(90deg, #1d4ed8, #2563eb);
+
+  /* Texto blanco */
   color: white;
 }
 
+/* Celdas de encabezado */
 .table-modern th {
+
+  /* Espaciado interno */
   padding: 16px 14px;
+
+  /* Centrado */
   text-align: center;
+
+  /* Tamaño del texto */
   font-size: 15px;
+
+  /* Texto en negrita */
   font-weight: 700;
 }
 
+/* Celdas del cuerpo */
 .table-modern td {
+
+  /* Espaciado interno */
   padding: 14px 12px;
+
+  /* Centrado */
   text-align: center;
+
+  /* Línea inferior */
   border-bottom: 1px solid #e2e8f0;
+
+  /* Color del texto */
   color: #334155;
+
+  /* Tamaño del texto */
   font-size: 14px;
 }
 
+/* Filas pares con color diferente (efecto cebra) */
 .table-modern tbody tr:nth-child(even) {
+
+  /* Fondo gris claro */
   background: #f8fafc;
 }
 
+/* Efecto al pasar el mouse */
 .table-modern tbody tr:hover {
+
+  /* Fondo azul claro */
   background: #eff6ff;
 }
 
+/* Contenedor de botones de acción */
 .actions-box {
+
+  /* Usa flexbox */
   display: flex;
+
+  /* Centra los botones */
   justify-content: center;
+
+  /* Espacio entre botones */
   gap: 8px;
+
+  /* Permite que bajen de línea si no caben */
   flex-wrap: wrap;
 }
 
+/* Botón principal (ej: editar, aprobar) */
 .btn-main {
+
+  /* Sin borde */
   border: none;
+
+  /* Bordes redondeados */
   border-radius: 12px;
+
+  /* Espaciado interno */
   padding: 10px 14px;
+
+  /* Texto en negrita */
   font-weight: 600;
+
+  /* Cambia el cursor a mano */
   cursor: pointer;
+
+  /* Fondo verde */
   background: #16a34a;
+
+  /* Texto blanco */
   color: white;
 }
 
+/* Botón de eliminar */
 .btn-delete {
+
+  /* Sin borde */
   border: none;
+
+  /* Bordes redondeados */
   border-radius: 12px;
+
+  /* Espaciado interno */
   padding: 10px 14px;
+
+  /* Texto en negrita */
   font-weight: 600;
+
+  /* Cursor tipo mano */
   cursor: pointer;
+
+  /* Fondo rojo */
   background: #ef4444;
+
+  /* Texto blanco */
   color: white;
 }

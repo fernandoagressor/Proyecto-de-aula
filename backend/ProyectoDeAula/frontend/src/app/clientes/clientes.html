@@ -1,7 +1,21 @@
+<!-- Contenedor principal de la vista -->
+<!-- <div> agrupa todo el contenido -->
+<!-- class="page-card" aplica el diseño tipo tarjeta -->
 <div class="page-card">
+
+  <!-- Título de la pantalla -->
+  <!-- <h2> es un encabezado -->
+  <!-- class="page-title" aplica estilos al título -->
   <h2 class="page-title">Clientes</h2>
 
+  <!-- Contenedor del formulario -->
+  <!-- Aquí van los campos para registrar o editar un cliente -->
   <div class="form-grid">
+
+    <!-- Campo para escribir el nombre -->
+    <!-- <input> es una caja de texto -->
+    <!-- [(ngModel)] conecta este campo con nuevoCliente.nombre -->
+    <!-- Lo que el usuario escriba aquí se guarda en nuevoCliente.nombre -->
     <input
       class="input-modern"
       type="text"
@@ -9,6 +23,8 @@
       placeholder="Nombre"
     />
 
+    <!-- Campo para escribir la cédula -->
+    <!-- Se conecta con nuevoCliente.cedula -->
     <input
       class="input-modern"
       type="text"
@@ -16,6 +32,8 @@
       placeholder="Cédula"
     />
 
+    <!-- Campo para escribir el teléfono -->
+    <!-- Se conecta con nuevoCliente.telefono -->
     <input
       class="input-modern"
       type="text"
@@ -23,6 +41,8 @@
       placeholder="Teléfono"
     />
 
+    <!-- Campo para escribir la dirección -->
+    <!-- Se conecta con nuevoCliente.direccion -->
     <input
       class="input-modern"
       type="text"
@@ -30,6 +50,10 @@
       placeholder="Dirección"
     />
 
+    <!-- Botón para crear cliente -->
+    <!-- *ngIf="!clienteEditando" significa:
+         este botón solo aparece cuando NO se está editando -->
+    <!-- (click)="crearCliente()" ejecuta el método crearCliente() del archivo .ts -->
     <button
       class="btn-main"
       *ngIf="!clienteEditando"
@@ -38,6 +62,10 @@
       Crear Cliente
     </button>
 
+    <!-- Botón para actualizar cliente -->
+    <!-- *ngIf="clienteEditando" significa:
+         aparece solo cuando sí se está editando un cliente -->
+    <!-- (click)="actualizarCliente()" ejecuta el método actualizarCliente() -->
     <button
       class="btn-main"
       *ngIf="clienteEditando"
@@ -46,6 +74,9 @@
       Actualizar Cliente
     </button>
 
+    <!-- Botón para cancelar edición -->
+    <!-- Solo aparece cuando clienteEditando tiene datos -->
+    <!-- (click)="cancelarEdicion()" limpia el formulario y sale del modo edición -->
     <button
       class="btn-delete"
       *ngIf="clienteEditando"
@@ -55,10 +86,17 @@
     </button>
   </div>
 
+  <!-- Contenedor de la tabla -->
+  <!-- Permite organizar y dar scroll si la tabla es grande -->
   <div class="table-wrapper">
+
+    <!-- Tabla donde se muestran los clientes -->
     <table class="table-modern">
+
+      <!-- Encabezado de la tabla -->
       <thead>
       <tr>
+        <!-- <th> representa títulos de columnas -->
         <th>ID</th>
         <th>Nombre</th>
         <th>Cédula</th>
@@ -68,17 +106,43 @@
       </tr>
       </thead>
 
+      <!-- Cuerpo de la tabla -->
       <tbody>
+
+      <!-- *ngFor recorre la lista clientes -->
+      <!-- Por cada cliente, Angular crea una fila -->
       <tr *ngFor="let cliente of clientes">
+
+        <!-- {{ }} muestra datos dinámicos -->
+        <!-- Muestra el id del cliente -->
         <td>{{ cliente.id }}</td>
+
+        <!-- Muestra el nombre del cliente -->
         <td>{{ cliente.nombre }}</td>
+
+        <!-- Muestra la cédula del cliente -->
         <td>{{ cliente.cedula }}</td>
+
+        <!-- Muestra el teléfono del cliente -->
         <td>{{ cliente.telefono }}</td>
+
+        <!-- Muestra la dirección del cliente -->
         <td>{{ cliente.direccion }}</td>
+
+        <!-- Columna de acciones -->
         <td>
+
+          <!-- Contenedor de botones -->
           <div class="actions-box">
+
+            <!-- Botón editar -->
+            <!-- Envía el objeto cliente completo al método editarCliente() -->
             <button class="btn-edit" (click)="editarCliente(cliente)">Editar</button>
+
+            <!-- Botón eliminar -->
+            <!-- Envía solo el id del cliente al método eliminarCliente() -->
             <button class="btn-delete" (click)="eliminarCliente(cliente.id)">Eliminar</button>
+
           </div>
         </td>
       </tr>

@@ -1,55 +1,121 @@
+/* Estilo para el título h2 */
 h2 {
+
+  /* Elimina margen superior */
   margin-top: 0;
+
+  /* Color azul oscuro */
   color: #1f3552;
 }
 
+/* Contenedor principal del perfil */
 .perfil-card {
+
+  /* Usa flexbox */
   display: flex;
+
+  /* Organiza en columna */
   flex-direction: column;
+
+  /* Espacio entre campos */
   gap: 12px;
+
+  /* Ancho máximo */
   max-width: 500px;
 }
 
+/* Cada campo (label + input) */
 .campo {
+
+  /* Flex en columna */
   display: flex;
+
   flex-direction: column;
+
+  /* Espacio entre label e input */
   gap: 6px;
 }
 
+/* Etiquetas */
 .campo label {
+
+  /* Texto en negrita */
   font-weight: bold;
+
+  /* Color azul oscuro */
   color: #1f3552;
 }
 
+/* Inputs */
 .campo input {
+
+  /* Espaciado interno */
   padding: 10px 12px;
+
+  /* Borde gris claro */
   border: 1px solid #ccd6e0;
+
+  /* Bordes redondeados */
   border-radius: 8px;
+
+  /* Quita borde azul por defecto */
   outline: none;
 }
 
+/* Inputs deshabilitados */
 .campo input:disabled {
+
+  /* Fondo gris claro */
   background: #f2f4f8;
+
+  /* Texto gris */
   color: #666;
 }
 
+/* Botón */
 button {
+
+  /* Ajusta ancho al contenido */
   width: fit-content;
+
+  /* Espaciado interno */
   padding: 10px 14px;
+
+  /* Sin borde */
   border: none;
+
+  /* Bordes redondeados */
   border-radius: 8px;
+
+  /* Fondo azul */
   background: #2c5d91;
+
+  /* Texto blanco */
   color: white;
+
+  /* Cursor tipo mano */
   cursor: pointer;
+
+  /* Negrita */
   font-weight: 600;
 }
 
+/* Hover del botón */
 button:hover {
+
+  /* Azul más oscuro */
   background: #234b75;
 }
 
+/* Mensaje de confirmación */
 .mensaje {
+
+  /* Espacio arriba */
   margin-top: 8px;
+
+  /* Texto en negrita */
   font-weight: bold;
+
+  /* Color verde (éxito) */
   color: #2e7d32;
 }

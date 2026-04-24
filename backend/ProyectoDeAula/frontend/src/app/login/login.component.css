@@ -1,55 +1,127 @@
+/* Contenedor principal del login */
 .login-container {
+
+  /* Ocupa toda la altura de la pantalla */
   min-height: 100vh;
+
+  /* Usa flexbox */
   display: flex;
+
+  /* Centra horizontalmente */
   justify-content: center;
+
+  /* Centra verticalmente */
   align-items: center;
+
+  /* Fondo degradado (azul oscuro → azul claro) */
   background: linear-gradient(135deg, #163b86, #4d91f7);
 }
 
+/* Tarjeta del login */
 .login-card {
+
+  /* Ancho fijo */
   width: 360px;
+
+  /* Fondo blanco */
   background: white;
+
+  /* Bordes redondeados */
   border-radius: 18px;
+
+  /* Espacio interno */
   padding: 30px;
+
+  /* Sombra fuerte para destacar */
   box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+
+  /* Centra el contenido */
   text-align: center;
 }
 
+/* Título principal */
 .login-card h1 {
+
+  /* Espacio debajo */
   margin-bottom: 8px;
+
+  /* Color azul */
   color: #163b86;
 }
 
+/* Subtítulo */
 .login-card p {
+
+  /* Espacio debajo */
   margin-bottom: 20px;
+
+  /* Color gris */
   color: #6b7280;
 }
 
+/* Inputs (usuario y contraseña) */
 .login-card input {
+
+  /* Ocupa todo el ancho */
   width: 100%;
+
+  /* Espaciado interno */
   padding: 12px;
+
+  /* Espacio entre inputs */
   margin-bottom: 14px;
+
+  /* Borde gris */
   border: 1px solid #d1d5db;
+
+  /* Bordes redondeados */
   border-radius: 10px;
+
+  /* Mantiene tamaño correcto */
   box-sizing: border-box;
 }
 
+/* Botón de login */
 .login-card button {
+
+  /* Ocupa todo el ancho */
   width: 100%;
+
+  /* Espaciado interno */
   padding: 12px;
+
+  /* Fondo azul */
   background: #2563eb;
+
+  /* Texto blanco */
   color: white;
+
+  /* Sin borde */
   border: none;
+
+  /* Bordes redondeados */
   border-radius: 10px;
+
+  /* Texto en negrita */
   font-weight: bold;
+
+  /* Cursor tipo mano */
   cursor: pointer;
 }
 
+/* Efecto hover del botón */
 .login-card button:hover {
+
+  /* Azul más oscuro */
   background: #1d4ed8;
 }
 
+/* Mensaje de error */
 .error {
+
+  /* Espacio arriba */
   margin-top: 12px;
+
+  /* Color rojo */
   color: #dc2626;
 }

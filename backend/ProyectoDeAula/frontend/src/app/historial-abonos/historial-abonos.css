@@ -1,46 +1,95 @@
+/* Contenedor principal del historial */
 .historial-container {
+
+  /* Fondo blanco */
   background: #ffffff;
+
+  /* Bordes redondeados */
   border-radius: 14px;
+
+  /* Espaciado interno */
   padding: 24px;
+
+  /* Sombra para dar profundidad */
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+/* Estilo del título */
 .historial-container h2 {
+
+  /* Espacio debajo */
   margin-bottom: 20px;
+
+  /* Color oscuro */
   color: #2c3e50;
 }
 
+/* Texto de "Cargando..." */
 .cargando {
+
+  /* Espacio vertical */
   padding: 20px 0;
+
+  /* Color gris */
   color: #6b7280;
+
+  /* Texto en negrita */
   font-weight: 600;
 }
 
+/* Contenedor de la tabla */
 .tabla-wrapper {
+
+  /* Permite scroll horizontal si la tabla es grande */
   overflow-x: auto;
 }
 
+/* Tabla general */
 table {
+
+  /* Ocupa todo el ancho */
   width: 100%;
+
+  /* Quita espacios entre celdas */
   border-collapse: collapse;
+
+  /* Ancho mínimo (evita que se comprima demasiado) */
   min-width: 900px;
 }
 
+/* Encabezado de la tabla */
 thead {
+
+  /* Fondo gris claro */
   background: #f4f6f9;
 }
 
+/* Celdas (títulos y datos) */
 th, td {
+
+  /* Espaciado interno */
   padding: 14px 12px;
+
+  /* Línea divisoria inferior */
   border-bottom: 1px solid #e5e7eb;
+
+  /* Centra el texto */
   text-align: center;
 }
 
+/* Encabezados */
 th {
+
+  /* Color azul oscuro */
   color: #1f3e82;
+
+  /* Negrita */
   font-weight: 700;
 }
 
+/* Datos */
 td {
+
+  /* Color gris oscuro */
   color: #334155;
 }

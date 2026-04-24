@@ -1,25 +1,42 @@
+<!-- Contenedor principal de la pantalla de solicitud -->
 <div class="solicitud-container">
+
+  <!-- Tarjeta visual del formulario -->
   <div class="solicitud-card">
+
+    <!-- Título de la vista -->
     <h2>Solicitar Préstamo</h2>
 
+    <!-- Contenedor del formulario -->
     <div class="formulario">
+
+      <!-- Campo para escribir el monto solicitado -->
+      <!-- type="number" permite ingresar solo números -->
+      <!-- [(ngModel)] conecta el input con la variable monto del .ts -->
       <input
         type="number"
         [(ngModel)]="monto"
         placeholder="Monto solicitado"
       />
 
+      <!-- Campo para escribir el plazo del préstamo -->
+      <!-- El valor se guarda en la variable plazoMeses -->
       <input
         type="number"
         [(ngModel)]="plazoMeses"
         placeholder="Plazo en meses"
       />
 
+      <!-- Botón para enviar la solicitud -->
+      <!-- Al hacer clic ejecuta solicitarPrestamo() en el .ts -->
       <button (click)="solicitarPrestamo()">
         Enviar solicitud
       </button>
     </div>
 
+    <!-- Mensaje dinámico -->
+    <!-- Solo aparece si mensaje tiene contenido -->
+    <!-- Muestra confirmación o error -->
     <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
   </div>
 </div>

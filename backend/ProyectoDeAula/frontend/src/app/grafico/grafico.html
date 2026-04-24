@@ -1,16 +1,41 @@
+<!-- Contenedor principal de los gráficos -->
+<!-- <div> agrupa todos los elementos -->
+<!-- class="graficos-grid" organiza los gráficos en forma de grid (rejilla) -->
 <div class="graficos-grid">
 
+  <!-- Tarjeta del primer gráfico -->
+  <!-- class="grafico-card" aplica diseño tipo tarjeta -->
   <div class="grafico-card">
+
+    <!-- Título del gráfico -->
+    <!-- <h3> es un subtítulo -->
     <h3>Monto por Estado</h3>
+
+    <!-- Contenedor del canvas -->
+    <!-- class="canvas-box" controla tamaño y espacio del gráfico -->
     <div class="canvas-box">
+
+      <!-- <canvas> es donde se dibuja el gráfico -->
+      <!-- id="graficoEstados" permite acceder a este canvas desde el archivo .ts -->
+      <!-- Aquí Angular (con Chart.js u otra librería) dibuja el gráfico -->
       <canvas id="graficoEstados"></canvas>
+
     </div>
   </div>
 
+  <!-- Tarjeta del segundo gráfico -->
   <div class="grafico-card">
+
+    <!-- Título -->
     <h3>Abonos por Mes</h3>
+
+    <!-- Contenedor del gráfico -->
     <div class="canvas-box">
+
+      <!-- Segundo canvas -->
+      <!-- id="graficoMensual" permite dibujar otro gráfico distinto -->
       <canvas id="graficoMensual"></canvas>
+
     </div>
   </div>
 

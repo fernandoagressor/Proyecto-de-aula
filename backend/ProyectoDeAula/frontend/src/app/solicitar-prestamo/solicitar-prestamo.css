@@ -1,48 +1,111 @@
+/* Contenedor general de la vista */
 .solicitud-container {
+
+  /* Espacio interno alrededor de todo el contenido */
   padding: 20px;
 }
 
+
+/* Tarjeta principal donde está el formulario */
 .solicitud-card {
+
+  /* Fondo blanco para simular una tarjeta */
   background: white;
+
+  /* Bordes redondeados */
   border-radius: 16px;
+
+  /* Espacio interno dentro de la tarjeta */
   padding: 24px;
+
+  /* Sombra para efecto flotante */
   box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
+
+  /* Ancho máximo para que no se vea gigante */
   max-width: 500px;
 }
 
+
+/* Título dentro de la tarjeta */
 .solicitud-card h2 {
+
+  /* Espacio debajo del título */
   margin-bottom: 20px;
+
+  /* Color azul oscuro */
   color: #1f3e82;
 }
 
+
+/* Contenedor del formulario */
 .formulario {
+
+  /* Organiza los elementos en columna (uno debajo del otro) */
   display: flex;
   flex-direction: column;
+
+  /* Espacio entre inputs y botón */
   gap: 12px;
 }
 
+
+/* Estilo de los inputs */
 .formulario input {
+
+  /* Espacio interno dentro del input */
   padding: 12px;
+
+  /* Borde gris claro */
   border: 1px solid #d1d5db;
+
+  /* Bordes redondeados */
   border-radius: 10px;
 }
 
+
+/* Botón del formulario */
 .formulario button {
+
+  /* Espacio interno del botón */
   padding: 12px;
+
+  /* Sin borde */
   border: none;
+
+  /* Bordes redondeados */
   border-radius: 10px;
+
+  /* Color azul */
   background: #2563eb;
+
+  /* Texto blanco */
   color: white;
+
+  /* Texto en negrita */
   font-weight: 600;
+
+  /* Cambia el cursor al pasar el mouse */
   cursor: pointer;
 }
 
+
+/* Efecto cuando pasas el mouse sobre el botón */
 .formulario button:hover {
+
+  /* Color más oscuro */
   background: #1d4ed8;
 }
 
+
+/* Mensaje debajo del formulario */
 .mensaje {
+
+  /* Espacio arriba del mensaje */
   margin-top: 16px;
+
+  /* Color azul */
   color: #2563eb;
+
+  /* Texto en negrita */
   font-weight: 600;
 }

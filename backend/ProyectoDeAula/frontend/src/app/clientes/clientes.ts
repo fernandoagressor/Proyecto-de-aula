@@ -1,44 +1,19 @@
-// Importa decorador Component y ciclo de vida OnInit
-// Component → define el componente
-// OnInit → permite ejecutar código al iniciar
-import { Component, OnInit } from '@angular/core';
-
-// Importa CommonModule (para usar *ngIf, *ngFor)
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-// Importa FormsModule (para usar [(ngModel)])
 import { FormsModule } from '@angular/forms';
-
-// Importa el servicio que conecta con el backend
 import { ClienteService } from '../services/cliente.service';
 
-
-// Decorador del componente
 @Component({
-
-  // Nombre del componente en HTML
   selector: 'app-clientes',
-
-  // Componente standalone
   standalone: true,
-
-  // Módulos que puede usar
   imports: [CommonModule, FormsModule],
-
-  // HTML asociado
   templateUrl: './clientes.html',
-
-  // CSS asociado
   styleUrls: ['./clientes.css']
 })
-
-// Clase principal del componente
 export class ClientesComponent implements OnInit {
 
-  // Lista donde se guardan los clientes
   clientes: any[] = [];
 
-  // Objeto para crear o editar cliente
   nuevoCliente = {
     nombre: '',
     cedula: '',
@@ -46,96 +21,102 @@ export class ClientesComponent implements OnInit {
     direccion: ''
   };
 
-  // Variable para saber si se está editando un cliente
   clienteEditando: any = null;
 
-  // Constructor con inyección del servicio
-  constructor(private clienteService: ClienteService) {}
+  busqueda: string = '';
 
-  // Método que se ejecuta al iniciar el componente
+  toastVisible: boolean = false;
+  toastMensaje: string = '';
+  toastTipo: 'success' | 'error' | 'warning' | 'info' = 'info';
+
+  constructor(
+    private clienteService: ClienteService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
   ngOnInit(): void {
-
-    // Carga los clientes desde el backend
     this.cargarClientes();
   }
 
-  // Método para obtener clientes
   cargarClientes(): void {
-
-    // Llama al backend (HTTP GET)
     this.clienteService.listarClientes().subscribe({
-
-      // Si la respuesta es exitosa
       next: (data: any[]) => {
-
-        // Guarda los clientes en la variable
-        this.clientes = data;
+        this.clientes = data || [];
+        this.cdr.detectChanges();
       },
 
-      // Si ocurre error
       error: (err: any) => {
         console.error('Error al cargar clientes', err);
+
+        this.clientes = [];
+        this.mostrarToast('No fue posible cargar los clientes.', 'error');
+
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Método para crear cliente
   crearCliente(): void {
-
-    // Validación: todos los campos deben tener datos
-    if (
-      !this.nuevoCliente.nombre ||
-      !this.nuevoCliente.cedula ||
-      !this.nuevoCliente.telefono ||
-      !this.nuevoCliente.direccion
-    ) {
-      return; // Detiene la ejecución si falta algo
-    }
-
-    // Llama al backend (HTTP POST)
-    this.clienteService.crearCliente(this.nuevoCliente).subscribe({
-
-      // Si se crea correctamente
-      next: () => {
-
-        // Recarga la lista de clientes
-        this.cargarClientes();
-
-        // Limpia el formulario
-        this.limpiarFormulario();
-      },
-
-      // Si ocurre error
-      error: (err: any) => {
-        console.error('Error al crear cliente', err);
-      }
-    });
-  }
-
-  // Método para seleccionar cliente a editar
-  editarCliente(cliente: any): void {
-
-    // Guarda el cliente seleccionado
-    this.clienteEditando = cliente;
-
-    // Copia los datos al formulario
-    this.nuevoCliente = {
-      nombre: cliente.nombre,
-      cedula: cliente.cedula,
-      telefono: cliente.telefono,
-      direccion: cliente.direccion
-    };
-  }
-
-  // Método para actualizar cliente
-  actualizarCliente(): void {
-
-    // Si no hay cliente seleccionado, no hace nada
-    if (!this.clienteEditando) {
+    if (!this.formularioValido()) {
+      this.mostrarToast('Debes completar nombre, cédula, teléfono y dirección.', 'warning');
       return;
     }
 
-    // Crea objeto con datos actualizados
+    this.clienteService.crearCliente(this.nuevoCliente).subscribe({
+      next: () => {
+        this.limpiarFormulario();
+        this.cargarClientes();
+
+        this.mostrarToast('Cliente creado correctamente.', 'success');
+        this.cdr.detectChanges();
+      },
+
+      error: (err: any) => {
+        console.error('Error al crear cliente', err);
+
+        const mensaje = err?.error?.mensaje || 'No fue posible crear el cliente.';
+        this.mostrarToast(mensaje, 'error');
+
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  editarCliente(cliente: any): void {
+    this.clienteEditando = cliente;
+
+    this.nuevoCliente = {
+      nombre: cliente.nombre || '',
+      cedula: cliente.cedula || '',
+      telefono: cliente.telefono || '',
+      direccion: cliente.direccion || ''
+    };
+
+    this.mostrarToast('Modo edición activado para el cliente seleccionado.', 'info');
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      const form = document.getElementById('formCliente');
+      if (form) {
+        form.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+    }, 100);
+  }
+
+  actualizarCliente(): void {
+    if (!this.clienteEditando) {
+      this.mostrarToast('No hay ningún cliente seleccionado para actualizar.', 'warning');
+      return;
+    }
+
+    if (!this.formularioValido()) {
+      this.mostrarToast('Debes completar todos los campos antes de actualizar.', 'warning');
+      return;
+    }
+
     const clienteActualizado = {
       id: this.clienteEditando.id,
       nombre: this.nuevoCliente.nombre,
@@ -144,65 +125,122 @@ export class ClientesComponent implements OnInit {
       direccion: this.nuevoCliente.direccion
     };
 
-    // Llama al backend (HTTP PUT)
     this.clienteService.actualizarCliente(clienteActualizado.id, clienteActualizado).subscribe({
-
-      // Si todo sale bien
       next: () => {
-
-        // Recarga la lista
+        this.cancelarEdicion();
         this.cargarClientes();
 
-        // Cancela modo edición
-        this.cancelarEdicion();
+        this.mostrarToast('Cliente actualizado correctamente.', 'success');
+        this.cdr.detectChanges();
       },
 
-      // Si ocurre error
       error: (err: any) => {
         console.error('Error al actualizar cliente', err);
+
+        const mensaje = err?.error?.mensaje || 'No fue posible actualizar el cliente.';
+        this.mostrarToast(mensaje, 'error');
+
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Método para eliminar cliente
   eliminarCliente(id: number): void {
+    const confirmar = confirm('¿Seguro que deseas eliminar este cliente?');
 
-    // Llama al backend (HTTP DELETE)
+    if (!confirmar) {
+      return;
+    }
+
     this.clienteService.eliminarCliente(id).subscribe({
-
-      // Si se elimina correctamente
       next: () => {
-
-        // Recarga la lista
         this.cargarClientes();
+
+        this.mostrarToast('Cliente eliminado correctamente.', 'success');
+        this.cdr.detectChanges();
       },
 
-      // Si ocurre error
       error: (err: any) => {
         console.error('Error al eliminar cliente', err);
+
+        const mensaje = err?.error?.mensaje || 'No fue posible eliminar el cliente.';
+        this.mostrarToast(mensaje, 'error');
+
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Cancela la edición
   cancelarEdicion(): void {
-
-    // Quita el cliente seleccionado
     this.clienteEditando = null;
-
-    // Limpia formulario
     this.limpiarFormulario();
+    this.cdr.detectChanges();
   }
 
-  // Limpia el formulario
   limpiarFormulario(): void {
-
-    // Reinicia los campos
     this.nuevoCliente = {
       nombre: '',
       cedula: '',
       telefono: '',
       direccion: ''
     };
+  }
+
+  formularioValido(): boolean {
+    return !!(
+      this.nuevoCliente.nombre?.trim() &&
+      this.nuevoCliente.cedula?.trim() &&
+      this.nuevoCliente.telefono?.trim() &&
+      this.nuevoCliente.direccion?.trim()
+    );
+  }
+
+  obtenerClientesFiltrados(): any[] {
+    const texto = this.busqueda.trim().toLowerCase();
+
+    if (!texto) {
+      return this.clientes;
+    }
+
+    return this.clientes.filter((cliente: any) => {
+      const nombre = String(cliente.nombre || '').toLowerCase();
+      const cedula = String(cliente.cedula || '').toLowerCase();
+      const telefono = String(cliente.telefono || '').toLowerCase();
+      const direccion = String(cliente.direccion || '').toLowerCase();
+
+      return (
+        nombre.includes(texto) ||
+        cedula.includes(texto) ||
+        telefono.includes(texto) ||
+        direccion.includes(texto)
+      );
+    });
+  }
+
+  obtenerInicialCliente(cliente: any): string {
+    const nombre = cliente?.nombre || 'C';
+    return nombre.charAt(0).toUpperCase();
+  }
+
+  contarConTelefono(): number {
+    return this.clientes.filter((cliente: any) => !!cliente.telefono).length;
+  }
+
+  contarConDireccion(): number {
+    return this.clientes.filter((cliente: any) => !!cliente.direccion).length;
+  }
+
+  mostrarToast(
+    mensaje: string,
+    tipo: 'success' | 'error' | 'warning' | 'info' = 'info'
+  ): void {
+    this.toastMensaje = mensaje;
+    this.toastTipo = tipo;
+    this.toastVisible = true;
+
+    setTimeout(() => {
+      this.toastVisible = false;
+      this.cdr.detectChanges();
+    }, 4200);
   }
 }

@@ -1,104 +1,260 @@
-<!-- Contenedor principal -->
-<!-- <div> agrupa todo el contenido de la vista -->
-<!-- class="page-card" aplica estilos CSS (tarjeta blanca con sombra) -->
-<div class="page-card">
+<div class="abonos-page">
 
-  <!-- Título de la página -->
-  <!-- <h2> es un encabezado (título) -->
-  <!-- class="page-title" aplica estilo (tamaño, color, centrado) -->
-  <h2 class="page-title">Abonos Pendientes</h2>
+  <!-- TOAST -->
+  <div
+    class="toast-message"
+    *ngIf="toastVisible"
+    [ngClass]="{
+      'toast-success': toastTipo === 'success',
+      'toast-error': toastTipo === 'error',
+      'toast-warning': toastTipo === 'warning',
+      'toast-info': toastTipo === 'info'
+    }"
+  >
+    <div class="toast-icon">
+      <span *ngIf="toastTipo === 'success'">✓</span>
+      <span *ngIf="toastTipo === 'error'">!</span>
+      <span *ngIf="toastTipo === 'warning'">!</span>
+      <span *ngIf="toastTipo === 'info'">ℹ</span>
+    </div>
 
-  <!-- Mensaje dinámico -->
-  <!-- <p> es un párrafo -->
-  <!-- *ngIf="mensaje" → SOLO muestra este elemento si la variable mensaje tiene valor -->
-  <!-- {{ mensaje }} → imprime el contenido de la variable mensaje -->
-  <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+    <div class="toast-content">
+      <strong>
+        {{
+        toastTipo === 'success'
+        ? 'Operación exitosa'
+        : toastTipo === 'error'
+        ? 'Error'
+        : toastTipo === 'warning'
+        ? 'Atención'
+        : 'Información'
+        }}
+      </strong>
 
-  <!-- Contenedor de la tabla -->
-  <!-- Permite scroll horizontal si la tabla es muy grande -->
-  <div class="table-wrapper">
+      <p>{{ toastMensaje }}</p>
+    </div>
 
-    <!-- Tabla -->
-    <!-- <table> se usa para mostrar datos en filas y columnas -->
-    <table class="table-modern">
-
-      <!-- Encabezado de la tabla -->
-      <thead>
-
-      <!-- <tr> = fila de la tabla -->
-      <tr>
-
-        <!-- <th> = celda de encabezado -->
-        <th>ID Abono</th>
-        <th>Cliente</th>
-        <th>Cédula</th>
-        <th>ID Préstamo</th>
-        <th>Monto</th>
-        <th>Fecha</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-      </thead>
-
-      <!-- Cuerpo de la tabla -->
-      <tbody>
-
-      <!-- *ngFor recorre una lista -->
-      <!-- "let abono of abonosPendientes" significa:
-           por cada abono dentro de la lista abonosPendientes -->
-      <!-- Angular crea una fila <tr> por cada elemento -->
-      <tr *ngFor="let abono of abonosPendientes">
-
-        <!-- {{ }} muestra datos dinámicos -->
-        <!-- Muestra el id del abono -->
-        <td>{{ abono.id }}</td>
-
-        <!-- ?. evita errores si algún dato es null -->
-        <!-- Accede a:
-             abono → prestamo → cliente → nombre -->
-        <td>{{ abono.prestamo?.cliente?.nombre }}</td>
-
-        <!-- Muestra la cédula del cliente -->
-        <td>{{ abono.prestamo?.cliente?.cedula }}</td>
-
-        <!-- Muestra el id del préstamo -->
-        <td>{{ abono.prestamo?.id }}</td>
-
-        <!-- Llama a una función del archivo .ts -->
-        <!-- formatearDinero() convierte número a formato moneda -->
-        <td>{{ formatearDinero(abono.monto) }}</td>
-
-        <!-- Muestra la fecha -->
-        <td>{{ abono.fecha }}</td>
-
-        <!-- Muestra el estado del abono -->
-        <td>{{ abono.estado }}</td>
-
-        <!-- Columna de acciones -->
-        <td>
-
-          <!-- Contenedor de botones -->
-          <div class="actions-box">
-
-            <!-- Botón aprobar -->
-            <!-- (click) es un evento -->
-            <!-- Cuando se hace clic, ejecuta la función aprobarAbono() -->
-            <!-- abono.id! → ! asegura que el id no es null -->
-            <button class="btn-main" (click)="aprobarAbono(abono.id!)">
-              Aprobar
-            </button>
-
-            <!-- Botón rechazar -->
-            <!-- Llama a la función rechazarAbono() -->
-            <button class="btn-delete" (click)="rechazarAbono(abono.id!)">
-              Rechazar
-            </button>
-
-          </div>
-        </td>
-
-      </tr>
-      </tbody>
-    </table>
+    <button
+      class="toast-close"
+      type="button"
+      (click)="toastVisible = false"
+    >
+      ×
+    </button>
   </div>
+
+  <!-- HERO -->
+  <section class="abonos-hero">
+
+    <div class="hero-content">
+      <span class="hero-eyebrow">Validación de pagos</span>
+
+      <h1>Abonos pendientes</h1>
+
+      <p>
+        Revisa, aprueba o rechaza los abonos enviados por los clientes
+        antes de aplicarlos al saldo del préstamo.
+      </p>
+    </div>
+
+    <div class="hero-summary">
+      <span>Total pendiente por validar</span>
+      <strong>{{ formatearDinero(obtenerTotalPendiente()) }}</strong>
+      <p>{{ abonosPendientes.length }} abonos pendientes</p>
+    </div>
+
+  </section>
+
+  <!-- RESUMEN -->
+  <section class="stats-grid">
+
+    <article class="stat-card">
+      <div class="stat-icon amber">⏳</div>
+
+      <div>
+        <span>Abonos pendientes</span>
+        <strong>{{ abonosPendientes.length }}</strong>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon green">💰</div>
+
+      <div>
+        <span>Monto total</span>
+        <strong>{{ formatearDinero(obtenerTotalPendiente()) }}</strong>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon blue">🧾</div>
+
+      <div>
+        <span>Validación</span>
+        <strong>Manual</strong>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon indigo">🔐</div>
+
+      <div>
+        <span>Estado</span>
+        <strong>Seguro</strong>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- MENSAJE SIMPLE -->
+  <div class="alert-message" *ngIf="mensaje">
+    {{ mensaje }}
+  </div>
+
+  <!-- TABLA -->
+  <section class="table-card">
+
+    <div class="section-header table-header">
+      <div>
+        <span class="section-eyebrow">Pagos por validar</span>
+
+        <h2>Listado de abonos pendientes</h2>
+
+        <p>
+          Controla los pagos pendientes de aprobación y verifica la información
+          del cliente antes de aplicar el abono.
+        </p>
+      </div>
+
+      <span class="counter-chip">
+        {{ abonosPendientes.length }} pendientes
+      </span>
+    </div>
+
+    <div class="table-wrapper" *ngIf="abonosPendientes.length > 0; else sinAbonos">
+
+      <table class="table-modern">
+
+        <thead>
+        <tr>
+          <th>ID abono</th>
+          <th>Cliente</th>
+          <th>Cédula</th>
+          <th>ID préstamo</th>
+          <th>Monto</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr *ngFor="let abono of abonosPendientes">
+
+          <td>
+            <span class="id-text">#{{ abono.id }}</span>
+          </td>
+
+          <td>
+            <div class="client-cell">
+
+              <div class="client-avatar">
+                {{ obtenerInicialCliente(abono) }}
+              </div>
+
+              <div>
+                <strong>{{ obtenerNombreCliente(abono) }}</strong>
+                <span>Cliente asociado</span>
+              </div>
+
+            </div>
+          </td>
+
+          <td>
+              <span class="document-text">
+                {{ obtenerCedulaCliente(abono) }}
+              </span>
+          </td>
+
+          <td>
+              <span class="id-text">
+                {{ obtenerIdPrestamo(abono) }}
+              </span>
+          </td>
+
+          <td>
+              <span class="money-text">
+                {{ formatearDinero(abono.monto) }}
+              </span>
+          </td>
+
+          <td>
+              <span class="date-text">
+                {{ abono.fecha }}
+              </span>
+          </td>
+
+          <td>
+              <span
+                class="badge-status"
+                [ngClass]="{
+                  'status-pendiente': obtenerEstado(abono) === 'PENDIENTE',
+                  'status-aprobado': obtenerEstado(abono) === 'APROBADO',
+                  'status-rechazado': obtenerEstado(abono) === 'RECHAZADO',
+                  'status-sin-estado': obtenerEstado(abono) === 'SIN ESTADO'
+                }"
+              >
+                {{ obtenerEstado(abono) }}
+              </span>
+          </td>
+
+          <td>
+            <div class="actions-box">
+
+              <button
+                class="btn-table approve"
+                type="button"
+                (click)="aprobarAbono(abono.id!)"
+              >
+                Aprobar
+              </button>
+
+              <button
+                class="btn-table reject"
+                type="button"
+                (click)="rechazarAbono(abono.id!)"
+              >
+                Rechazar
+              </button>
+
+              <button
+                class="btn-table pdf"
+                type="button"
+                disabled
+              >
+                PDF
+              </button>
+
+            </div>
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <ng-template #sinAbonos>
+      <div class="empty-state">
+        <div>📭</div>
+        <strong>No hay abonos pendientes</strong>
+        <p>Cuando un cliente envíe un abono, aparecerá aquí para validación.</p>
+      </div>
+    </ng-template>
+
+  </section>
+
 </div>

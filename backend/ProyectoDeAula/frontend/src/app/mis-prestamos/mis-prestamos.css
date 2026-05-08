@@ -1,238 +1,490 @@
-/* Contenedor general de la vista */
-.contenedor-prestamos {
+/* =========================
+   MIS PRÉSTAMOS
+========================= */
 
-  /* Espacio interno alrededor de todo */
-  padding: 20px;
+.mis-prestamos-page {
+  width: 100%;
 }
 
-/* Título principal */
-.titulo {
+/* =========================
+   ENCABEZADO
+========================= */
 
-  /* Espacio debajo */
-  margin-bottom: 20px;
-
-  /* Color azul oscuro */
-  color: #1f3e82;
-}
-
-/* Mensajes informativos */
-.mensaje {
-
-  /* Separación inferior */
-  margin-bottom: 16px;
-
-  /* Azul informativo */
-  color: #2563eb;
-
-  /* Resalta el texto */
-  font-weight: 600;
-}
-
-/* Grid de tarjetas de préstamos */
-.grid-prestamos {
-
-  /* Layout en grid */
-  display: grid;
-
-  /* Columnas adaptables (mín 300px por tarjeta) */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-
-  /* Espacio entre tarjetas */
-  gap: 20px;
-}
-
-/* Tarjeta de cada préstamo */
-.card-prestamo {
-
-  /* Fondo blanco */
-  background: white;
-
-  /* Bordes redondeados */
-  border-radius: 16px;
-
-  /* Espaciado interno */
-  padding: 18px;
-
-  /* Sombra suave */
-  box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
-}
-
-/* Cabecera de la tarjeta (estado) */
-.card-header {
-
-  /* Flex para alinear contenido */
+.page-header {
   display: flex;
-
-  /* Alinea a la derecha */
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 26px;
 }
 
-/* Etiqueta de estado */
-.estado {
-
-  /* Espaciado interno */
-  padding: 6px 10px;
-
-  /* Bordes redondeados */
-  border-radius: 10px;
-
-  /* Tamaño pequeño */
+.page-eyebrow {
+  display: inline-block;
   font-size: 12px;
-
-  /* Negrita */
-  font-weight: bold;
+  font-weight: 800;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
 }
 
-/* Estados con colores distintos */
-.aprobado {
-  background: #d1fae5;  /* Verde claro */
-  color: #065f46;       /* Verde oscuro */
+.page-title {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.8px;
 }
 
-.pendiente {
-  background: #fef3c7;  /* Amarillo claro */
-  color: #92400e;       /* Marrón */
+.page-description {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
-.rechazado {
-  background: #fee2e2;  /* Rojo claro */
-  color: #991b1b;       /* Rojo oscuro */
+/* =========================
+   MENSAJE
+========================= */
+
+.alert-message {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 22px;
 }
 
-.pagado {
-  background: #e0e7ff;  /* Azul claro */
-  color: #3730a3;       /* Azul oscuro */
+/* =========================
+   RESUMEN
+========================= */
+
+.summary-card {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
-/* Texto dentro de la tarjeta */
-.card-body p {
-
-  /* Espacio entre líneas */
-  margin: 6px 0;
+.summary-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
 }
 
-/* Sección de progreso */
-.progreso {
-
-  /* Separación superior */
-  margin-top: 10px;
+.summary-label {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 750;
+  margin-bottom: 8px;
 }
 
-/* Barra base */
-.barra {
-
-  /* Altura */
-  height: 8px;
-
-  /* Fondo gris */
-  background: #e5e7eb;
-
-  /* Bordes redondeados */
-  border-radius: 10px;
+.summary-item strong {
+  display: block;
+  color: #0f172a;
+  font-size: 22px;
+  font-weight: 850;
+  letter-spacing: -0.4px;
 }
 
-/* Barra de progreso (relleno) */
-.relleno {
+/* =========================
+   GRID DE PRÉSTAMOS
+========================= */
 
-  /* Altura igual a la barra */
-  height: 8px;
-
-  /* Color azul */
-  background: #2563eb;
-
-  /* Bordes redondeados */
-  border-radius: 10px;
+.grid-prestamos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
 }
 
-/* Sección de acciones (botones + input) */
-.acciones {
+.loan-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-  margin-top: 12px;
+.loan-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.09);
+}
 
-  /* Flex en columna */
+/* =========================
+   CARD HEADER
+========================= */
+
+.loan-header {
   display: flex;
-
-  flex-direction: column;
-
-  /* Espacio entre elementos */
-  gap: 8px;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 22px;
 }
 
-/* Input de abono */
-.acciones input {
-
-  padding: 8px;
-
-  border-radius: 8px;
-
-  border: 1px solid #ccc;
+.loan-id {
+  display: inline-block;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
 }
 
-/* Botones */
-.acciones button {
-
-  padding: 8px;
-
-  border-radius: 8px;
-
-  border: none;
-
-  /* Azul principal */
-  background: #2563eb;
-
-  color: white;
-
-  cursor: pointer;
+.loan-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.7px;
 }
 
-/* Botón deshabilitado */
-.acciones button:disabled {
+/* =========================
+   ESTADOS
+========================= */
 
-  /* Opacidad baja */
-  opacity: 0.6;
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 850;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
 
-  /* Cursor bloqueado */
+.status-pendiente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-aprobado {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-rechazado {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-pagado {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-abono-pendiente {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+/* =========================
+   DETALLES
+========================= */
+
+.loan-details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.detail-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.detail-item span {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 750;
+  margin-bottom: 7px;
+}
+
+.detail-item strong {
+  display: block;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+/* =========================
+   PROGRESO
+========================= */
+
+.progress-section {
+  margin-bottom: 22px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-header span {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.progress-header strong {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #16a34a);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* =========================
+   ACCIONES
+========================= */
+
+.loan-actions {
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.input-abono {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #cbd5e1;
+  border-radius: 13px;
+  padding: 0 13px;
+  font-size: 14px;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.input-abono::placeholder {
+  color: #94a3b8;
+}
+
+.input-abono:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.input-abono:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
   cursor: not-allowed;
 }
 
-/* Botón especial: pagar total */
-.btn-pagar-total {
-
-  /* Color morado */
-  background: #7c3aed;
+.buttons-row {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
 }
 
-/* Contenedor del historial */
-.historial-box {
-
-  margin-top: 30px;
-
-  background: white;
-
-  padding: 18px;
-
-  border-radius: 14px;
-
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+.btn-action {
+  height: 36px;
+  padding: 0 13px;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 850;
+  transition: all 0.2s ease;
 }
 
-/* Tabla del historial */
-.historial-box table {
+.btn-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 
+.btn-action.pay {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.btn-action.pay:hover:not(:disabled) {
+  background: #dbeafe;
+}
+
+.btn-action.total {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.btn-action.total:hover:not(:disabled) {
+  background: #fde68a;
+}
+
+.btn-action.history {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.btn-action.history:hover {
+  background: #e2e8f0;
+}
+
+/* =========================
+   HISTORIAL
+========================= */
+
+.history-card {
+  margin-top: 26px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+  gap: 16px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.section-header p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.counter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.table-wrapper {
   width: 100%;
-
-  border-collapse: collapse;
-
-  margin-top: 12px;
+  overflow-x: auto;
 }
 
-/* Celdas del historial */
-.historial-box th,
-.historial-box td {
+.table-modern {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 620px;
+}
 
-  border-bottom: 1px solid #e5e7eb;
+.table-modern thead {
+  background: #f8fafc;
+}
 
-  padding: 10px;
+.table-modern th {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+}
 
-  text-align: center;
+.table-modern td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 14px;
+}
+
+.id-text {
+  font-weight: 850;
+  color: #64748b;
+}
+
+.money-text {
+  font-weight: 850;
+  color: #0f172a;
+}
+
+.date-text {
+  color: #475569;
+  font-weight: 650;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+  .grid-prestamos {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .summary-card {
+    grid-template-columns: 1fr;
+  }
+
+  .loan-details {
+    grid-template-columns: 1fr;
+  }
+
+  .page-title {
+    font-size: 28px;
+  }
+
+  .section-header {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 520px) {
+  .loan-card,
+  .history-card,
+  .summary-item {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .loan-header {
+    flex-direction: column;
+  }
+
+  .loan-header h2 {
+    font-size: 22px;
+  }
 }

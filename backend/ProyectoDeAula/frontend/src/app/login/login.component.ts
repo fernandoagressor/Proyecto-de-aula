@@ -1,108 +1,137 @@
-// Importa decorador Component
 import { Component } from '@angular/core';
-
-// Permite usar *ngIf, *ngFor
 import { CommonModule } from '@angular/common';
-
-// Permite usar [(ngModel)] en inputs
 import { FormsModule } from '@angular/forms';
-
-// Router → para navegar entre páginas
 import { Router } from '@angular/router';
-
-// Servicio que conecta con el backend
 import { UsuarioService } from '../services/usuario.service';
 
-
-// Decorador del componente
 @Component({
-
-  // Nombre del componente en HTML
   selector: 'app-login',
-
-  // Componente standalone
   standalone: true,
-
-  // Módulos que puede usar
   imports: [CommonModule, FormsModule],
-
-  // HTML asociado
   templateUrl: './login.component.html',
-
-  // CSS asociado
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
-
-// Clase del componente
 export class LoginComponent {
 
-  // Variable para guardar el usuario ingresado
   loginNombre: string = '';
-
-  // Variable para guardar la contraseña
   loginPassword: string = '';
-
-  // Mensaje de error o estado
   mensajeLogin: string = '';
 
-  // Constructor con inyección de dependencias
+  ayudaAbierta: boolean = false;
+
+  toastVisible: boolean = false;
+  toastMensaje: string = '';
+  toastTipo: 'info' | 'error' | 'success' | 'warning' = 'info';
+
   constructor(
-    private usuarioService: UsuarioService, // Servicio backend
-    private router: Router // Navegación
+    private usuarioService: UsuarioService,
+    private router: Router
   ) {}
 
-  // Método que se ejecuta al hacer clic en "Ingresar"
+  abrirCerrarAyuda(): void {
+    this.ayudaAbierta = !this.ayudaAbierta;
+  }
+
+  cerrarAyuda(): void {
+    this.ayudaAbierta = false;
+  }
+
+  irALogin(): void {
+    const elemento = document.getElementById('loginCard');
+
+    if (elemento) {
+      elemento.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  }
+
+  mostrarToast(
+    mensaje: string,
+    tipo: 'info' | 'error' | 'success' | 'warning' = 'info'
+  ): void {
+    this.toastMensaje = mensaje;
+    this.toastTipo = tipo;
+    this.toastVisible = true;
+
+    setTimeout(() => {
+      this.toastVisible = false;
+    }, 4200);
+  }
+
+  mostrarAyuda(mensaje: string): void {
+    this.mensajeLogin = mensaje;
+    this.ayudaAbierta = false;
+    this.mostrarToast(mensaje, 'info');
+    this.irALogin();
+  }
+
+  abrirSolicitudAcceso(): void {
+    const mensaje = 'Para solicitar acceso, comunícate con soporte o con el administrador del sistema.';
+
+    this.ayudaAbierta = true;
+    this.mensajeLogin = mensaje;
+    this.mostrarToast(mensaje, 'warning');
+    this.irALogin();
+  }
+
   iniciarSesion(): void {
 
-    // Validación: campos vacíos
+    this.mensajeLogin = '';
+
     if (!this.loginNombre || !this.loginPassword) {
-
-      // Muestra mensaje
-      this.mensajeLogin = 'Completa todos los campos';
-
-      return; // Detiene ejecución
+      this.mensajeLogin = 'Debes ingresar usuario y contraseña para continuar.';
+      this.mostrarToast(this.mensajeLogin, 'warning');
+      return;
     }
 
-    // Llama al backend (HTTP POST)
-    this.usuarioService.login({
+    const datosLogin = {
       nombre: this.loginNombre,
       password: this.loginPassword
-    }).subscribe({
+    };
 
-      // Si el backend responde
+    this.usuarioService.login(datosLogin).subscribe({
+
       next: (usuario: any) => {
 
-        // Si existe el usuario
-        if (usuario) {
+        if (!usuario) {
+          this.mensajeLogin = 'Usuario o contraseña incorrectos. Verifica tus datos e intenta nuevamente.';
+          this.mostrarToast(this.mensajeLogin, 'error');
+          return;
+        }
 
-          // Guarda usuario en el navegador (sesión)
-          localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
+        localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
 
-          // Redirección según rol
-          if (usuario.rol === 'cliente') {
+        this.mostrarToast('Inicio de sesión exitoso. Redirigiendo...', 'success');
 
-            // Va a préstamos del cliente
-            this.router.navigate(['/panel/mis-prestamos']);
-
-          } else {
-
-            // Va al dashboard general
+        setTimeout(() => {
+          if (usuario.rol === 'administrador' || usuario.rol === 'empleado') {
             this.router.navigate(['/panel/dashboard']);
+            return;
           }
 
-        } else {
+          if (usuario.rol === 'cliente') {
+            this.router.navigate(['/panel/mis-prestamos']);
+            return;
+          }
 
-          // Si no existe usuario
-          this.mensajeLogin = 'Usuario o contraseña incorrectos';
-        }
+          this.mensajeLogin = 'El usuario no tiene un rol válido asignado.';
+          this.mostrarToast(this.mensajeLogin, 'error');
+        }, 700);
       },
 
-      // Si ocurre error en backend
-      error: (err: any) => {
+      error: (error: any) => {
+        console.error('Error al iniciar sesión', error);
 
-        console.error('Error en login', err);
+        if (error?.error?.mensaje) {
+          this.mensajeLogin = error.error.mensaje;
+          this.mostrarToast(this.mensajeLogin, 'error');
+          return;
+        }
 
-        this.mensajeLogin = 'Error al iniciar sesión';
+        this.mensajeLogin = 'No fue posible iniciar sesión. Verifica tus datos e intenta nuevamente.';
+        this.mostrarToast(this.mensajeLogin, 'error');
       }
     });
   }

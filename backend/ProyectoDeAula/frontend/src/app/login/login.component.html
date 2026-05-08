@@ -1,52 +1,532 @@
-<!-- Contenedor principal del login -->
-<!-- <div> agrupa todo el formulario -->
-<!-- class="login-container" aplica estilos (centrado en pantalla, fondo, etc.) -->
-<div class="login-container">
+<div class="login-page">
 
-  <!-- Tarjeta del login -->
-  <!-- class="login-card" crea una caja visual tipo formulario -->
-  <div class="login-card">
+  <!-- TOAST / NOTIFICACIÓN -->
+  <div
+    class="toast-message"
+    *ngIf="toastVisible"
+    [ngClass]="{
+      'toast-info': toastTipo === 'info',
+      'toast-error': toastTipo === 'error',
+      'toast-success': toastTipo === 'success',
+      'toast-warning': toastTipo === 'warning'
+    }"
+  >
+    <div class="toast-icon">
+      <span *ngIf="toastTipo === 'info'">ℹ</span>
+      <span *ngIf="toastTipo === 'error'">!</span>
+      <span *ngIf="toastTipo === 'success'">✓</span>
+      <span *ngIf="toastTipo === 'warning'">!</span>
+    </div>
 
-    <!-- Título principal del sistema -->
-    <!-- <h1> es el encabezado más importante -->
-    <h1>PrestaFácil</h1>
+    <div class="toast-content">
+      <strong>
+        {{
+        toastTipo === 'success'
+        ? 'Operación exitosa'
+        : toastTipo === 'error'
+        ? 'Error'
+        : toastTipo === 'warning'
+        ? 'Atención'
+        : 'Información'
+        }}
+      </strong>
 
-    <!-- Descripción o subtítulo -->
-    <!-- <p> es un párrafo -->
-    <p>Sistema de préstamos</p>
+      <p>{{ toastMensaje }}</p>
+    </div>
 
-    <!-- Campo para ingresar el usuario -->
-    <!-- type="text" permite escribir texto -->
-    <!-- placeholder muestra un texto guía dentro del input -->
+    <button
+      class="toast-close"
+      type="button"
+      (click)="toastVisible = false"
+    >
+      ×
+    </button>
+  </div>
 
-    <!-- [(ngModel)]="loginNombre" -->
-    <!-- Conecta este input con la variable loginNombre del archivo .ts -->
-    <!-- Lo que el usuario escriba se guarda automáticamente en loginNombre -->
-    <input
-      type="text"
-      placeholder="Usuario"
-      [(ngModel)]="loginNombre"
-    />
+  <!-- NAVBAR -->
+  <header class="bank-navbar">
 
-    <!-- Campo para ingresar contraseña -->
-    <!-- type="password" oculta los caracteres -->
-    <!-- [(ngModel)]="loginPassword" guarda el valor en la variable loginPassword -->
-    <input
-      type="password"
-      placeholder="Contraseña"
-      [(ngModel)]="loginPassword"
-    />
+    <div class="brand-box">
+      <div class="brand-logo">PF</div>
 
-    <!-- Botón para iniciar sesión -->
-    <!-- (click)="iniciarSesion()" -->
-    <!-- Cuando el usuario hace clic, se ejecuta la función iniciarSesion() en el .ts -->
-    <button (click)="iniciarSesion()">Ingresar</button>
+      <div class="brand-text">
+        <strong>Presta<span>Fácil</span></strong>
+      </div>
+    </div>
 
-    <!-- Mensaje de error -->
-    <!-- *ngIf="mensajeLogin" -->
-    <!-- Solo se muestra si la variable mensajeLogin tiene contenido -->
-    <!-- {{ mensajeLogin }} muestra el texto del error -->
-    <p class="error" *ngIf="mensajeLogin">{{ mensajeLogin }}</p>
+    <nav class="nav-menu">
+      <div class="segment-control">
+        <button class="segment active" type="button">Personas</button>
+        <button class="segment" type="button">Empresas</button>
+      </div>
+
+      <button class="nav-link" type="button">
+        Productos <span>⌄</span>
+      </button>
+
+      <button class="nav-link" type="button">
+        Pagos <span>⌄</span>
+      </button>
+
+      <button class="nav-link" type="button">
+        Atención al cliente <span>⌄</span>
+      </button>
+    </nav>
+
+    <button
+      class="nav-login-btn"
+      type="button"
+      (click)="irALogin()"
+    >
+      Ingresar
+      <span>👤</span>
+    </button>
+
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main-content">
+
+    <!-- HERO + LOGIN -->
+    <section class="hero-grid">
+
+      <!-- BANNER PRINCIPAL -->
+      <div class="hero-banner">
+
+        <div class="hero-text">
+          <span class="hero-label">TU PRÉSTAMO, SIEMPRE CONTIGO</span>
+
+          <h1>
+            Accede a tu portal <br />
+            de préstamos
+          </h1>
+
+          <p>
+            Gestiona tus préstamos, realiza pagos y consulta tu información
+            de forma rápida, segura y sin salir de casa.
+          </p>
+
+          <button
+            class="hero-btn"
+            type="button"
+            (click)="irALogin()"
+          >
+            Ir a mi portal
+            <span>→</span>
+          </button>
+        </div>
+
+        <div class="hero-visual">
+          <div class="shape-yellow"></div>
+          <div class="shape-blue"></div>
+          <div class="dots"></div>
+
+          <div class="phone-card">
+            <div class="phone-top"></div>
+            <div class="phone-line"></div>
+            <div class="phone-line short"></div>
+            <div class="phone-amount">$ 2.450.000</div>
+            <div class="phone-button"></div>
+          </div>
+
+          <div class="person-card">
+            <div class="person-head"></div>
+            <div class="person-body"></div>
+            <div class="person-phone"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CARD LOGIN -->
+      <section class="login-card" id="loginCard">
+
+        <div class="login-header">
+          <span>Acceso seguro</span>
+          <h2>Ingresa a tu cuenta</h2>
+          <p>Consulta tus préstamos, cuotas, pagos y comprobantes.</p>
+        </div>
+
+        <!-- Usuario -->
+        <div class="form-field">
+          <label>Usuario</label>
+
+          <div class="input-icon">
+            <span>👤</span>
+
+            <input
+              type="text"
+              placeholder="Usuario"
+              [(ngModel)]="loginNombre"
+              (keyup.enter)="iniciarSesion()"
+            />
+          </div>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="form-field">
+          <label>Contraseña</label>
+
+          <div class="input-icon">
+            <span>🔒</span>
+
+            <input
+              type="password"
+              placeholder="Contraseña"
+              [(ngModel)]="loginPassword"
+              (keyup.enter)="iniciarSesion()"
+            />
+          </div>
+        </div>
+
+        <div class="login-options">
+          <label>
+            <input type="checkbox" />
+            Recordar usuario
+          </label>
+
+          <button
+            type="button"
+            (click)="mostrarAyuda('Si olvidaste tu contraseña, comunícate con soporte o con el administrador del sistema para restablecer el acceso.')"
+          >
+            ¿Olvidaste tu contraseña?
+          </button>
+        </div>
+
+        <button
+          class="btn-login"
+          type="button"
+          (click)="iniciarSesion()"
+        >
+          Ingresar
+        </button>
+
+        <!-- Mensaje dinámico -->
+        <div class="error-message" *ngIf="mensajeLogin">
+          {{ mensajeLogin }}
+        </div>
+
+        <div class="login-divider">
+          <span></span>
+          <p>¿Aún no tienes cuenta?</p>
+          <span></span>
+        </div>
+
+        <button
+          class="btn-outline"
+          type="button"
+          (click)="abrirSolicitudAcceso()"
+        >
+          Solicitar acceso
+        </button>
+
+      </section>
+
+    </section>
+
+    <!-- INFORMACIÓN -->
+    <section class="info-section">
+
+      <div class="info-image-card">
+        <div class="info-person">
+          <div class="info-face"></div>
+          <div class="info-body"></div>
+          <div class="info-phone"></div>
+        </div>
+      </div>
+
+      <div class="info-content">
+
+        <h2>Información</h2>
+
+        <div class="tabs">
+          <button class="active" type="button">¿Qué es?</button>
+          <button type="button">Requisitos</button>
+          <button type="button">Seguridad</button>
+        </div>
+
+        <p>
+          PrestaFácil es una plataforma digital donde puedes gestionar tus
+          préstamos en línea, consultar tus cuotas, hacer pagos y descargar
+          comprobantes de forma fácil, segura y desde cualquier lugar.
+        </p>
+
+        <button
+          class="text-link"
+          type="button"
+          (click)="mostrarAyuda('PrestaFácil permite administrar préstamos, abonos, comprobantes, estados y notificaciones desde una sola plataforma.')"
+        >
+          Conoce más sobre PrestaFácil →
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- QUÉ PUEDES HACER -->
+    <section class="features-section">
+
+      <div class="features-content">
+
+        <h2>¿Qué puedes hacer?</h2>
+
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+
+          <div>
+            <h3>Consultar tus cuotas</h3>
+            <p>Revisa el estado de tus préstamos y próximos vencimientos.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💳</div>
+
+          <div>
+            <h3>Pagar abonos o cuotas</h3>
+            <p>Realiza pagos en línea de forma segura y en pocos pasos.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🧾</div>
+
+          <div>
+            <h3>Descargar comprobantes</h3>
+            <p>Obtén recibos, facturas y estados de cuenta en PDF.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="features-visual">
+        <div class="visual-card">
+          <div class="mini-dashboard">
+            <span>Saldo pendiente</span>
+            <strong>$ 1.250.000</strong>
+
+            <div class="progress">
+              <div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- PASOS -->
+    <section class="steps-section">
+
+      <div class="section-title">
+        <h2>¿Cómo usar tu portal?</h2>
+        <p>Encuentra lo que necesitas de una forma ágil y rápida.</p>
+      </div>
+
+      <div class="steps-tabs">
+        <button class="active" type="button">Ingresar</button>
+        <button type="button">Gestionar</button>
+        <button type="button">Realizar pagos</button>
+      </div>
+
+      <div class="steps-grid">
+
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <div class="step-icon">↪</div>
+          <h3>Ingresa al portal</h3>
+          <p>Accede con tu usuario y contraseña de forma rápida y segura.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <div class="step-icon">📄</div>
+          <h3>Selecciona el préstamo</h3>
+          <p>Elige el préstamo que deseas consultar o gestionar.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <div class="step-icon">✅</div>
+          <h3>Revisa tu estado</h3>
+          <p>Consulta detalles, cuotas pendientes y realiza acciones.</p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- BANNER APP -->
+    <section class="app-banner">
+
+      <div class="app-people">
+        <div class="circle-person one"></div>
+        <div class="circle-person two"></div>
+      </div>
+
+      <div class="app-text">
+        <h2>Descubre todos nuestros canales digitales</h2>
+
+        <p>
+          Realiza tus operaciones, paga tus cuotas y mantente al día desde donde estés.
+        </p>
+
+        <button
+          type="button"
+          (click)="mostrarAyuda('Los canales digitales estarán disponibles próximamente para consultar pagos, descargar comprobantes y recibir notificaciones.')"
+        >
+          Ir a canales digitales →
+        </button>
+      </div>
+
+      <div class="app-phone">
+        <div class="phone-screen">
+          <span>PrestaFácil</span>
+          <strong>$ 850.000</strong>
+          <small>Saldo pendiente</small>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+
+    <div class="footer-app">
+      <div class="footer-logo">PF</div>
+
+      <div>
+        <h3>App PrestaFácil</h3>
+        <p>Gestiona tus préstamos, paga tus cuotas y recibe notificaciones importantes.</p>
+      </div>
+
+      <div class="store-buttons">
+        <button
+          type="button"
+          (click)="mostrarAyuda('La app móvil estará disponible próximamente en Google Play.')"
+        >
+          ▶ Google Play
+        </button>
+
+        <button
+          type="button"
+          (click)="mostrarAyuda('La app móvil estará disponible próximamente en App Store.')"
+        >
+           App Store
+        </button>
+      </div>
+    </div>
+
+    <div class="footer-grid">
+
+      <div>
+        <h3>Atención al cliente</h3>
+        <p>¿Necesitas ayuda?</p>
+        <p>Canales de atención</p>
+        <p>Preguntas frecuentes</p>
+        <p>Seguridad y privacidad</p>
+      </div>
+
+      <div>
+        <h3>Beneficios</h3>
+        <p>Programa de lealtad</p>
+        <p>Referidos y beneficios</p>
+        <p>Educación financiera</p>
+        <p>Simulador de préstamos</p>
+      </div>
+
+      <div>
+        <h3>Información</h3>
+        <p>Sobre PrestaFácil</p>
+        <p>Tasas y condiciones</p>
+        <p>Políticas y documentos</p>
+        <p>Transparencia</p>
+      </div>
+
+      <div>
+        <h3>Contacto</h3>
+        <p>Línea nacional: 018000 123 456</p>
+        <p>WhatsApp: 300 123 4567</p>
+        <p>Oficinas y puntos de atención</p>
+        <p>Redes sociales</p>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 PrestaFácil S.A.S. Todos los derechos reservados.</span>
+      <span>Términos y condiciones</span>
+      <span>Aviso de privacidad</span>
+    </div>
+
+  </footer>
+
+  <!-- BOTÓN AYUDA -->
+  <button
+    class="help-btn"
+    type="button"
+    (click)="abrirCerrarAyuda()"
+  >
+    💬 Ayuda
+  </button>
+
+  <!-- PANEL AYUDA -->
+  <div class="help-panel" *ngIf="ayudaAbierta">
+
+    <div class="help-header">
+      <div>
+        <strong>Centro de ayuda</strong>
+        <span>PrestaFácil</span>
+      </div>
+
+      <button type="button" (click)="cerrarAyuda()">×</button>
+    </div>
+
+    <div class="help-body">
+
+      <p class="help-welcome">
+        Hola, ¿en qué podemos ayudarte?
+      </p>
+
+      <button
+        type="button"
+        class="help-option"
+        (click)="mostrarAyuda('Si no puedes iniciar sesión, verifica tu usuario y contraseña. Si el problema continúa, contacta al administrador.')"
+      >
+        No puedo iniciar sesión
+      </button>
+
+      <button
+        type="button"
+        class="help-option"
+        (click)="mostrarAyuda('Para consultar el estado de tu préstamo, inicia sesión y entra a la sección Mis préstamos.')"
+      >
+        Consultar estado de mi préstamo
+      </button>
+
+      <button
+        type="button"
+        class="help-option"
+        (click)="mostrarAyuda('Los comprobantes y facturas estarán disponibles desde el historial de abonos de cada préstamo.')"
+      >
+        Descargar comprobante o factura
+      </button>
+
+      <button
+        type="button"
+        class="help-option"
+        (click)="mostrarAyuda('Para hablar con soporte, comunícate a la línea 018000 123 456 o al WhatsApp 300 123 4567.')"
+      >
+        Hablar con soporte
+      </button>
+
+    </div>
+
+    <div class="help-footer">
+      Línea de atención: 018000 123 456
+    </div>
 
   </div>
+
 </div>

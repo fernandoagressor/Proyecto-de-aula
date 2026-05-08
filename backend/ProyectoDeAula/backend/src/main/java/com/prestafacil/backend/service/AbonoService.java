@@ -26,4 +26,9 @@ public class AbonoService {
     public List<Abono> listarAbonosPendientes() {
         return abonoRepository.findByEstado("PENDIENTE");
     }
+
+    public Abono buscarAbonoPorId(Long abonoId) {
+        return abonoRepository.findById(abonoId)
+                .orElseThrow(() -> new RuntimeException("Abono no encontrado con ID: " + abonoId));
+    }
 }

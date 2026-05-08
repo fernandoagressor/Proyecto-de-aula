@@ -1,310 +1,714 @@
-/* Tarjeta principal de cada página (contenedor general) */
-.page-card {
+/* =========================
+   PÁGINA USUARIOS
+========================= */
 
-  /* Fondo blanco */
-  background: #ffffff;
-
-  /* Bordes redondeados */
-  border-radius: 18px;
-
-  /* Espacio interno */
-  padding: 28px;
-
-  /* Sombra para efecto de tarjeta */
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-
-  /* Espacio externo */
-  margin: 20px;
-}
-
-
-/* Título principal de la página */
-.page-title {
-
-  /* Centrar el texto */
-  text-align: center;
-
-  /* Tamaño grande */
-  font-size: 34px;
-
-  /* Negrita */
-  font-weight: 700;
-
-  /* Color azul */
-  color: #1e3a8a;
-
-  /* Espacio inferior */
-  margin-bottom: 24px;
-}
-
-
-/* Grid para formularios (inputs organizados automáticamente) */
-.form-grid {
-
-  /* Activa sistema grid */
-  display: grid;
-
-  /* Columnas automáticas adaptables */
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-
-  /* Espacio entre elementos */
-  gap: 14px;
-
-  /* Margen inferior */
-  margin-bottom: 24px;
-}
-
-
-/* Inputs y select con estilo moderno */
-.input-modern,
-.select-modern {
-
-  /* Ocupa todo el ancho */
+.usuarios-page {
   width: 100%;
-
-  /* Espacio interno */
-  padding: 12px 14px;
-
-  /* Borde gris claro */
-  border: 1px solid #cbd5e1;
-
-  /* Bordes redondeados */
-  border-radius: 12px;
-
-  /* Quita borde azul por defecto */
-  outline: none;
-
-  /* Tamaño de texto */
-  font-size: 15px;
-
-  /* Fondo claro */
-  background: #f8fafc;
-
-  /* Animación suave */
-  transition: all 0.2s ease;
-
-  /* Ajuste de tamaño */
+  max-width: 100%;
+  overflow-x: hidden;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #0f172a;
   box-sizing: border-box;
 }
 
+/* =========================
+   TOAST
+========================= */
 
-/* Efecto cuando haces clic en input */
-.input-modern:focus,
-.select-modern:focus {
-
-  /* Borde azul */
-  border-color: #2563eb;
-
-  /* Fondo blanco */
+.toast-message {
+  position: fixed;
+  top: 24px;
+  right: 26px;
+  width: min(420px, calc(100% - 32px));
   background: #ffffff;
-
-  /* Sombra azul suave */
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border: 1px solid #dbe3ef;
+  border-left: 6px solid #0647ad;
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+  padding: 16px 16px 16px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  z-index: 100;
+  animation: toastIn 0.25s ease;
 }
 
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+  }
 
-/* Botón principal */
-.btn-main {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 
-  border: none;
+.toast-icon {
+  width: 34px;
+  height: 34px;
   border-radius: 12px;
-  padding: 12px 18px;
-
-  /* Texto seminegrita */
-  font-weight: 600;
-
-  font-size: 15px;
-
-  cursor: pointer;
-
-  transition: all 0.2s ease;
-
-  /* Color azul */
-  background: #2563eb;
-
-  color: white;
+  background: #eff6ff;
+  color: #0647ad;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 950;
+  flex-shrink: 0;
 }
 
-
-/* Efecto hover del botón principal */
-.btn-main:hover {
-
-  /* Azul más oscuro */
-  background: #1d4ed8;
-
-  /* Levanta el botón */
-  transform: translateY(-1px);
+.toast-content {
+  flex: 1;
 }
 
-
-/* Botón editar */
-.btn-edit {
-
-  background: #0ea5e9;
-  color: white;
-
-  border: none;
-  border-radius: 10px;
-
-  padding: 8px 14px;
-
-  cursor: pointer;
-
-  font-weight: 600;
-}
-
-
-/* Hover editar */
-.btn-edit:hover {
-  background: #0284c7;
-}
-
-
-/* Botón eliminar */
-.btn-delete {
-
-  background: #ef4444;
-  color: white;
-
-  border: none;
-  border-radius: 10px;
-
-  padding: 8px 14px;
-
-  cursor: pointer;
-
-  font-weight: 600;
-}
-
-
-/* Hover eliminar */
-.btn-delete:hover {
-  background: #dc2626;
-}
-
-
-/* Contenedor de tabla con scroll horizontal */
-.table-wrapper {
-
-  overflow-x: auto;
-
-  border-radius: 16px;
-}
-
-
-/* Tabla moderna */
-.table-modern {
-
-  width: 100%;
-
-  /* Quita espacios entre bordes */
-  border-collapse: collapse;
-
-  overflow: hidden;
-
-  /* Ancho mínimo */
-  min-width: 700px;
-
-  background: white;
-
-  border-radius: 16px;
-}
-
-
-/* Encabezado de la tabla */
-.table-modern thead {
-
-  /* Degradado azul */
-  background: linear-gradient(90deg, #1d4ed8, #2563eb);
-
-  color: white;
-}
-
-
-/* Encabezados */
-.table-modern th {
-
-  padding: 16px 14px;
-
-  text-align: center;
-
-  font-size: 15px;
-
-  font-weight: 700;
-}
-
-
-/* Celdas */
-.table-modern td {
-
-  padding: 14px 12px;
-
-  text-align: center;
-
-  border-bottom: 1px solid #e2e8f0;
-
-  color: #334155;
-
+.toast-content strong {
+  display: block;
+  color: #0f172a;
   font-size: 14px;
+  font-weight: 950;
+  margin-bottom: 4px;
 }
 
-
-/* Filas pares con color diferente */
-.table-modern tbody tr:nth-child(even) {
-  background: #f8fafc;
+.toast-content p {
+  margin: 0;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 650;
 }
 
+.toast-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 9px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
 
-/* Hover en filas */
-.table-modern tbody tr:hover {
+.toast-success {
+  border-left-color: #16a34a;
+}
+
+.toast-success .toast-icon {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.toast-error {
+  border-left-color: #dc2626;
+}
+
+.toast-error .toast-icon {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.toast-warning {
+  border-left-color: #f59e0b;
+}
+
+.toast-warning .toast-icon {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.toast-info {
+  border-left-color: #0647ad;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.usuarios-hero {
+  background:
+    radial-gradient(circle at 86% 22%, rgba(255, 212, 71, 0.9) 0 9%, transparent 10%),
+    linear-gradient(135deg, #0647ad 0%, #04327f 100%);
+  color: white;
+  border-radius: 28px;
+  padding: 34px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 28px;
+  align-items: center;
+  box-shadow: 0 22px 48px rgba(6, 71, 173, 0.18);
+  box-sizing: border-box;
+}
+
+.hero-content {
+  min-width: 0;
+}
+
+.hero-eyebrow,
+.section-eyebrow {
+  display: inline-block;
+  color: #ffd447;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.section-eyebrow {
+  color: #0647ad;
+}
+
+.hero-content h1 {
+  margin: 0;
+  font-size: 42px;
+  font-weight: 950;
+  letter-spacing: -1.2px;
+}
+
+.hero-content p {
+  max-width: 740px;
+  margin: 14px 0 0;
+  color: #dbeafe;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.hero-summary {
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 24px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.hero-summary span {
+  color: #dbeafe;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.hero-summary strong {
+  display: block;
+  margin: 10px 0;
+  font-size: 36px;
+  font-weight: 950;
+}
+
+.hero-summary p {
+  margin: 0;
+  color: #dbeafe;
+  font-size: 13px;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #dbe3ef;
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.stat-icon.blue {
   background: #eff6ff;
 }
 
+.stat-icon.green {
+  background: #dcfce7;
+}
 
-/* Contenedor de botones de acciones */
-.actions-box {
+.stat-icon.amber {
+  background: #fef3c7;
+}
 
+.stat-icon.indigo {
+  background: #eef2ff;
+}
+
+.stat-card span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 850;
+  margin-bottom: 5px;
+}
+
+.stat-card strong {
+  display: block;
+  color: #0f172a;
+  font-size: 22px;
+  font-weight: 950;
+  word-break: break-word;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.form-card,
+.table-card {
+  background: #ffffff;
+  border: 1px solid #dbe3ef;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+  margin-top: 24px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.section-header {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+  gap: 16px;
+}
 
+.section-header h2 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 950;
+  color: #0f172a;
+  letter-spacing: -0.4px;
+}
+
+.section-header p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.counter-chip,
+.mode-chip {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-
-  gap: 8px;
-
-  flex-wrap: wrap;
-}
-
-
-/* Badge de rol (etiquetas tipo pill) */
-.badge-role {
-
-  display: inline-block;
-
-  padding: 6px 10px;
-
+  background: #eff6ff;
+  color: #0647ad;
+  border: 1px solid #bfdbfe;
   border-radius: 999px;
-
-  font-size: 12px;
-
-  font-weight: 700;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
+.mode-chip {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
 
-/* Rol administrador */
+/* =========================
+   FORMULARIO
+========================= */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 850;
+  color: #334155;
+}
+
+.input-modern,
+.select-modern {
+  width: 100%;
+  height: 46px;
+  border: 1px solid #cbd5e1;
+  border-radius: 13px;
+  padding: 0 14px;
+  font-size: 14px;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.input-modern::placeholder {
+  color: #94a3b8;
+}
+
+.input-modern:focus,
+.select-modern:focus {
+  border-color: #0647ad;
+  box-shadow: 0 0 0 4px rgba(6, 71, 173, 0.12);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.btn-primary,
+.btn-secondary,
+.btn-table {
+  border: none;
+  border-radius: 12px;
+  font-weight: 900;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-primary,
+.btn-secondary {
+  height: 44px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background: #0647ad;
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(6, 71, 173, 0.18);
+}
+
+.btn-primary:hover {
+  background: #04327f;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.btn-table {
+  height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.btn-table.edit {
+  background: #eff6ff;
+  color: #0647ad;
+}
+
+.btn-table.edit:hover {
+  background: #dbeafe;
+}
+
+.btn-table.delete {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.btn-table.delete:hover {
+  background: #fee2e2;
+}
+
+/* =========================
+   TOOLBAR / BUSCADOR
+========================= */
+
+.toolbar {
+  margin-bottom: 18px;
+}
+
+.search-box {
+  width: min(520px, 100%);
+  height: 46px;
+  background: #f8fbff;
+  border: 1px solid #dbe3ef;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.search-box span {
+  color: #64748b;
+}
+
+.search-box input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/* =========================
+   TABLA
+========================= */
+
+.table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.table-modern {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.table-modern thead {
+  background: #f8fafc;
+}
+
+.table-modern th {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 900;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.table-modern td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 14px;
+  color: #334155;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.table-modern tbody tr:hover {
+  background: #f8fafc;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.id-text {
+  font-weight: 900;
+  color: #64748b;
+}
+
+/* =========================
+   CELDA USUARIO
+========================= */
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 13px;
+  background: #e0ecff;
+  color: #0647ad;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 950;
+  flex-shrink: 0;
+}
+
+.user-cell strong {
+  display: block;
+  color: #0f172a;
+  font-size: 14px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+}
+
+.user-cell span {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* =========================
+   BADGES DE ROL
+========================= */
+
+.badge-role {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 6px 11px;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
 .role-admin {
   background: #dbeafe;
   color: #1d4ed8;
 }
 
-
-/* Rol empleado */
 .role-empleado {
   background: #dcfce7;
-  color: #15803d;
+  color: #166534;
 }
 
-
-/* Rol cliente */
 .role-cliente {
   background: #fef3c7;
-  color: #b45309;
+  color: #92400e;
+}
+
+.role-empty {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+/* =========================
+   ACCIONES
+========================= */
+
+.actions-box {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.empty-state {
+  background: #f8fbff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 20px;
+  padding: 34px;
+  text-align: center;
+}
+
+.empty-state div {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.empty-state strong {
+  display: block;
+  color: #0f172a;
+  font-size: 17px;
+  font-weight: 950;
+}
+
+.empty-state p {
+  color: #64748b;
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+  .usuarios-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .hero-content h1 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 620px) {
+  .usuarios-hero,
+  .form-card,
+  .table-card {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions-box {
+    justify-content: flex-start;
+  }
+
+  .toast-message {
+    top: 14px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
 }

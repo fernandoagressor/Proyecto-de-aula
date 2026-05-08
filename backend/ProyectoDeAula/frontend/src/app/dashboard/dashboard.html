@@ -1,67 +1,260 @@
-<!-- Contenedor principal del dashboard -->
-<!-- <div> agrupa todos los elementos -->
-<!-- class="dashboard-container" aplica estilos generales -->
 <div class="dashboard-container">
 
-  <!-- Título de la pantalla -->
-  <!-- <h2> es un encabezado -->
-  <!-- class="titulo" aplica estilos (tamaño, color, etc) -->
-  <h2 class="titulo">Dashboard</h2>
+  <!-- HERO / BIENVENIDA -->
+  <section class="dashboard-hero">
 
-  <!-- Contenedor de tarjetas -->
-  <!-- Aquí se agrupan las estadísticas -->
-  <div class="cards">
+    <div class="hero-content">
+      <span class="hero-eyebrow">Centro financiero</span>
 
-    <!-- Tarjeta 1 -->
-    <div class="card">
+      <h1>
+        Bienvenido a PrestaFácil
+      </h1>
 
-      <!-- Título de la tarjeta -->
-      <h3>Total Préstamos</h3>
+      <p>
+        Consulta el estado general de préstamos, pagos, saldos pendientes,
+        capital recuperado y actividad financiera del sistema.
+      </p>
 
-      <!-- {{ totalPrestamos }} -->
-      <!-- Muestra el valor de la variable totalPrestamos -->
-      <!-- Este valor viene del archivo .ts -->
-      <p>{{ totalPrestamos }}</p>
+      <div class="hero-actions">
+        <button class="btn-primary" type="button">
+          Ver operaciones
+        </button>
+
+        <button class="btn-secondary" type="button">
+          Generar reporte
+        </button>
+      </div>
     </div>
 
-    <!-- Tarjeta 2 -->
-    <div class="card">
+    <div class="hero-panel">
+      <div class="hero-card">
+        <span>Saldo pendiente</span>
+        <strong>{{ formatearDinero(saldoPendiente) }}</strong>
 
-      <h3>Total Prestado</h3>
+        <div class="hero-progress">
+          <div></div>
+        </div>
 
-      <!-- Llama función del TS -->
-      <!-- formatearDinero() convierte número en formato moneda -->
-      <p>{{ formatearDinero(totalPrestado) }}</p>
+        <p>Seguimiento actualizado de cartera</p>
+      </div>
     </div>
 
-    <!-- Tarjeta 3 -->
-    <div class="card">
+  </section>
 
-      <h3>Saldo Pendiente</h3>
+  <!-- TARJETAS PRINCIPALES -->
+  <section class="stats-grid">
 
-      <!-- Muestra el dinero que aún deben los clientes -->
-      <p>{{ formatearDinero(saldoPendiente) }}</p>
+    <article class="stat-card">
+      <div class="stat-top">
+        <div class="stat-icon blue">📄</div>
+        <span>Total préstamos</span>
+      </div>
+
+      <strong>{{ totalPrestamos }}</strong>
+
+      <p>Operaciones registradas en el sistema.</p>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-top">
+        <div class="stat-icon indigo">💰</div>
+        <span>Total prestado</span>
+      </div>
+
+      <strong>{{ formatearDinero(totalPrestado) }}</strong>
+
+      <p>Capital desembolsado a clientes.</p>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-top">
+        <div class="stat-icon amber">⏳</div>
+        <span>Saldo pendiente</span>
+      </div>
+
+      <strong>{{ formatearDinero(saldoPendiente) }}</strong>
+
+      <p>Monto pendiente por recuperar.</p>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-top">
+        <div class="stat-icon green">✅</div>
+        <span>Total abonado</span>
+      </div>
+
+      <strong>{{ formatearDinero(totalAbonado) }}</strong>
+
+      <p>Pagos recibidos y aplicados.</p>
+    </article>
+
+  </section>
+
+  <!-- CUERPO PRINCIPAL -->
+  <section class="dashboard-grid">
+
+    <!-- GRÁFICO -->
+    <article class="chart-card">
+
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">Análisis visual</span>
+          <h2>Indicadores financieros</h2>
+          <p>
+            Visualización general del comportamiento de préstamos,
+            saldos y abonos registrados.
+          </p>
+        </div>
+
+        <span class="status-chip">Actualizado</span>
+      </div>
+
+      <div class="chart-wrapper">
+        <app-grafico></app-grafico>
+      </div>
+
+    </article>
+
+    <!-- RESUMEN LATERAL -->
+    <aside class="side-panel">
+
+      <article class="system-card">
+        <div class="section-header compact">
+          <div>
+            <span class="section-eyebrow">Sistema</span>
+            <h2>Estado operativo</h2>
+            <p>Resumen rápido para seguimiento administrativo.</p>
+          </div>
+        </div>
+
+        <div class="summary-list">
+
+          <div class="summary-item">
+            <span class="summary-dot blue"></span>
+
+            <div>
+              <strong>Préstamos registrados</strong>
+              <p>{{ totalPrestamos }} operaciones disponibles.</p>
+            </div>
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-dot amber"></span>
+
+            <div>
+              <strong>Cartera pendiente</strong>
+              <p>{{ formatearDinero(saldoPendiente) }} por recuperar.</p>
+            </div>
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-dot green"></span>
+
+            <div>
+              <strong>Capital recuperado</strong>
+              <p>{{ formatearDinero(totalAbonado) }} recibidos.</p>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+      <article class="quick-actions-card">
+        <h2>Accesos rápidos</h2>
+
+        <div class="quick-actions">
+
+          <button type="button">
+            <span>💰</span>
+            <div>
+              <strong>Préstamos</strong>
+              <small>Gestionar operaciones</small>
+            </div>
+          </button>
+
+          <button type="button">
+            <span>⏳</span>
+            <div>
+              <strong>Abonos</strong>
+              <small>Validar pendientes</small>
+            </div>
+          </button>
+
+          <button type="button">
+            <span>🧾</span>
+            <div>
+              <strong>Reportes</strong>
+              <small>Próximamente PDF</small>
+            </div>
+          </button>
+
+        </div>
+      </article>
+
+    </aside>
+
+  </section>
+
+  <!-- ACTIVIDAD RECIENTE -->
+  <section class="activity-card">
+
+    <div class="section-header">
+      <div>
+        <span class="section-eyebrow">Actividad</span>
+        <h2>Últimos movimientos</h2>
+        <p>
+          Resumen de los préstamos más recientes registrados en el sistema.
+        </p>
+      </div>
     </div>
 
-    <!-- Tarjeta 4 -->
-    <div class="card">
+    <div class="activity-list" *ngIf="prestamos.length > 0; else sinActividad">
 
-      <h3>Total Abonado</h3>
+      <div
+        class="activity-item"
+        *ngFor="let prestamo of prestamos.slice(0, 5)"
+      >
+        <div class="activity-icon">
+          💳
+        </div>
 
-      <!-- Muestra cuánto han pagado los clientes -->
-      <p>{{ formatearDinero(totalAbonado) }}</p>
+        <div class="activity-info">
+          <strong>
+            Préstamo #{{ prestamo.id }}
+          </strong>
+
+          <span>
+            Cliente:
+               {{ prestamo.cliente.nombre || 'Cliente no asignado' }}
+          </span>
+        </div>
+
+        <div class="activity-money">
+          <strong>{{ formatearDinero(prestamo.monto || 0) }}</strong>
+          <span
+            class="activity-status"
+            [ngClass]="{
+              'status-pendiente': prestamo.estado === 'PENDIENTE',
+              'status-aprobado': prestamo.estado === 'APROBADO',
+              'status-rechazado': prestamo.estado === 'RECHAZADO',
+              'status-pagado': prestamo.estado === 'PAGADO'
+            }"
+          >
+            {{ prestamo.estado || 'SIN ESTADO' }}
+          </span>
+        </div>
+      </div>
+
     </div>
 
-  </div>
+    <ng-template #sinActividad>
+      <div class="empty-state">
+        <div>📭</div>
+        <strong>No hay actividad reciente</strong>
+        <p>Cuando se registren préstamos, aparecerán aquí.</p>
+      </div>
+    </ng-template>
 
-  <!-- Sección del gráfico -->
-  <div class="grafico-seccion">
+  </section>
 
-    <!-- Componente Angular personalizado -->
-    <!-- <app-grafico> NO es HTML normal -->
-    <!-- Es un componente creado por ti en Angular -->
-    <!-- Este componente dibuja el gráfico (probablemente con datos de préstamos) -->
-    <app-grafico></app-grafico>
-
-  </div>
 </div>

@@ -1,42 +1,76 @@
 <!-- Contenedor principal -->
-<!-- <div> agrupa todos los elementos -->
-<!-- class="page-card config-box" aplica estilos (tarjeta + diseño específico de configuración) -->
-<div class="page-card config-box">
+<div class="config-page">
 
-  <!-- Título de la sección -->
-  <!-- <h2> es un encabezado -->
-  <!-- class="page-title" aplica estilo visual (tamaño, color, centrado) -->
-  <h2 class="page-title">Configuración de Tasa de Interés</h2>
+  <!-- Encabezado de la vista -->
+  <section class="page-header">
+    <div>
+      <span class="page-eyebrow">Parámetros financieros</span>
+      <h1 class="page-title">Configuración de tasa</h1>
+      <p class="page-description">
+        Define la tasa de interés que se aplicará a las nuevas solicitudes de préstamo.
+      </p>
+    </div>
+  </section>
 
-  <!-- Contenedor del formulario -->
-  <!-- Aquí se agrupan los elementos para ingresar la tasa -->
-  <div class="config-form">
+  <!-- Card principal -->
+  <section class="config-card">
 
-    <!-- Campo de entrada -->
-    <!-- <input> permite al usuario escribir datos -->
-    <!-- type="number" → solo permite números -->
-    <!-- step="0.01" → permite decimales (ej: 0.05, 1.25) -->
+    <div class="config-content">
 
-    <!-- [(ngModel)]="tasaInteres" -->
-    <!-- Esto es binding bidireccional -->
-    <!-- Lo que el usuario escribe se guarda en la variable tasaInteres -->
-    <!-- Y si tasaInteres cambia en el TS, se refleja en el input -->
-    <input
-      class="input-modern"
-      type="number"
-      step="0.01"
-      [(ngModel)]="tasaInteres"
-      placeholder="Ingrese la tasa"
-    />
+      <!-- Información lateral -->
+      <div class="config-info">
+        <div class="config-icon">%</div>
 
-    <!-- Botón para guardar -->
-    <!-- (click)="guardarTasa()" -->
-    <!-- Cuando el usuario hace clic, se ejecuta la función guardarTasa() en el archivo .ts -->
-    <button class="btn-main" (click)="guardarTasa()">
+        <h2>Tasa de interés</h2>
 
-      <!-- Texto del botón -->
-      Guardar Tasa
-    </button>
+        <p>
+          Actualiza el porcentaje de interés usado por el sistema para calcular préstamos,
+          cuotas y saldos asociados.
+        </p>
 
-  </div>
+        <div class="warning-box">
+          <strong>Importante</strong>
+          <span>
+            Verifica la tasa antes de guardarla. Este cambio puede afectar los cálculos de nuevos préstamos.
+          </span>
+        </div>
+      </div>
+
+      <!-- Formulario -->
+      <div class="config-form">
+
+        <div class="form-field">
+          <label>Nueva tasa de interés</label>
+
+          <div class="input-with-symbol">
+            <input
+              class="input-modern"
+              type="number"
+              step="0.01"
+              [(ngModel)]="tasaInteres"
+              placeholder="Ej: 5.00"
+            />
+
+            <span>%</span>
+          </div>
+
+          <small>
+            Ingresa el porcentaje usando valores decimales si es necesario.
+          </small>
+        </div>
+
+        <button
+          class="btn-primary"
+          type="button"
+          (click)="guardarTasa()"
+        >
+          Guardar tasa
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
 </div>

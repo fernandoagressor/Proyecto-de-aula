@@ -1,55 +1,27 @@
-// Importa Component y OnInit desde Angular
-import { Component, OnInit } from '@angular/core';
-
-// Importa CommonModule para usar directivas como *ngIf y *ngFor
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-// Importa FormsModule para usar [(ngModel)] en los formularios
 import { FormsModule } from '@angular/forms';
 
-// Importa el servicio de préstamos para comunicarse con el backend
 import { PrestamoService } from '../services/prestamo.service';
-
-// Importa el modelo Prestamo
 import { Prestamo } from '../services/prestamo';
 
-// Importa el modelo Abono
 import { Abono } from '../services/abono';
-
-// Importa el servicio de abonos para consultar historial
 import { AbonoService } from '../services/abono.service';
 
-// Configuración del componente
 @Component({
-  // Nombre del componente
   selector: 'app-prestamos',
-
-  // Indica que el componente es independiente
   standalone: true,
-
-  // Módulos que usa este componente
   imports: [CommonModule, FormsModule],
-
-  // Archivo HTML conectado
   templateUrl: './prestamos.html',
-
-  // Archivo CSS conectado
-  styleUrl: './prestamos.css'
+  styleUrls: ['./prestamos.css']
 })
-
-// Clase principal del componente
 export class PrestamosComponent implements OnInit {
 
-  // Lista donde se guardan todos los préstamos que llegan del backend
   prestamos: Prestamo[] = [];
-
-  // Lista donde se guardan los abonos del préstamo seleccionado
   historialAbonos: Abono[] = [];
 
-  // Guarda el id del préstamo al que se le está viendo el historial
   prestamoSeleccionadoHistorial: number | null = null;
 
-  // Objeto que guarda los datos del formulario para solicitar préstamo
   nuevoPrestamo = {
     clienteId: '',
     monto: '',
@@ -57,258 +29,338 @@ export class PrestamosComponent implements OnInit {
     interes: ''
   };
 
-  // Guarda valores de abono por préstamo
-  // Ejemplo: abonos[3] = "50000"
   abonos: { [key: number]: string } = {};
 
-  // Guarda el usuario que inició sesión
   usuarioLogueado: any = null;
 
-  // Constructor: Angular inyecta los servicios
+  filtroEstado: string = 'TODOS';
+
+  toastVisible: boolean = false;
+  toastMensaje: string = '';
+  toastTipo: 'success' | 'error' | 'warning' | 'info' = 'info';
+
   constructor(
     private prestamoService: PrestamoService,
-    private abonoService: AbonoService
-  ) { }
+    private abonoService: AbonoService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  // Método para ver historial de abonos de un préstamo
-  verHistorial(prestamoId: number): void {
-
-    // Guarda el id del préstamo seleccionado
-    this.prestamoSeleccionadoHistorial = prestamoId;
-
-    // Llama al backend para traer los abonos de ese préstamo
-    this.abonoService.listarAbonosPorPrestamo(prestamoId).subscribe({
-
-      // Si la respuesta llega bien
-      next: (data: Abono[]) => {
-
-        // Guarda los abonos en la lista del historial
-        this.historialAbonos = data;
-      },
-
-      // Si ocurre error
-      error: (err: any) => {
-        console.error('Error al cargar historial de abonos', err);
-      }
-    });
+  ngOnInit(): void {
+    this.cargarUsuarioLogueado();
+    this.cargarPrestamos();
   }
 
-  // Método que se ejecuta automáticamente cuando se abre la vista
-  ngOnInit(): void {
-
-    // Carga todos los préstamos
-    this.cargarPrestamos();
-
-    // Verifica que exista window para poder usar localStorage
+  cargarUsuarioLogueado(): void {
     if (typeof window !== 'undefined') {
-
-      // Obtiene el usuario guardado en el navegador
       const usuarioGuardado = localStorage.getItem('usuarioLogueado');
 
-      // Si existe usuario guardado
       if (usuarioGuardado) {
-
-        // Convierte el JSON en objeto
         this.usuarioLogueado = JSON.parse(usuarioGuardado);
       }
     }
+
+    this.cdr.detectChanges();
   }
 
-  // Método para cargar todos los préstamos
   cargarPrestamos(): void {
-
-    // Llama al backend mediante el servicio
     this.prestamoService.listarPrestamos().subscribe({
-
-      // Si el backend responde correctamente
       next: (data: Prestamo[]) => {
-
-        // Muestra los préstamos en consola para revisar
-        console.log("PRESTAMOS FRONT:", data);
-
-        // Guarda los préstamos en la variable
-        this.prestamos = data;
+        this.prestamos = data || [];
+        this.cdr.detectChanges();
       },
-
-      // Si ocurre error
       error: (err: any) => {
         console.error('Error al cargar préstamos', err);
+        this.prestamos = [];
+        this.mostrarToast('No fue posible cargar los préstamos.', 'error');
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Método para crear o solicitar préstamo
   crearPrestamo(): void {
+    if (
+      !this.nuevoPrestamo.clienteId ||
+      !this.nuevoPrestamo.monto ||
+      !this.nuevoPrestamo.plazoMeses
+    ) {
+      this.mostrarToast('Debe ingresar el ID del cliente, el monto y el plazo.', 'warning');
+      return;
+    }
 
-    // Envía el objeto nuevoPrestamo al backend
+    const monto = Number(this.nuevoPrestamo.monto);
+    const plazo = Number(this.nuevoPrestamo.plazoMeses);
+
+    if (isNaN(monto) || monto <= 0) {
+      this.mostrarToast('El monto debe ser un número mayor a cero.', 'warning');
+      return;
+    }
+
+    if (isNaN(plazo) || plazo <= 0) {
+      this.mostrarToast('El plazo debe ser un número mayor a cero.', 'warning');
+      return;
+    }
+
     this.prestamoService.solicitarPrestamo(this.nuevoPrestamo).subscribe({
-
-      // Si se crea correctamente
       next: () => {
-
-        // Recarga la tabla de préstamos
-        this.cargarPrestamos();
-
-        // Limpia el formulario
         this.nuevoPrestamo = {
           clienteId: '',
           monto: '',
           plazoMeses: '',
           interes: ''
         };
-      },
 
-      // Si ocurre error
+        this.mostrarToast('Solicitud de préstamo creada correctamente.', 'success');
+        this.cargarPrestamos();
+        this.cdr.detectChanges();
+      },
       error: (err: any) => {
         console.error('Error al crear préstamo', err);
+
+        const mensaje = err?.error?.mensaje || 'No fue posible crear la solicitud de préstamo.';
+        this.mostrarToast(mensaje, 'error');
+
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Método para aprobar préstamo
   aprobarPrestamo(id: number): void {
-
-    // Llama al backend para cambiar estado a APROBADO
     this.prestamoService.aprobarPrestamo(id).subscribe({
-
-      // Si se aprueba correctamente
       next: () => {
-
-        // Recarga la lista
+        this.mostrarToast('Préstamo aprobado correctamente.', 'success');
         this.cargarPrestamos();
+        this.cdr.detectChanges();
       },
-
-      // Si ocurre error
       error: (err: any) => {
         console.error('Error al aprobar préstamo', err);
+
+        const mensaje = err?.error?.mensaje || 'No fue posible aprobar el préstamo.';
+        this.mostrarToast(mensaje, 'error');
+
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Método para rechazar préstamo
   rechazarPrestamo(id: number): void {
-
-    // Llama al backend para cambiar estado a RECHAZADO
     this.prestamoService.rechazarPrestamo(id).subscribe({
-
-      // Si se rechaza correctamente
       next: () => {
-
-        // Recarga la lista
+        this.mostrarToast('Préstamo rechazado correctamente.', 'success');
         this.cargarPrestamos();
+        this.cdr.detectChanges();
       },
-
-      // Si ocurre error
       error: (err: any) => {
         console.error('Error al rechazar préstamo', err);
+
+        const mensaje = err?.error?.mensaje || 'No fue posible rechazar el préstamo.';
+        this.mostrarToast(mensaje, 'error');
+
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Método para pagar todo el saldo pendiente
   pagarTotal(prestamo: Prestamo): void {
-
-    // Solo permite pagar si el préstamo está aprobado
     if (prestamo.estado !== 'APROBADO') {
+      this.mostrarToast('Solo se pueden pagar préstamos aprobados.', 'warning');
       return;
     }
 
-    // Toma el saldo pendiente completo
-    const saldoTotal = prestamo.saldoPendiente;
+    const saldoTotal = this.obtenerValorNumero(prestamo.saldoPendiente);
 
-    // Envía ese saldo como abono al backend
+    if (saldoTotal <= 0) {
+      this.mostrarToast('Este préstamo no tiene saldo pendiente.', 'warning');
+      return;
+    }
+
     this.prestamoService.abonarPrestamo(prestamo.id!, String(saldoTotal)).subscribe({
-
-      // Si responde correctamente
       next: () => {
-
-        // Recarga la lista de préstamos
-        this.cargarPrestamos();
-
-        // Limpia el campo de abono de ese préstamo
         this.abonos[prestamo.id!] = '';
 
-        // Muestra alerta
-        alert('Préstamo pagado completamente');
+        this.mostrarToast('Pago total enviado para revisión.', 'success');
+        this.cargarPrestamos();
+        this.cdr.detectChanges();
       },
-
-      // Si ocurre error
       error: (err: any) => {
         console.error('Error al pagar total del préstamo', err);
+
+        const mensaje = err?.error?.mensaje || 'No fue posible registrar el pago total.';
+        this.mostrarToast(mensaje, 'error');
+
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Método para calcular el porcentaje pagado
-  calcularProgreso(prestamo: any): number {
-
-    // Calcula el total con interés
-    const total = prestamo.monto + (prestamo.monto * prestamo.interes);
-
-    // Si el total es cero, retorna 0 para evitar división por cero
-    if (total === 0) return 0;
-
-    // Calcula cuánto se ha pagado
-    const pagado = total - prestamo.saldoPendiente;
-
-    // Devuelve porcentaje pagado
-    return (pagado / total) * 100;
-  }
-
-  // Método para mostrar dinero con formato colombiano
-  formatearDinero(valor: number): string {
-
-    // Convierte número a formato moneda
-    return '$' + valor.toLocaleString('es-CO', {});
-  }
-
-  // Método para abonar a un préstamo
   abonarPrestamo(id: number): void {
-
-    // Toma el valor escrito en el input del préstamo
     const abono = Number(this.abonos[id]);
 
-    // Valida que sea mayor a cero
-    if (!abono || abono <= 0) {
-
-      // Muestra alerta
-      alert("El abono debe ser mayor a 0");
-
-      // Detiene ejecución
+    if (!abono || abono <= 0 || isNaN(abono)) {
+      this.mostrarToast('El abono debe ser un número mayor a cero.', 'warning');
       return;
     }
 
-    // Envía el abono al backend
     this.prestamoService.abonarPrestamo(id, abono.toString()).subscribe({
-
-      // Si se envía correctamente
       next: () => {
-
-        // Recarga préstamos
-        this.cargarPrestamos();
-
-        // Limpia input del abono
         this.abonos[id] = '';
-      },
 
-      // Si ocurre error
+        this.mostrarToast('Abono enviado correctamente. Queda pendiente de aprobación.', 'success');
+        this.cargarPrestamos();
+        this.cdr.detectChanges();
+      },
       error: (err: any) => {
         console.error('Error al abonar préstamo', err);
+
+        const mensaje = err?.error?.mensaje || 'No fue posible registrar el abono.';
+        this.mostrarToast(mensaje, 'error');
+
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Verifica si el usuario logueado es administrador
-  esAdmin(): boolean {
+  verHistorial(prestamoId: number): void {
+    this.prestamoSeleccionadoHistorial = prestamoId;
 
-    // Retorna true si existe usuario y su rol es administrador
+    this.abonoService.listarAbonosPorPrestamo(prestamoId).subscribe({
+      next: (data: Abono[]) => {
+        this.historialAbonos = data || [];
+
+        this.mostrarToast('Historial de abonos cargado.', 'info');
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Error al cargar historial de abonos', err);
+
+        this.historialAbonos = [];
+        this.mostrarToast('No fue posible cargar el historial de abonos.', 'error');
+
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  cerrarHistorial(): void {
+    this.prestamoSeleccionadoHistorial = null;
+    this.historialAbonos = [];
+  }
+
+  cambiarFiltro(estado: string): void {
+    this.filtroEstado = estado;
+  }
+
+  obtenerPrestamosFiltrados(): Prestamo[] {
+    if (this.filtroEstado === 'TODOS') {
+      return this.prestamos;
+    }
+
+    return this.prestamos.filter((p: Prestamo) => p.estado === this.filtroEstado);
+  }
+
+  contarPorEstado(estado: string): number {
+    return this.prestamos.filter((p: Prestamo) => p.estado === estado).length;
+  }
+
+  calcularTotalPrestado(): number {
+    return this.prestamos.reduce(
+      (sum: number, p: Prestamo) => sum + this.obtenerValorNumero(p.monto),
+      0
+    );
+  }
+
+  calcularSaldoPendiente(): number {
+    return this.prestamos.reduce(
+      (sum: number, p: Prestamo) => sum + this.obtenerValorNumero(p.saldoPendiente),
+      0
+    );
+  }
+
+  calcularProgreso(prestamo: any): number {
+    const monto = this.obtenerValorNumero(prestamo?.monto);
+    const interes = this.obtenerValorNumero(prestamo?.interes);
+    const saldoPendiente = this.obtenerValorNumero(prestamo?.saldoPendiente);
+
+    const total = monto + (monto * interes);
+
+    if (total <= 0) {
+      return 0;
+    }
+
+    const pagado = total - saldoPendiente;
+    const porcentaje = (pagado / total) * 100;
+
+    if (porcentaje < 0) {
+      return 0;
+    }
+
+    if (porcentaje > 100) {
+      return 100;
+    }
+
+    return porcentaje;
+  }
+
+  formatearDinero(valor: number): string {
+    if (valor === null || valor === undefined || isNaN(Number(valor))) {
+      return '$ 0';
+    }
+
+    return '$ ' + Number(valor).toLocaleString('es-CO', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    });
+  }
+
+  obtenerNombreCliente(prestamo: any): string {
+    return prestamo?.cliente?.nombre || 'Cliente no asignado';
+  }
+
+  obtenerInicialCliente(prestamo: any): string {
+    const nombre = this.obtenerNombreCliente(prestamo);
+    return nombre.charAt(0).toUpperCase();
+  }
+
+  obtenerValorNumero(valor: any): number {
+    return Number(valor || 0);
+  }
+
+  obtenerEstado(estado: any): string {
+    return estado || 'SIN ESTADO';
+  }
+
+  obtenerInteresPorcentaje(prestamo: any): string {
+    const interes = this.obtenerValorNumero(prestamo?.interes);
+
+    if (interes <= 1) {
+      return (interes * 100).toFixed(2) + '%';
+    }
+
+    return interes.toFixed(2) + '%';
+  }
+
+  mostrarToast(
+    mensaje: string,
+    tipo: 'success' | 'error' | 'warning' | 'info' = 'info'
+  ): void {
+    this.toastMensaje = mensaje;
+    this.toastTipo = tipo;
+    this.toastVisible = true;
+
+    setTimeout(() => {
+      this.toastVisible = false;
+      this.cdr.detectChanges();
+    }, 4200);
+  }
+
+  esAdmin(): boolean {
     return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'administrador';
   }
 
-  // Verifica si el usuario logueado es empleado
   esEmpleado(): boolean {
-
-    // Retorna true si existe usuario y su rol es empleado
     return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'empleado';
+  }
+
+  esCliente(): boolean {
+    return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'cliente';
   }
 }

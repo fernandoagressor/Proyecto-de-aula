@@ -1,145 +1,330 @@
-<!-- Contenedor principal tipo tarjeta -->
-<div class="page-card">
+<div class="usuarios-page">
 
-  <!-- Título de la vista -->
-  <h2 class="page-title">Usuarios</h2>
+  <!-- TOAST -->
+  <div
+    class="toast-message"
+    *ngIf="toastVisible"
+    [ngClass]="{
+      'toast-success': toastTipo === 'success',
+      'toast-error': toastTipo === 'error',
+      'toast-warning': toastTipo === 'warning',
+      'toast-info': toastTipo === 'info'
+    }"
+  >
+    <div class="toast-icon">
+      <span *ngIf="toastTipo === 'success'">✓</span>
+      <span *ngIf="toastTipo === 'error'">!</span>
+      <span *ngIf="toastTipo === 'warning'">!</span>
+      <span *ngIf="toastTipo === 'info'">ℹ</span>
+    </div>
 
-  <!-- Formulario para crear o editar usuarios -->
-  <div class="form-grid">
+    <div class="toast-content">
+      <strong>
+        {{
+        toastTipo === 'success'
+        ? 'Operación exitosa'
+        : toastTipo === 'error'
+        ? 'Error'
+        : toastTipo === 'warning'
+        ? 'Atención'
+        : 'Información'
+        }}
+      </strong>
 
-    <!-- Input para el nombre -->
-    <!-- [(ngModel)] conecta el campo con nuevoUsuario.nombre -->
-    <!-- Todo lo que escriba el usuario se guarda en esa variable -->
-    <input
-      class="input-modern"
-      type="text"
-      [(ngModel)]="nuevoUsuario.nombre"
-      placeholder="Nombre"
-    />
+      <p>{{ toastMensaje }}</p>
+    </div>
 
-    <!-- Input para la contraseña -->
-    <!-- type="password" oculta lo que se escribe -->
-    <!-- Se guarda en nuevoUsuario.password -->
-    <input
-      class="input-modern"
-      type="password"
-      [(ngModel)]="nuevoUsuario.password"
-      placeholder="Password"
-    />
-
-    <!-- Select para elegir el rol -->
-    <!-- [(ngModel)] guarda el valor en nuevoUsuario.rol -->
-    <select
-      class="select-modern"
-      [(ngModel)]="nuevoUsuario.rol"
-    >
-
-      <!-- Opción vacía por defecto -->
-      <option value="">Seleccione rol</option>
-
-      <!-- Opciones disponibles -->
-      <option value="administrador">Administrador</option>
-      <option value="empleado">Empleado</option>
-      <option value="cliente">Cliente</option>
-    </select>
-
-    <!-- Botón crear usuario -->
-    <!-- Solo aparece cuando NO se está editando -->
-    <!-- Ejecuta crearUsuario() -->
     <button
-      class="btn-main"
-      *ngIf="!usuarioEditando"
-      (click)="crearUsuario()"
+      class="toast-close"
+      type="button"
+      (click)="toastVisible = false"
     >
-      Crear Usuario
-    </button>
-
-    <!-- Botón actualizar usuario -->
-    <!-- Solo aparece cuando se está editando -->
-    <!-- Ejecuta actualizarUsuario() -->
-    <button
-      class="btn-main"
-      *ngIf="usuarioEditando"
-      (click)="actualizarUsuario()"
-    >
-      Actualizar Usuario
-    </button>
-
-    <!-- Botón cancelar edición -->
-    <!-- Solo aparece en modo edición -->
-    <!-- Limpia el formulario -->
-    <button
-      class="btn-delete"
-      *ngIf="usuarioEditando"
-      (click)="cancelarEdicionUsuario()"
-    >
-      Cancelar
+      ×
     </button>
   </div>
 
-  <!-- Contenedor de la tabla -->
-  <div class="table-wrapper">
+  <!-- HERO -->
+  <section class="usuarios-hero">
 
-    <!-- Tabla de usuarios -->
-    <table class="table-modern">
+    <div class="hero-content">
+      <span class="hero-eyebrow">Gestión del sistema</span>
 
-      <!-- Encabezado -->
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Rol</th>
-        <th>Acciones</th>
-      </tr>
-      </thead>
+      <h1>Usuarios</h1>
 
-      <!-- Cuerpo -->
-      <tbody>
+      <p>
+        Administra los usuarios del sistema, sus roles de acceso y permisos
+        operativos dentro de PrestaFácil.
+      </p>
+    </div>
 
-      <!-- Recorre la lista usuarios -->
-      <!-- Por cada usuario crea una fila -->
-      <tr *ngFor="let usuario of usuarios">
+    <div class="hero-summary">
+      <span>Total usuarios</span>
+      <strong>{{ usuarios.length }}</strong>
+      <p>Accesos registrados</p>
+    </div>
 
-        <!-- Muestra ID -->
-        <td>{{ usuario.id }}</td>
+  </section>
 
-        <!-- Muestra nombre -->
-        <td>{{ usuario.nombre }}</td>
+  <!-- RESUMEN -->
+  <section class="stats-grid">
 
-        <!-- Muestra rol con estilo dinámico -->
-        <td>
+    <article class="stat-card">
+      <div class="stat-icon blue">👥</div>
 
-          <!-- span para mostrar el rol -->
-          <!-- [ngClass] aplica estilos según el rol -->
-          <span
-            class="badge-role"
-            [ngClass]="{
-                'role-admin': usuario.rol === 'administrador',
-                'role-empleado': usuario.rol === 'empleado',
-                'role-cliente': usuario.rol === 'cliente'
-              }"
-          >
-              {{ usuario.rol }}
-            </span>
-        </td>
+      <div>
+        <span>Total usuarios</span>
+        <strong>{{ usuarios.length }}</strong>
+      </div>
+    </article>
 
-        <!-- Acciones -->
-        <td>
+    <article class="stat-card">
+      <div class="stat-icon indigo">🛡️</div>
 
-          <!-- Contenedor de botones -->
-          <div class="actions-box">
+      <div>
+        <span>Administradores</span>
+        <strong>{{ contarPorRol('administrador') }}</strong>
+      </div>
+    </article>
 
-            <!-- Botón editar -->
-            <!-- Envía el usuario completo al método editarUsuario() -->
-            <button class="btn-edit" (click)="editarUsuario(usuario)">Editar</button>
+    <article class="stat-card">
+      <div class="stat-icon green">💼</div>
 
-            <!-- Botón eliminar -->
-            <!-- Envía el ID al método eliminarUsuario() -->
-            <button class="btn-delete" (click)="eliminarUsuario(usuario.id)">Eliminar</button>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+      <div>
+        <span>Empleados</span>
+        <strong>{{ contarPorRol('empleado') }}</strong>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon amber">👤</div>
+
+      <div>
+        <span>Clientes</span>
+        <strong>{{ contarPorRol('cliente') }}</strong>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- FORMULARIO -->
+  <section class="form-card" id="formUsuario">
+
+    <div class="section-header">
+      <div>
+        <span class="section-eyebrow">
+          {{ usuarioEditando ? 'Modo edición' : 'Nuevo acceso' }}
+        </span>
+
+        <h2>
+          {{ usuarioEditando ? 'Editar usuario' : 'Crear nuevo usuario' }}
+        </h2>
+
+        <p>
+          {{
+          usuarioEditando
+          ? 'Actualiza la información del usuario seleccionado. Si no deseas cambiar la contraseña, puedes dejarla vacía si tu backend lo permite.'
+          : 'Registra un nuevo usuario para acceder al sistema.'
+          }}
+        </p>
+      </div>
+
+      <span class="mode-chip" *ngIf="usuarioEditando">
+        Editando #{{ usuarioEditando.id }}
+      </span>
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+        <label>Nombre</label>
+
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoUsuario.nombre"
+          placeholder="Ingrese el nombre"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Contraseña</label>
+
+        <input
+          class="input-modern"
+          type="password"
+          [(ngModel)]="nuevoUsuario.password"
+          [placeholder]="usuarioEditando ? 'Nueva contraseña opcional' : 'Ingrese la contraseña'"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Rol</label>
+
+        <select
+          class="select-modern"
+          [(ngModel)]="nuevoUsuario.rol"
+        >
+          <option value="">Seleccione un rol</option>
+          <option value="administrador">Administrador</option>
+          <option value="empleado">Empleado</option>
+          <option value="cliente">Cliente</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+
+      <button
+        class="btn-primary"
+        *ngIf="!usuarioEditando"
+        type="button"
+        (click)="crearUsuario()"
+      >
+        Crear usuario
+      </button>
+
+      <button
+        class="btn-primary"
+        *ngIf="usuarioEditando"
+        type="button"
+        (click)="actualizarUsuario()"
+      >
+        Actualizar usuario
+      </button>
+
+      <button
+        class="btn-secondary"
+        *ngIf="usuarioEditando"
+        type="button"
+        (click)="cancelarEdicionUsuario()"
+      >
+        Cancelar
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- TABLA -->
+  <section class="table-card">
+
+    <div class="section-header table-header">
+      <div>
+        <span class="section-eyebrow">Control de acceso</span>
+
+        <h2>Listado de usuarios</h2>
+
+        <p>
+          Consulta, filtra, edita o elimina los usuarios registrados.
+        </p>
+      </div>
+
+      <span class="counter-chip">
+        {{ obtenerUsuariosFiltrados().length }} visibles
+      </span>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <span>🔎</span>
+
+        <input
+          type="text"
+          [(ngModel)]="busqueda"
+          placeholder="Buscar por nombre, rol o ID..."
+        />
+      </div>
+    </div>
+
+    <div class="table-wrapper" *ngIf="obtenerUsuariosFiltrados().length > 0; else sinUsuarios">
+
+      <table class="table-modern">
+
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Usuario</th>
+          <th>Rol</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr *ngFor="let usuario of obtenerUsuariosFiltrados()">
+
+          <td>
+            <span class="id-text">#{{ usuario.id }}</span>
+          </td>
+
+          <td>
+            <div class="user-cell">
+
+              <div class="user-avatar">
+                {{ obtenerInicialUsuario(usuario) }}
+              </div>
+
+              <div>
+                <strong>{{ usuario.nombre || 'Sin nombre' }}</strong>
+                <span>Usuario registrado</span>
+              </div>
+
+            </div>
+          </td>
+
+          <td>
+              <span
+                class="badge-role"
+                [ngClass]="{
+                  'role-admin': usuario.rol === 'administrador',
+                  'role-empleado': usuario.rol === 'empleado',
+                  'role-cliente': usuario.rol === 'cliente',
+                  'role-empty': !usuario.rol
+                }"
+              >
+                {{ obtenerRolFormateado(usuario.rol) }}
+              </span>
+          </td>
+
+          <td>
+            <div class="actions-box">
+
+              <button
+                class="btn-table edit"
+                type="button"
+                (click)="editarUsuario(usuario)"
+              >
+                Editar
+              </button>
+
+              <button
+                class="btn-table delete"
+                type="button"
+                (click)="eliminarUsuario(usuario.id)"
+              >
+                Eliminar
+              </button>
+
+            </div>
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <ng-template #sinUsuarios>
+      <div class="empty-state">
+        <div>📭</div>
+        <strong>No hay usuarios para mostrar</strong>
+        <p>Registra un nuevo usuario o cambia el texto de búsqueda.</p>
+      </div>
+    </ng-template>
+
+  </section>
+
 </div>

@@ -1,61 +1,97 @@
-<!-- Título de la vista -->
-<!-- <h2> es un encabezado -->
-<h2>Mi Perfil</h2>
+<!-- Contenedor principal -->
+<div class="perfil-page">
 
-<!-- Contenedor del perfil -->
-<!-- *ngIf="cliente" → SOLO muestra esta sección si el objeto cliente existe -->
-<!-- Evita errores si los datos aún no han llegado del backend -->
-<div *ngIf="cliente" class="perfil-card">
+  <!-- Encabezado de la vista -->
+  <section class="page-header">
+    <div>
+      <span class="page-eyebrow">Cuenta del cliente</span>
+      <h1 class="page-title">Mi perfil</h1>
+      <p class="page-description">
+        Consulta tu información personal y actualiza tus datos de contacto.
+      </p>
+    </div>
+  </section>
 
-  <!-- Campo: Nombre -->
-  <div class="campo">
+  <!-- Card del perfil -->
+  <section class="perfil-card" *ngIf="cliente">
 
-    <!-- Etiqueta descriptiva -->
-    <label>Nombre</label>
+    <div class="perfil-header">
 
-    <!-- Input que muestra el nombre -->
-    <!-- [value]="cliente.nombre" → binding de una sola vía (solo muestra el dato) -->
-    <!-- disabled → el usuario NO puede modificarlo -->
-    <input [value]="cliente.nombre" disabled />
-  </div>
+      <div class="perfil-avatar">
+        {{ cliente.nombre ? cliente.nombre.charAt(0).toUpperCase() : 'C' }}
+      </div>
 
-  <!-- Campo: Cédula -->
-  <div class="campo">
+      <div>
+        <h2>{{ cliente.nombre }}</h2>
+        <p>Cliente registrado en Presta Fácil</p>
+      </div>
 
-    <label>Cédula</label>
+    </div>
 
-    <!-- Muestra la cédula -->
-    <!-- También está bloqueado (no editable) -->
-    <input [value]="cliente.cedula" disabled />
-  </div>
+    <div class="perfil-grid">
 
-  <!-- Campo: Teléfono -->
-  <div class="campo">
+      <!-- Nombre -->
+      <div class="form-field">
+        <label>Nombre completo</label>
+        <input
+          class="input-modern input-disabled"
+          [value]="cliente.nombre"
+          disabled
+        />
+        <small>Este campo no es editable.</small>
+      </div>
 
-    <label>Teléfono</label>
+      <!-- Cédula -->
+      <div class="form-field">
+        <label>Cédula</label>
+        <input
+          class="input-modern input-disabled"
+          [value]="cliente.cedula"
+          disabled
+        />
+        <small>Documento de identificación registrado.</small>
+      </div>
 
-    <!-- [(ngModel)] → binding bidireccional -->
-    <!-- Permite editar el teléfono -->
-    <!-- Lo que el usuario escriba se guarda en cliente.telefono -->
-    <input [(ngModel)]="cliente.telefono" />
-  </div>
+      <!-- Teléfono -->
+      <div class="form-field">
+        <label>Teléfono</label>
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="cliente.telefono"
+          placeholder="Ingrese su teléfono"
+        />
+      </div>
 
-  <!-- Campo: Dirección -->
-  <div class="campo">
+      <!-- Dirección -->
+      <div class="form-field">
+        <label>Dirección</label>
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="cliente.direccion"
+          placeholder="Ingrese su dirección"
+        />
+      </div>
 
-    <label>Dirección</label>
+    </div>
 
-    <!-- También editable -->
-    <!-- Se guarda directamente en cliente.direccion -->
-    <input [(ngModel)]="cliente.direccion" />
-  </div>
+    <!-- Acciones -->
+    <div class="form-actions">
+      <button
+        class="btn-primary"
+        type="button"
+        (click)="guardarCambios()"
+      >
+        Guardar cambios
+      </button>
+    </div>
 
-  <!-- Botón para guardar cambios -->
-  <!-- (click)="guardarCambios()" → ejecuta la función en el .ts -->
-  <button (click)="guardarCambios()">Guardar cambios</button>
+    <!-- Mensaje dinámico -->
+    <div class="alert-message" *ngIf="mensaje">
+      {{ mensaje }}
+    </div>
 
-  <!-- Mensaje dinámico -->
-  <!-- *ngIf="mensaje" → solo se muestra si hay mensaje -->
-  <!-- {{ mensaje }} muestra el texto -->
-  <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+  </section>
+
 </div>

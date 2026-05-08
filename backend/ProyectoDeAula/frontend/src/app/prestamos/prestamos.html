@@ -1,269 +1,530 @@
-<!-- Contenedor principal de toda la pantalla de préstamos -->
-<div class="prestamos-container">
+<div class="prestamos-page">
 
-  <!-- Tarjeta principal donde está el formulario y la tabla -->
-  <div class="prestamos-card">
+  <!-- TOAST -->
+  <div
+    class="toast-message"
+    *ngIf="toastVisible"
+    [ngClass]="{
+      'toast-success': toastTipo === 'success',
+      'toast-error': toastTipo === 'error',
+      'toast-warning': toastTipo === 'warning',
+      'toast-info': toastTipo === 'info'
+    }"
+  >
+    <div class="toast-icon">
+      <span *ngIf="toastTipo === 'success'">✓</span>
+      <span *ngIf="toastTipo === 'error'">!</span>
+      <span *ngIf="toastTipo === 'warning'">!</span>
+      <span *ngIf="toastTipo === 'info'">ℹ</span>
+    </div>
 
-    <!-- Título de la vista -->
-    <h2 class="titulo">Préstamos</h2>
+    <div class="toast-content">
+      <strong>
+        {{
+        toastTipo === 'success'
+        ? 'Operación exitosa'
+        : toastTipo === 'error'
+        ? 'Error'
+        : toastTipo === 'warning'
+        ? 'Atención'
+        : 'Información'
+        }}
+      </strong>
 
-    <!-- Formulario para solicitar un préstamo -->
-    <div class="formulario-prestamo">
+      <p>{{ toastMensaje }}</p>
+    </div>
 
-      <!-- Campo para escribir el ID del cliente -->
-      <!-- [(ngModel)] guarda lo escrito en nuevoPrestamo.clienteId -->
-      <input
-        type="text"
-        [(ngModel)]="nuevoPrestamo.clienteId"
-        placeholder="ID Cliente"
-      />
+    <button
+      class="toast-close"
+      type="button"
+      (click)="toastVisible = false"
+    >
+      ×
+    </button>
+  </div>
 
-      <!-- Campo para escribir el monto del préstamo -->
-      <!-- Se guarda en nuevoPrestamo.monto -->
-      <input
-        type="text"
-        [(ngModel)]="nuevoPrestamo.monto"
-        placeholder="Monto"
-      />
+  <!-- HERO -->
+  <section class="prestamos-hero">
 
-      <!-- Campo para escribir el plazo en meses -->
-      <!-- Se guarda en nuevoPrestamo.plazoMeses -->
-      <input
-        type="text"
-        [(ngModel)]="nuevoPrestamo.plazoMeses"
-        placeholder="Plazo en meses"
-      />
+    <div class="hero-content">
+      <span class="hero-eyebrow">Gestión financiera</span>
 
-      <!-- Botón para solicitar el préstamo -->
-      <!-- Al hacer clic ejecuta crearPrestamo() en el archivo .ts -->
-      <button class="btn btn-solicitar" (click)="crearPrestamo()">
-        Solicitar Préstamo
+      <h1>Préstamos</h1>
+
+      <p>
+        Registra solicitudes, aprueba operaciones, controla abonos,
+        consulta saldos y prepara comprobantes para tus clientes.
+      </p>
+
+      <div class="hero-actions">
+        <button class="hero-btn primary" type="button">
+          Nueva solicitud
+        </button>
+
+        <button class="hero-btn secondary" type="button">
+          Exportar reporte
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-summary">
+      <span>Cartera pendiente</span>
+      <strong>{{ formatearDinero(calcularSaldoPendiente()) }}</strong>
+      <p>{{ prestamos.length }} préstamos registrados</p>
+    </div>
+
+  </section>
+
+  <!-- RESUMEN -->
+  <section class="stats-grid">
+
+    <article class="stat-card">
+      <div class="stat-icon blue">📄</div>
+      <div>
+        <span>Total préstamos</span>
+        <strong>{{ prestamos.length }}</strong>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon amber">⏳</div>
+      <div>
+        <span>Pendientes</span>
+        <strong>{{ contarPorEstado('PENDIENTE') }}</strong>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon green">✅</div>
+      <div>
+        <span>Aprobados</span>
+        <strong>{{ contarPorEstado('APROBADO') }}</strong>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon indigo">💰</div>
+      <div>
+        <span>Total prestado</span>
+        <strong>{{ formatearDinero(calcularTotalPrestado()) }}</strong>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- FORMULARIO -->
+  <section class="form-card">
+
+    <div class="section-header">
+      <div>
+        <span class="section-eyebrow">Nueva operación</span>
+        <h2>Registrar préstamo</h2>
+        <p>
+          Crea una nueva solicitud asociada a un cliente registrado.
+          El backend calculará la tasa, cuota y saldo.
+        </p>
+      </div>
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+        <label>ID del cliente</label>
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoPrestamo.clienteId"
+          placeholder="Ej: 1"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Monto solicitado</label>
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoPrestamo.monto"
+          placeholder="Ej: 1000000"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Plazo en meses</label>
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoPrestamo.plazoMeses"
+          placeholder="Ej: 12"
+        />
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+      <button
+        class="btn-primary"
+        type="button"
+        (click)="crearPrestamo()"
+      >
+        Solicitar préstamo
       </button>
     </div>
 
-    <!-- Contenedor de la tabla -->
-    <div class="tabla-wrapper">
+  </section>
 
-      <!-- Tabla donde se muestran los préstamos -->
-      <table class="tabla-prestamos">
+  <!-- TABLA -->
+  <section class="table-card">
 
-        <!-- Encabezado de la tabla -->
+    <div class="section-header table-header">
+      <div>
+        <span class="section-eyebrow">Operaciones</span>
+        <h2>Listado de préstamos</h2>
+        <p>
+          Consulta estado, saldo, cuotas, progreso y acciones disponibles.
+        </p>
+      </div>
+
+      <span class="counter-chip">
+        {{ obtenerPrestamosFiltrados().length }} visibles
+      </span>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="filters-bar">
+
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="filtroEstado === 'TODOS'"
+        (click)="cambiarFiltro('TODOS')"
+      >
+        Todos
+      </button>
+
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="filtroEstado === 'PENDIENTE'"
+        (click)="cambiarFiltro('PENDIENTE')"
+      >
+        Pendientes
+      </button>
+
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="filtroEstado === 'APROBADO'"
+        (click)="cambiarFiltro('APROBADO')"
+      >
+        Aprobados
+      </button>
+
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="filtroEstado === 'PAGADO'"
+        (click)="cambiarFiltro('PAGADO')"
+      >
+        Pagados
+      </button>
+
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="filtroEstado === 'RECHAZADO'"
+        (click)="cambiarFiltro('RECHAZADO')"
+      >
+        Rechazados
+      </button>
+
+    </div>
+
+    <div class="table-wrapper">
+
+      <table class="table-modern">
+
         <thead>
         <tr>
           <th>ID</th>
           <th>Cliente</th>
           <th>Monto</th>
+          <th>Saldo</th>
+          <th>Cuota</th>
           <th>Plazo</th>
           <th>Interés</th>
-          <th>Saldo Pendiente</th>
-          <th>Cuota Mensual</th>
-          <th>Cuotas Restantes</th>
+          <th>Cuotas</th>
           <th>Estado</th>
           <th>Abono</th>
-          <th>Acciones</th>
           <th>Progreso</th>
+          <th class="text-right">Acciones</th>
         </tr>
         </thead>
 
-        <!-- Cuerpo de la tabla -->
         <tbody>
 
-        <!-- *ngFor recorre la lista prestamos -->
-        <!-- Por cada préstamo crea una fila -->
-        <tr *ngFor="let prestamo of prestamos">
+        <tr *ngFor="let prestamo of obtenerPrestamosFiltrados()">
 
-          <!-- Muestra el ID del préstamo -->
-          <td>{{ prestamo.id }}</td>
-
-          <!-- Muestra el nombre del cliente relacionado -->
-          <!-- ?. evita error si cliente viene vacío o todavía no cargó -->
-          <td>{{ prestamo.cliente?.nombre }}</td>
-
-          <!-- Muestra el monto con formato de dinero -->
-          <td>{{ formatearDinero(prestamo.monto) }}</td>
-
-          <!-- Muestra el plazo en meses -->
-          <td>{{ prestamo.plazoMeses }}</td>
-
-          <!-- Muestra la tasa de interés aplicada -->
-          <td>{{ prestamo.interes }}</td>
-
-          <!-- Muestra lo que falta por pagar -->
-          <td>{{ formatearDinero(prestamo.saldoPendiente) }}</td>
-
-          <!-- Muestra el valor de la cuota mensual -->
-          <td>{{ formatearDinero(prestamo.cuotaMensual) }}</td>
-
-          <!-- Muestra cuántas cuotas faltan -->
-          <td>{{ prestamo.cuotasRestantes }}</td>
-
-          <!-- Celda del estado del préstamo -->
           <td>
+            <span class="id-text">#{{ prestamo.id }}</span>
+          </td>
 
-            <!-- span muestra el estado como una etiqueta visual -->
-            <!-- [ngClass] aplica clases CSS dependiendo del estado -->
-            <span
-              class="badge"
-              [ngClass]="{
-                  'badge-pendiente': prestamo.estado === 'PENDIENTE',
-                  'badge-aprobado': prestamo.estado === 'APROBADO',
-                  'badge-rechazado': prestamo.estado === 'RECHAZADO',
-                  'badge-pagado': prestamo.estado === 'PAGADO'
-                }"
-            >
-                <!-- Muestra el estado en texto -->
-                {{ prestamo.estado }}
+          <td>
+            <div class="client-cell">
+              <div class="client-avatar">
+                {{ obtenerInicialCliente(prestamo) }}
+              </div>
+
+              <div>
+                <strong>{{ obtenerNombreCliente(prestamo) }}</strong>
+                <span>
+                    {{ prestamo.cliente ? 'Cliente asociado' : 'Sin cliente vinculado' }}
+                  </span>
+              </div>
+            </div>
+          </td>
+
+          <td>
+              <span class="money-text">
+                {{ formatearDinero(obtenerValorNumero(prestamo.monto)) }}
               </span>
           </td>
 
-          <!-- Celda para ingresar valor del abono -->
           <td>
+              <span class="money-text warning">
+                {{ formatearDinero(obtenerValorNumero(prestamo.saldoPendiente)) }}
+              </span>
+          </td>
 
-            <!-- Input para escribir el abono -->
-            <!-- abonos[prestamo.id!] guarda un abono diferente por cada préstamo -->
-            <!-- [disabled] desactiva el input si el préstamo no está APROBADO -->
+          <td>
+              <span class="money-text">
+                {{ formatearDinero(obtenerValorNumero(prestamo.cuotaMensual)) }}
+              </span>
+          </td>
+
+          <td>
+              <span class="muted-text">
+                {{ prestamo.plazoMeses || 0 }} meses
+              </span>
+          </td>
+
+          <td>
+              <span class="muted-text">
+                {{ obtenerInteresPorcentaje(prestamo) }}
+              </span>
+          </td>
+
+          <td>
+              <span class="muted-text">
+                {{ prestamo.cuotasRestantes || 0 }}
+              </span>
+          </td>
+
+          <td>
+              <span
+                class="badge-status"
+                [ngClass]="{
+                  'status-pendiente': obtenerEstado(prestamo.estado) === 'PENDIENTE',
+                  'status-aprobado': obtenerEstado(prestamo.estado) === 'APROBADO',
+                  'status-rechazado': obtenerEstado(prestamo.estado) === 'RECHAZADO',
+                  'status-pagado': obtenerEstado(prestamo.estado) === 'PAGADO',
+                  'status-sin-estado': obtenerEstado(prestamo.estado) === 'SIN ESTADO'
+                }"
+              >
+                {{ obtenerEstado(prestamo.estado) }}
+              </span>
+          </td>
+
+          <td>
             <input
               class="input-abono"
               type="text"
               [(ngModel)]="abonos[prestamo.id!]"
-              placeholder="Valor abono"
+              placeholder="Valor"
               [disabled]="prestamo.estado !== 'APROBADO'"
             />
           </td>
 
-          <!-- Celda de botones de acción -->
           <td>
-
-            <!-- Contenedor de botones -->
-            <div class="acciones">
-
-              <!-- Botón aprobar -->
-              <!-- Solo aparece si el usuario es admin o empleado -->
-              <!-- Y si el préstamo está PENDIENTE -->
-              <button
-                *ngIf="(esAdmin() || esEmpleado()) && prestamo.estado === 'PENDIENTE'"
-                class="btn btn-aprobar"
-                (click)="aprobarPrestamo(prestamo.id!)"
-              >
-                Aprobar
-              </button>
-
-              <!-- Botón rechazar -->
-              <!-- También solo aparece para admin o empleado -->
-              <!-- Y únicamente cuando el préstamo está PENDIENTE -->
-              <button
-                *ngIf="(esAdmin() || esEmpleado()) && prestamo.estado === 'PENDIENTE'"
-                class="btn btn-rechazar"
-                (click)="rechazarPrestamo(prestamo.id!)"
-              >
-                Rechazar
-              </button>
-
-              <!-- Botón abonar -->
-              <!-- Ejecuta abonarPrestamo() -->
-              <!-- Se desactiva si el préstamo no está APROBADO -->
-              <button
-                class="btn btn-abonar"
-                (click)="abonarPrestamo(prestamo.id!)"
-                [disabled]="prestamo.estado !== 'APROBADO'"
-              >
-                Abonar
-              </button>
-
-              <!-- Botón pagar total -->
-              <!-- Envía el préstamo completo al método pagarTotal() -->
-              <!-- Se desactiva si el préstamo no está APROBADO -->
-              <button
-                class="btn btn-pagar-total"
-                (click)="pagarTotal(prestamo)"
-                [disabled]="prestamo.estado !== 'APROBADO'"
-              >
-                Pagar total
-              </button>
-
-              <!-- Botón historial -->
-              <!-- Muestra los abonos realizados a ese préstamo -->
-              <button
-                class="btn btn-historial"
-                (click)="verHistorial(prestamo.id!)"
-              >
-                Historial
-              </button>
-            </div>
-          </td>
-
-          <!-- Celda de progreso -->
-          <td>
-
-            <!-- Contenedor de la barra de progreso -->
             <div class="progress-box">
 
-              <!-- Barra base -->
               <div class="progress-bar">
-
-                <!-- Relleno de la barra -->
-                <!-- [style.width.%] cambia el ancho según el porcentaje pagado -->
                 <div
                   class="progress-fill"
                   [style.width.%]="calcularProgreso(prestamo)"
                 ></div>
               </div>
 
-              <!-- Texto del porcentaje -->
-              <!-- number:'1.0-0' muestra el número sin decimales -->
               <span class="progress-text">
                   {{ calcularProgreso(prestamo) | number:'1.0-0' }}%
                 </span>
+
             </div>
           </td>
+
+          <td>
+            <div class="actions-box">
+
+              <button
+                *ngIf="(esAdmin() || esEmpleado()) && prestamo.estado === 'PENDIENTE'"
+                class="btn-table approve"
+                type="button"
+                (click)="aprobarPrestamo(prestamo.id!)"
+              >
+                Aprobar
+              </button>
+
+              <button
+                *ngIf="(esAdmin() || esEmpleado()) && prestamo.estado === 'PENDIENTE'"
+                class="btn-table reject"
+                type="button"
+                (click)="rechazarPrestamo(prestamo.id!)"
+              >
+                Rechazar
+              </button>
+
+              <button
+                class="btn-table pay"
+                type="button"
+                (click)="abonarPrestamo(prestamo.id!)"
+                [disabled]="prestamo.estado !== 'APROBADO'"
+              >
+                Abonar
+              </button>
+
+              <button
+                class="btn-table total"
+                type="button"
+                (click)="pagarTotal(prestamo)"
+                [disabled]="prestamo.estado !== 'APROBADO'"
+              >
+                Pagar total
+              </button>
+
+              <button
+                class="btn-table history"
+                type="button"
+                (click)="verHistorial(prestamo.id!)"
+              >
+                Historial
+              </button>
+
+              <button
+                class="btn-table pdf"
+                type="button"
+                disabled
+              >
+                PDF
+              </button>
+
+            </div>
+          </td>
+
         </tr>
+
         </tbody>
+
       </table>
+
     </div>
-  </div>
 
-  <!-- Tarjeta del historial -->
-  <!-- Solo aparece cuando se selecciona un préstamo -->
-  <div class="prestamos-card" *ngIf="prestamoSeleccionadoHistorial !== null">
+    <div class="empty-state" *ngIf="obtenerPrestamosFiltrados().length === 0">
+      <div>📭</div>
+      <strong>No hay préstamos para este filtro</strong>
+      <p>Cambia el filtro o registra una nueva solicitud.</p>
+    </div>
 
-    <!-- Título del historial con el ID del préstamo seleccionado -->
-    <h3 class="subtitulo">
-      Historial de abonos del préstamo #{{ prestamoSeleccionadoHistorial }}
-    </h3>
+  </section>
 
-    <!-- Contenedor de la tabla de historial -->
-    <div class="tabla-wrapper">
+  <!-- HISTORIAL -->
+  <section
+    class="table-card history-card"
+    *ngIf="prestamoSeleccionadoHistorial !== null"
+  >
 
-      <!-- Tabla de abonos -->
-      <table class="tabla-prestamos historial-tabla">
+    <div class="section-header table-header">
+      <div>
+        <span class="section-eyebrow">Historial</span>
+        <h2>Historial de abonos</h2>
+        <p>
+          Préstamo seleccionado: #{{ prestamoSeleccionadoHistorial }}
+        </p>
+      </div>
 
-        <!-- Encabezado -->
+      <div class="history-actions">
+        <span class="counter-chip">
+          {{ historialAbonos.length }} abonos
+        </span>
+
+        <button
+          class="btn-close-history"
+          type="button"
+          (click)="cerrarHistorial()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+
+      <table class="table-modern history-table">
+
         <thead>
         <tr>
           <th>ID</th>
           <th>Monto</th>
           <th>Fecha</th>
+          <th>Estado</th>
         </tr>
         </thead>
 
-        <!-- Cuerpo -->
         <tbody>
 
-        <!-- Recorre los abonos del historial -->
         <tr *ngFor="let abono of historialAbonos">
 
-          <!-- Muestra ID del abono -->
-          <td>{{ abono.id }}</td>
+          <td>
+            <span class="id-text">#{{ abono.id }}</span>
+          </td>
 
-          <!-- Muestra monto del abono en formato dinero -->
-          <td>{{ formatearDinero(abono.monto) }}</td>
+          <td>
+              <span class="money-text">
+                {{ formatearDinero(abono.monto) }}
+              </span>
+          </td>
 
-          <!-- Muestra fecha del abono -->
-          <td>{{ abono.fecha }}</td>
+          <td>
+              <span class="muted-text">
+                {{ abono.fecha }}
+              </span>
+          </td>
+
+          <td>
+              <span
+                class="badge-status"
+                [ngClass]="{
+                  'status-pendiente': abono.estado === 'PENDIENTE',
+                  'status-aprobado': abono.estado === 'APROBADO',
+                  'status-rechazado': abono.estado === 'RECHAZADO'
+                }"
+              >
+                {{ abono.estado || 'SIN ESTADO' }}
+              </span>
+          </td>
+
         </tr>
+
         </tbody>
+
       </table>
+
     </div>
-  </div>
+
+    <div class="empty-state" *ngIf="historialAbonos.length === 0">
+      <div>🧾</div>
+      <strong>Sin abonos registrados</strong>
+      <p>Cuando existan abonos para este préstamo, aparecerán aquí.</p>
+    </div>
+
+  </section>
 
 </div>

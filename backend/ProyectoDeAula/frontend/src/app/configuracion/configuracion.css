@@ -1,152 +1,241 @@
-/* Contenedor principal tipo tarjeta */
-.page-card {
+/* =========================
+   PÁGINA CONFIGURACIÓN
+========================= */
 
-  /* Fondo blanco */
-  background: #ffffff;
-
-  /* Bordes redondeados */
-  border-radius: 18px;
-
-  /* Espacio interno */
-  padding: 28px;
-
-  /* Sombra suave (efecto elevación) */
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-
-  /* Margen externo */
-  margin: 20px;
-}
-
-/* Título de la página */
-.page-title {
-
-  /* Centra el texto */
-  text-align: center;
-
-  /* Tamaño grande */
-  font-size: 34px;
-
-  /* Texto en negrita */
-  font-weight: 700;
-
-  /* Color azul oscuro */
-  color: #1e3a8a;
-
-  /* Espacio debajo */
-  margin-bottom: 24px;
-}
-
-/* Estilo para inputs */
-.input-modern {
-
-  /* Ocupa todo el ancho disponible */
+.config-page {
   width: 100%;
-
-  /* Espaciado interno */
-  padding: 12px 14px;
-
-  /* Borde gris claro */
-  border: 1px solid #cbd5e1;
-
-  /* Bordes redondeados */
-  border-radius: 12px;
-
-  /* Quita el borde azul por defecto del navegador */
-  outline: none;
-
-  /* Tamaño de texto */
-  font-size: 15px;
-
-  /* Fondo gris claro */
-  background: #f8fafc;
-
-  /* Transición suave (animación) */
-  transition: all 0.2s ease;
-
-  /* Mantiene tamaño correcto incluyendo padding */
-  box-sizing: border-box;
 }
 
-/* Estilo cuando el input está activo (focus) */
-.input-modern:focus {
+/* =========================
+   ENCABEZADO
+========================= */
 
-  /* Borde azul */
-  border-color: #2563eb;
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 26px;
+}
 
-  /* Fondo blanco */
+.page-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.8px;
+}
+
+.page-description {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.config-card {
   background: #ffffff;
-
-  /* Sombra azul alrededor */
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+  max-width: 920px;
 }
 
-/* Botón principal */
-.btn-main {
+.config-content {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 32px;
+  align-items: stretch;
+}
 
-  /* Sin borde */
-  border: none;
+/* =========================
+   INFORMACIÓN
+========================= */
 
-  /* Bordes redondeados */
-  border-radius: 12px;
+.config-info {
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: 22px;
+  padding: 26px;
+}
 
-  /* Espaciado interno */
-  padding: 12px 18px;
+.config-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: #1e3a8a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 900;
+  margin-bottom: 18px;
+}
 
-  /* Texto en negrita */
-  font-weight: 600;
+.config-info h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 850;
+  color: #0f172a;
+  letter-spacing: -0.4px;
+}
 
-  /* Tamaño de texto */
-  font-size: 15px;
+.config-info p {
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
 
-  /* Cursor tipo mano */
-  cursor: pointer;
+.warning-box {
+  margin-top: 22px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 16px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
 
-  /* Transición suave */
+.warning-box strong {
+  color: #92400e;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.warning-box span {
+  color: #92400e;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================
+   FORMULARIO
+========================= */
+
+.config-form {
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 850;
+  color: #334155;
+}
+
+.input-with-symbol {
+  position: relative;
+}
+
+.input-modern {
+  width: 100%;
+  height: 52px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  padding: 0 44px 0 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
   transition: all 0.2s ease;
-
-  /* Fondo azul */
-  background: #2563eb;
-
-  /* Texto blanco */
-  color: white;
 }
 
-/* Efecto hover del botón */
-.btn-main:hover {
+.input-modern::placeholder {
+  color: #94a3b8;
+  font-weight: 600;
+}
 
-  /* Azul más oscuro */
+.input-modern:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.input-with-symbol span {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-weight: 900;
+}
+
+.form-field small {
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.btn-primary {
+  height: 46px;
+  margin-top: 22px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 14px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 850;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
   background: #1d4ed8;
-
-  /* Movimiento ligero hacia arriba */
   transform: translateY(-1px);
 }
 
-/* Contenedor específico para configuración */
-.config-box {
+/* =========================
+   RESPONSIVE
+========================= */
 
-  /* Limita el ancho máximo */
-  max-width: 700px;
+@media (max-width: 900px) {
+  .config-content {
+    grid-template-columns: 1fr;
+  }
+
+  .page-title {
+    font-size: 28px;
+  }
 }
 
-/* Formulario de configuración */
-.config-form {
+@media (max-width: 520px) {
+  .config-card {
+    padding: 18px;
+    border-radius: 18px;
+  }
 
-  /* Usa flexbox */
-  display: flex;
-
-  /* Espacio entre elementos */
-  gap: 12px;
-
-  /* Permite que los elementos bajen de línea si no caben */
-  flex-wrap: wrap;
-}
-
-/* Estilo especial para inputs dentro del formulario */
-.config-form .input-modern {
-
-  /* Hace que el input crezca y ocupe espacio disponible */
-  flex: 1;
-
-  /* Ancho mínimo */
-  min-width: 220px;
+  .config-info,
+  .config-form {
+    padding: 20px;
+    border-radius: 18px;
+  }
 }

@@ -1,152 +1,342 @@
-<!-- Contenedor principal de la vista -->
-<!-- <div> agrupa todo el contenido -->
-<!-- class="page-card" aplica el diseño tipo tarjeta -->
-<div class="page-card">
+<div class="clientes-page">
 
-  <!-- Título de la pantalla -->
-  <!-- <h2> es un encabezado -->
-  <!-- class="page-title" aplica estilos al título -->
-  <h2 class="page-title">Clientes</h2>
+  <!-- TOAST -->
+  <div
+    class="toast-message"
+    *ngIf="toastVisible"
+    [ngClass]="{
+      'toast-success': toastTipo === 'success',
+      'toast-error': toastTipo === 'error',
+      'toast-warning': toastTipo === 'warning',
+      'toast-info': toastTipo === 'info'
+    }"
+  >
+    <div class="toast-icon">
+      <span *ngIf="toastTipo === 'success'">✓</span>
+      <span *ngIf="toastTipo === 'error'">!</span>
+      <span *ngIf="toastTipo === 'warning'">!</span>
+      <span *ngIf="toastTipo === 'info'">ℹ</span>
+    </div>
 
-  <!-- Contenedor del formulario -->
-  <!-- Aquí van los campos para registrar o editar un cliente -->
-  <div class="form-grid">
+    <div class="toast-content">
+      <strong>
+        {{
+        toastTipo === 'success'
+        ? 'Operación exitosa'
+        : toastTipo === 'error'
+        ? 'Error'
+        : toastTipo === 'warning'
+        ? 'Atención'
+        : 'Información'
+        }}
+      </strong>
 
-    <!-- Campo para escribir el nombre -->
-    <!-- <input> es una caja de texto -->
-    <!-- [(ngModel)] conecta este campo con nuevoCliente.nombre -->
-    <!-- Lo que el usuario escriba aquí se guarda en nuevoCliente.nombre -->
-    <input
-      class="input-modern"
-      type="text"
-      [(ngModel)]="nuevoCliente.nombre"
-      placeholder="Nombre"
-    />
+      <p>{{ toastMensaje }}</p>
+    </div>
 
-    <!-- Campo para escribir la cédula -->
-    <!-- Se conecta con nuevoCliente.cedula -->
-    <input
-      class="input-modern"
-      type="text"
-      [(ngModel)]="nuevoCliente.cedula"
-      placeholder="Cédula"
-    />
-
-    <!-- Campo para escribir el teléfono -->
-    <!-- Se conecta con nuevoCliente.telefono -->
-    <input
-      class="input-modern"
-      type="text"
-      [(ngModel)]="nuevoCliente.telefono"
-      placeholder="Teléfono"
-    />
-
-    <!-- Campo para escribir la dirección -->
-    <!-- Se conecta con nuevoCliente.direccion -->
-    <input
-      class="input-modern"
-      type="text"
-      [(ngModel)]="nuevoCliente.direccion"
-      placeholder="Dirección"
-    />
-
-    <!-- Botón para crear cliente -->
-    <!-- *ngIf="!clienteEditando" significa:
-         este botón solo aparece cuando NO se está editando -->
-    <!-- (click)="crearCliente()" ejecuta el método crearCliente() del archivo .ts -->
     <button
-      class="btn-main"
-      *ngIf="!clienteEditando"
-      (click)="crearCliente()"
+      class="toast-close"
+      type="button"
+      (click)="toastVisible = false"
     >
-      Crear Cliente
-    </button>
-
-    <!-- Botón para actualizar cliente -->
-    <!-- *ngIf="clienteEditando" significa:
-         aparece solo cuando sí se está editando un cliente -->
-    <!-- (click)="actualizarCliente()" ejecuta el método actualizarCliente() -->
-    <button
-      class="btn-main"
-      *ngIf="clienteEditando"
-      (click)="actualizarCliente()"
-    >
-      Actualizar Cliente
-    </button>
-
-    <!-- Botón para cancelar edición -->
-    <!-- Solo aparece cuando clienteEditando tiene datos -->
-    <!-- (click)="cancelarEdicion()" limpia el formulario y sale del modo edición -->
-    <button
-      class="btn-delete"
-      *ngIf="clienteEditando"
-      (click)="cancelarEdicion()"
-    >
-      Cancelar
+      ×
     </button>
   </div>
 
-  <!-- Contenedor de la tabla -->
-  <!-- Permite organizar y dar scroll si la tabla es grande -->
-  <div class="table-wrapper">
+  <!-- HERO -->
+  <section class="clientes-hero">
 
-    <!-- Tabla donde se muestran los clientes -->
-    <table class="table-modern">
+    <div class="hero-content">
+      <span class="hero-eyebrow">Gestión comercial</span>
 
-      <!-- Encabezado de la tabla -->
-      <thead>
-      <tr>
-        <!-- <th> representa títulos de columnas -->
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Cédula</th>
-        <th>Teléfono</th>
-        <th>Dirección</th>
-        <th>Acciones</th>
-      </tr>
-      </thead>
+      <h1>Clientes</h1>
 
-      <!-- Cuerpo de la tabla -->
-      <tbody>
+      <p>
+        Registra, consulta y administra la información de los clientes
+        para asociarlos a préstamos, abonos y comprobantes.
+      </p>
+    </div>
 
-      <!-- *ngFor recorre la lista clientes -->
-      <!-- Por cada cliente, Angular crea una fila -->
-      <tr *ngFor="let cliente of clientes">
+    <div class="hero-summary">
+      <span>Total clientes</span>
+      <strong>{{ clientes.length }}</strong>
+      <p>Base comercial registrada</p>
+    </div>
 
-        <!-- {{ }} muestra datos dinámicos -->
-        <!-- Muestra el id del cliente -->
-        <td>{{ cliente.id }}</td>
+  </section>
 
-        <!-- Muestra el nombre del cliente -->
-        <td>{{ cliente.nombre }}</td>
+  <!-- RESUMEN -->
+  <section class="stats-grid">
 
-        <!-- Muestra la cédula del cliente -->
-        <td>{{ cliente.cedula }}</td>
+    <article class="stat-card">
+      <div class="stat-icon blue">👥</div>
 
-        <!-- Muestra el teléfono del cliente -->
-        <td>{{ cliente.telefono }}</td>
+      <div>
+        <span>Clientes registrados</span>
+        <strong>{{ clientes.length }}</strong>
+      </div>
+    </article>
 
-        <!-- Muestra la dirección del cliente -->
-        <td>{{ cliente.direccion }}</td>
+    <article class="stat-card">
+      <div class="stat-icon green">📞</div>
 
-        <!-- Columna de acciones -->
-        <td>
+      <div>
+        <span>Con teléfono</span>
+        <strong>{{ contarConTelefono() }}</strong>
+      </div>
+    </article>
 
-          <!-- Contenedor de botones -->
-          <div class="actions-box">
+    <article class="stat-card">
+      <div class="stat-icon amber">📍</div>
 
-            <!-- Botón editar -->
-            <!-- Envía el objeto cliente completo al método editarCliente() -->
-            <button class="btn-edit" (click)="editarCliente(cliente)">Editar</button>
+      <div>
+        <span>Con dirección</span>
+        <strong>{{ contarConDireccion() }}</strong>
+      </div>
+    </article>
 
-            <!-- Botón eliminar -->
-            <!-- Envía solo el id del cliente al método eliminarCliente() -->
-            <button class="btn-delete" (click)="eliminarCliente(cliente.id)">Eliminar</button>
+    <article class="stat-card">
+      <div class="stat-icon indigo">🔐</div>
 
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+      <div>
+        <span>Estado</span>
+        <strong>Activo</strong>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- FORMULARIO -->
+  <section class="form-card" id="formCliente">
+
+    <div class="section-header">
+      <div>
+        <span class="section-eyebrow">
+          {{ clienteEditando ? 'Modo edición' : 'Nuevo registro' }}
+        </span>
+
+        <h2>
+          {{ clienteEditando ? 'Editar cliente' : 'Registrar nuevo cliente' }}
+        </h2>
+
+        <p>
+          {{
+          clienteEditando
+          ? 'Actualiza la información del cliente seleccionado.'
+          : 'Agrega un cliente para asociarlo a futuras solicitudes de préstamo.'
+          }}
+        </p>
+      </div>
+
+      <span class="mode-chip" *ngIf="clienteEditando">
+        Editando #{{ clienteEditando.id }}
+      </span>
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+        <label>Nombre completo</label>
+
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoCliente.nombre"
+          placeholder="Ingrese el nombre"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Cédula</label>
+
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoCliente.cedula"
+          placeholder="Ingrese la cédula"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Teléfono</label>
+
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoCliente.telefono"
+          placeholder="Ingrese el teléfono"
+        />
+      </div>
+
+      <div class="form-field form-field-wide">
+        <label>Dirección</label>
+
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoCliente.direccion"
+          placeholder="Ingrese la dirección"
+        />
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+
+      <button
+        class="btn-primary"
+        *ngIf="!clienteEditando"
+        type="button"
+        (click)="crearCliente()"
+      >
+        Crear cliente
+      </button>
+
+      <button
+        class="btn-primary"
+        *ngIf="clienteEditando"
+        type="button"
+        (click)="actualizarCliente()"
+      >
+        Actualizar cliente
+      </button>
+
+      <button
+        class="btn-secondary"
+        *ngIf="clienteEditando"
+        type="button"
+        (click)="cancelarEdicion()"
+      >
+        Cancelar
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- TABLA -->
+  <section class="table-card">
+
+    <div class="section-header table-header">
+      <div>
+        <span class="section-eyebrow">Base de clientes</span>
+
+        <h2>Listado de clientes</h2>
+
+        <p>
+          Consulta, filtra, edita o elimina los clientes registrados.
+        </p>
+      </div>
+
+      <span class="counter-chip">
+        {{ obtenerClientesFiltrados().length }} visibles
+      </span>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <span>🔎</span>
+
+        <input
+          type="text"
+          [(ngModel)]="busqueda"
+          placeholder="Buscar por nombre, cédula, teléfono o dirección..."
+        />
+      </div>
+    </div>
+
+    <div class="table-wrapper" *ngIf="obtenerClientesFiltrados().length > 0; else sinClientes">
+
+      <table class="table-modern">
+
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Cédula</th>
+          <th>Teléfono</th>
+          <th>Dirección</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr *ngFor="let cliente of obtenerClientesFiltrados()">
+
+          <td>
+            <span class="id-text">#{{ cliente.id }}</span>
+          </td>
+
+          <td>
+            <div class="client-cell">
+              <div class="client-avatar">
+                {{ obtenerInicialCliente(cliente) }}
+              </div>
+
+              <div>
+                <strong>{{ cliente.nombre || 'Sin nombre' }}</strong>
+                <span>Cliente registrado</span>
+              </div>
+            </div>
+          </td>
+
+          <td>
+              <span class="document-text">
+                {{ cliente.cedula || 'No registra' }}
+              </span>
+          </td>
+
+          <td>
+              <span class="muted-text">
+                {{ cliente.telefono || 'No registra' }}
+              </span>
+          </td>
+
+          <td>
+              <span class="address-text">
+                {{ cliente.direccion || 'No registra' }}
+              </span>
+          </td>
+
+          <td>
+            <div class="actions-box">
+
+              <button
+                class="btn-table edit"
+                type="button"
+                (click)="editarCliente(cliente)"
+              >
+                Editar
+              </button>
+
+              <button
+                class="btn-table delete"
+                type="button"
+                (click)="eliminarCliente(cliente.id)"
+              >
+                Eliminar
+              </button>
+
+            </div>
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <ng-template #sinClientes>
+      <div class="empty-state">
+        <div>📭</div>
+        <strong>No hay clientes para mostrar</strong>
+        <p>Registra un nuevo cliente o cambia el texto de búsqueda.</p>
+      </div>
+    </ng-template>
+
+  </section>
+
 </div>

@@ -1,145 +1,203 @@
-<!-- Contenedor principal de la vista de préstamos -->
-<!-- Agrupa todo el contenido -->
-<div class="contenedor-prestamos">
+<!-- Contenedor principal -->
+<div class="mis-prestamos-page">
 
-  <!-- Título de la sección -->
-  <h2 class="titulo">Mis Préstamos</h2>
+  <!-- Encabezado -->
+  <section class="page-header">
+    <div>
+      <span class="page-eyebrow">Área del cliente</span>
+      <h1 class="page-title">Mis préstamos</h1>
+      <p class="page-description">
+        Consulta tus préstamos, revisa el saldo pendiente, realiza abonos y verifica tu historial de pagos.
+      </p>
+    </div>
+  </section>
 
   <!-- Mensaje dinámico -->
-  <!-- Solo aparece si la variable mensaje tiene contenido -->
-  <p class="mensaje" *ngIf="mensaje">{{ mensaje }}</p>
+  <div class="alert-message" *ngIf="mensaje">
+    {{ mensaje }}
+  </div>
 
-  <!-- Contenedor tipo grid para mostrar las tarjetas -->
-  <div class="grid-prestamos">
+  <!-- Resumen -->
+  <section class="summary-card">
+    <div class="summary-item">
+      <span class="summary-label">Total préstamos</span>
+      <strong>{{ prestamos.length }}</strong>
+    </div>
 
-    <!-- *ngFor recorre la lista de préstamos -->
-    <!-- Por cada préstamo crea una tarjeta -->
-    <div class="card-prestamo" *ngFor="let prestamo of prestamos">
+    <div class="summary-item">
+      <span class="summary-label">Seguimiento</span>
+      <strong>Activo</strong>
+    </div>
 
-      <!-- Encabezado de la tarjeta -->
-      <div class="card-header">
+    <div class="summary-item">
+      <span class="summary-label">Gestión</span>
+      <strong>Abonos e historial</strong>
+    </div>
+  </section>
 
-        <!-- Estado del préstamo -->
-        <!-- [ngClass] asigna una clase dinámica según el estado -->
-        <!-- prestamo.estado.toLowerCase() → convierte el estado a minúsculas -->
-        <!-- Ej: APROBADO → aprobado (clase CSS) -->
-        <span class="estado" [ngClass]="prestamo.estado.toLowerCase()">
+  <!-- Grid de préstamos -->
+  <section class="grid-prestamos">
+
+    <article class="loan-card" *ngFor="let prestamo of prestamos">
+
+      <!-- Encabezado de tarjeta -->
+      <div class="loan-header">
+
+        <div>
+          <span class="loan-id">Préstamo #{{ prestamo.id }}</span>
+          <h2>{{ formatearDinero(prestamo.monto) }}</h2>
+        </div>
+
+        <span
+          class="badge-status"
+          [ngClass]="{
+            'status-pendiente': prestamo.estado === 'PENDIENTE',
+            'status-aprobado': prestamo.estado === 'APROBADO',
+            'status-rechazado': prestamo.estado === 'RECHAZADO',
+            'status-pagado': prestamo.estado === 'PAGADO',
+            'status-abono-pendiente': prestamo.estado === 'ABONO_PENDIENTE'
+          }"
+        >
           {{ prestamo.estado }}
         </span>
+
       </div>
 
-      <!-- Cuerpo de la tarjeta -->
-      <div class="card-body">
+      <!-- Información principal -->
+      <div class="loan-details">
 
-        <!-- Muestra el monto -->
-        <p><strong>Monto:</strong> {{ formatearDinero(prestamo.monto) }}</p>
+        <div class="detail-item">
+          <span>Saldo pendiente</span>
+          <strong>{{ formatearDinero(prestamo.saldoPendiente) }}</strong>
+        </div>
 
-        <!-- Muestra el saldo pendiente -->
-        <p><strong>Saldo:</strong> {{ formatearDinero(prestamo.saldoPendiente) }}</p>
+        <div class="detail-item">
+          <span>Cuota mensual</span>
+          <strong>{{ formatearDinero(prestamo.cuotaMensual) }}</strong>
+        </div>
 
-        <!-- Muestra la cuota mensual -->
-        <p><strong>Cuota:</strong> {{ formatearDinero(prestamo.cuotaMensual) }}</p>
+        <div class="detail-item">
+          <span>Cuotas restantes</span>
+          <strong>{{ prestamo.cuotasRestantes }}</strong>
+        </div>
 
-        <!-- Muestra cuántas cuotas faltan -->
-        <p><strong>Cuotas restantes:</strong> {{ prestamo.cuotasRestantes }}</p>
       </div>
 
-      <!-- Barra de progreso del préstamo -->
-      <div class="progreso">
+      <!-- Progreso -->
+      <div class="progress-section">
 
-        <!-- Contenedor de la barra -->
-        <div class="barra">
+        <div class="progress-header">
+          <span>Progreso de pago</span>
+          <strong>{{ calcularProgreso(prestamo) | number:'1.0-0' }}%</strong>
+        </div>
 
-          <!-- Relleno de la barra -->
-          <!-- [style.width.%] define el ancho en porcentaje -->
-          <!-- calcularProgreso(prestamo) devuelve cuánto ha pagado -->
+        <div class="progress-bar">
           <div
-            class="relleno"
+            class="progress-fill"
             [style.width.%]="calcularProgreso(prestamo)"
           ></div>
         </div>
 
-        <!-- Muestra el porcentaje -->
-        <!-- | number:'1.0-0' formatea el número sin decimales -->
-        <span>{{ calcularProgreso(prestamo) | number:'1.0-0' }}%</span>
       </div>
 
-      <!-- Sección de acciones -->
-      <div class="acciones">
+      <!-- Acciones -->
+      <div class="loan-actions">
 
-        <!-- Input para ingresar valor del abono -->
-        <!-- [(ngModel)] guarda el valor en el objeto abonos usando el id del préstamo -->
-        <!-- abonos[prestamo.id!] → guarda cada valor por préstamo -->
-        <!-- [disabled] desactiva el campo si no se puede abonar -->
         <input
+          class="input-abono"
           type="text"
           [(ngModel)]="abonos[prestamo.id!]"
           placeholder="Valor del abono"
           [disabled]="!puedeAbonar(prestamo.estado)"
         />
 
-        <!-- Botón para abonar -->
-        <!-- Ejecuta abonarPrestamo() -->
-        <button
-          (click)="abonarPrestamo(prestamo.id!)"
-          [disabled]="!puedeAbonar(prestamo.estado)"
-        >
-          Abonar
-        </button>
+        <div class="buttons-row">
 
-        <!-- Botón para pagar todo el préstamo -->
-        <!-- Ejecuta pagarTotal() -->
-        <button
-          class="btn-pagar-total"
-          (click)="pagarTotal(prestamo)"
-          [disabled]="!puedeAbonar(prestamo.estado)"
-        >
-          Pagar total
-        </button>
+          <button
+            class="btn-action pay"
+            type="button"
+            (click)="abonarPrestamo(prestamo.id!)"
+            [disabled]="!puedeAbonar(prestamo.estado)"
+          >
+            Abonar
+          </button>
 
-        <!-- Botón para ver historial -->
-        <!-- Ejecuta verHistorial() -->
-        <button (click)="verHistorial(prestamo.id!)">
-          Historial
-        </button>
+          <button
+            class="btn-action total"
+            type="button"
+            (click)="pagarTotal(prestamo)"
+            [disabled]="!puedeAbonar(prestamo.estado)"
+          >
+            Pagar total
+          </button>
+
+          <button
+            class="btn-action history"
+            type="button"
+            (click)="verHistorial(prestamo.id!)"
+          >
+            Historial
+          </button>
+
+        </div>
+
       </div>
 
+    </article>
+
+  </section>
+
+  <!-- Historial -->
+  <section
+    class="history-card"
+    *ngIf="prestamoSeleccionadoHistorial !== null"
+  >
+
+    <div class="section-header">
+      <div>
+        <h2>Historial de abonos</h2>
+        <p>Préstamo seleccionado: #{{ prestamoSeleccionadoHistorial }}</p>
+      </div>
+
+      <span class="counter-chip">
+        {{ historialAbonos.length }} abonos
+      </span>
     </div>
-  </div>
 
-  <!-- Sección de historial -->
-  <!-- Solo aparece si hay un préstamo seleccionado -->
-  <div class="historial-box" *ngIf="prestamoSeleccionadoHistorial !== null">
+    <div class="table-wrapper">
 
-    <!-- Muestra el id del préstamo seleccionado -->
-    <h3>Historial del préstamo #{{ prestamoSeleccionadoHistorial }}</h3>
+      <table class="table-modern">
 
-    <!-- Tabla de historial -->
-    <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Monto</th>
+          <th>Fecha</th>
+        </tr>
+        </thead>
 
-      <!-- Encabezado -->
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>Monto</th>
-        <th>Fecha</th>
-      </tr>
-      </thead>
+        <tbody>
 
-      <!-- Cuerpo -->
-      <tbody>
+        <tr *ngFor="let abono of historialAbonos">
+          <td>
+            <span class="id-text">#{{ abono.id }}</span>
+          </td>
 
-      <!-- Recorre lista de abonos -->
-      <tr *ngFor="let abono of historialAbonos">
+          <td>
+            <span class="money-text">{{ formatearDinero(abono.monto) }}</span>
+          </td>
 
-        <!-- Muestra datos -->
-        <td>{{ abono.id }}</td>
-        <td>{{ formatearDinero(abono.monto) }}</td>
-        <td>{{ abono.fecha }}</td>
-      </tr>
+          <td>
+            <span class="date-text">{{ abono.fecha }}</span>
+          </td>
+        </tr>
 
-      </tbody>
-    </table>
-  </div>
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
 
 </div>

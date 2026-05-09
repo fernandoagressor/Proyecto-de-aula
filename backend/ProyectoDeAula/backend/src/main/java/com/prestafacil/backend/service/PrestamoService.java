@@ -14,9 +14,14 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Service
 public class PrestamoService {
@@ -25,22 +30,21 @@ public class PrestamoService {
     private final ClienteRepository clienteRepository;
     private final AbonoRepository abonoRepository;
     private final ConfiguracionSistemaRepository configuracionSistemaRepository;
+    private final NotificacionService notificacionService;
 
     public PrestamoService(
             PrestamoRepository prestamoRepository,
             ClienteRepository clienteRepository,
             AbonoRepository abonoRepository,
-            ConfiguracionSistemaRepository configuracionSistemaRepository
+            ConfiguracionSistemaRepository configuracionSistemaRepository,
+            NotificacionService notificacionService
     ) {
         this.prestamoRepository = prestamoRepository;
         this.clienteRepository = clienteRepository;
         this.abonoRepository = abonoRepository;
         this.configuracionSistemaRepository = configuracionSistemaRepository;
+        this.notificacionService = notificacionService;
     }
-
-    // =============================
-    // CONSULTAS
-    // =============================
 
     public List<Prestamo> listarPrestamos() {
         return prestamoRepository.findAll();
@@ -63,13 +67,8 @@ public class PrestamoService {
                 .orElseThrow(() -> new RuntimeException("Préstamo no encontrado."));
     }
 
-    // =============================
-    // SOLICITUD DE PRÉSTAMO
-    // =============================
-
     @Transactional
     public Prestamo solicitarPrestamo(Long clienteId, Double monto, Integer plazoMeses) {
-
         validarSolicitudPrestamo(clienteId, monto, plazoMeses);
 
         Cliente cliente = clienteRepository.findById(clienteId)
@@ -80,23 +79,19 @@ public class PrestamoService {
         Double interes = obtenerTasaInteresActual();
 
         Prestamo prestamo = new Prestamo();
-
-        /*
-         * Este método viene de la versión mejorada de Prestamo.java que te pasé:
-         * - asigna cliente
-         * - asigna monto
-         * - asigna plazo
-         * - asigna interés
-         * - calcula total con interés
-         * - calcula saldo pendiente
-         * - calcula cuota mensual
-         * - coloca cuotas restantes
-         * - coloca estado PENDIENTE
-         * - coloca fechaSolicitud
-         */
         prestamo.prepararSolicitud(cliente, monto, plazoMeses, interes);
 
-        return prestamoRepository.save(prestamo);
+        Prestamo prestamoGuardado = prestamoRepository.save(prestamo);
+
+        notificacionService.crearAdministrativa(
+                "📝",
+                "Nueva solicitud de préstamo",
+                "El cliente " + obtenerNombreCliente(cliente) +
+                        " solicitó un préstamo por " + formatearDinero(monto) +
+                        " a " + plazoMeses + " meses."
+        );
+
+        return prestamoGuardado;
     }
 
     private void validarSolicitudPrestamo(Long clienteId, Double monto, Integer plazoMeses) {
@@ -144,10 +139,6 @@ public class PrestamoService {
         return tasa;
     }
 
-    // =============================
-    // APROBAR / RECHAZAR PRÉSTAMO
-    // =============================
-
     @Transactional
     public Prestamo aprobarPrestamo(Long id) {
         Prestamo prestamo = prestamoRepository.findById(id)
@@ -155,7 +146,17 @@ public class PrestamoService {
 
         prestamo.aprobar();
 
-        return prestamoRepository.save(prestamo);
+        Prestamo prestamoGuardado = prestamoRepository.save(prestamo);
+
+        notificacionService.crearAdministrativa(
+                "✅",
+                "Préstamo aprobado",
+                "Se aprobó el préstamo #" + prestamoGuardado.getId() +
+                        " del cliente " + obtenerNombreCliente(prestamoGuardado.getCliente()) +
+                        " por " + formatearDinero(prestamoGuardado.getMonto()) + "."
+        );
+
+        return prestamoGuardado;
     }
 
     @Transactional
@@ -165,12 +166,17 @@ public class PrestamoService {
 
         prestamo.rechazar();
 
-        return prestamoRepository.save(prestamo);
-    }
+        Prestamo prestamoGuardado = prestamoRepository.save(prestamo);
 
-    // =============================
-    // SOLICITAR ABONO
-    // =============================
+        notificacionService.crearAdministrativa(
+                "❌",
+                "Préstamo rechazado",
+                "Se rechazó el préstamo #" + prestamoGuardado.getId() +
+                        " del cliente " + obtenerNombreCliente(prestamoGuardado.getCliente()) + "."
+        );
+
+        return prestamoGuardado;
+    }
 
     @Transactional
     public Abono abonarPrestamo(Long id, Double montoAbono) {
@@ -180,18 +186,19 @@ public class PrestamoService {
         validarSolicitudAbono(prestamo, montoAbono);
 
         Abono nuevoAbono = new Abono();
-        nuevoAbono.setPrestamo(prestamo);
-        nuevoAbono.setMonto(montoAbono);
-        nuevoAbono.setFecha(LocalDateTime.now());
-        nuevoAbono.setEstado("PENDIENTE");
+        nuevoAbono.crearPendiente(prestamo, montoAbono);
 
-        /*
-         * Importante:
-         * El préstamo NO cambia a ABONO_PENDIENTE.
-         * El préstamo sigue APROBADO.
-         * El abono queda PENDIENTE hasta que el administrador lo apruebe.
-         */
-        return abonoRepository.save(nuevoAbono);
+        Abono abonoGuardado = abonoRepository.save(nuevoAbono);
+
+        notificacionService.crearAdministrativa(
+                "⏳",
+                "Abono manual pendiente",
+                "El cliente " + obtenerNombreCliente(prestamo.getCliente()) +
+                        " registró un abono manual por " + formatearDinero(montoAbono) +
+                        " para el préstamo #" + prestamo.getId() + "."
+        );
+
+        return abonoGuardado;
     }
 
     private void validarSolicitudAbono(Prestamo prestamo, Double montoAbono) {
@@ -212,9 +219,66 @@ public class PrestamoService {
         }
     }
 
-    // =============================
-    // APROBAR / RECHAZAR ABONO
-    // =============================
+    @Transactional
+    public Map<String, Object> pagarPorPse(Long prestamoId, Double montoPago) {
+        Prestamo prestamo = prestamoRepository.findById(prestamoId)
+                .orElseThrow(() -> new RuntimeException("Préstamo no encontrado."));
+
+        validarSolicitudAbono(prestamo, montoPago);
+
+        Double saldoAnterior = prestamo.getSaldoPendiente();
+        String referenciaPago = generarReferenciaPse();
+
+        Abono abono = new Abono();
+        abono.crearAprobadoPse(prestamo, montoPago, referenciaPago);
+
+        prestamo.aplicarAbono(montoPago);
+        prestamoRepository.save(prestamo);
+
+        Abono abonoGuardado = abonoRepository.save(abono);
+
+        notificacionService.crearAdministrativa(
+                "💳",
+                "Pago PSE recibido",
+                "El cliente " + obtenerNombreCliente(prestamo.getCliente()) +
+                        " realizó un pago PSE por " + formatearDinero(montoPago) +
+                        " para el préstamo #" + prestamo.getId() +
+                        ". Referencia: " + referenciaPago + "."
+        );
+
+        if (prestamo.getEstado() == EstadoPrestamo.PAGADO) {
+            notificacionService.crearAdministrativa(
+                    "🏁",
+                    "Préstamo pagado totalmente",
+                    "El préstamo #" + prestamo.getId() +
+                            " del cliente " + obtenerNombreCliente(prestamo.getCliente()) +
+                            " quedó completamente pagado."
+            );
+        }
+
+        Map<String, Object> respuesta = new LinkedHashMap<>();
+        respuesta.put("ok", true);
+        respuesta.put("mensaje", "Pago PSE aprobado correctamente.");
+        respuesta.put("estadoPago", "APROBADO");
+        respuesta.put("metodoPago", "PSE");
+        respuesta.put("referenciaPago", referenciaPago);
+        respuesta.put("abonoId", abonoGuardado.getId());
+        respuesta.put("prestamoId", prestamo.getId());
+        respuesta.put("montoPagado", montoPago);
+        respuesta.put("saldoAnterior", saldoAnterior);
+        respuesta.put("saldoPendiente", prestamo.getSaldoPendiente());
+        respuesta.put("estadoPrestamo", prestamo.getEstado());
+        respuesta.put("fechaPago", abonoGuardado.getFecha());
+        respuesta.put("comprobanteUrl", "http://localhost:8080/api/abonos/" + abonoGuardado.getId() + "/comprobante");
+
+        return respuesta;
+    }
+
+    private String generarReferenciaPse() {
+        String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        int numero = (int) (Math.random() * 900000) + 100000;
+        return "PSE-" + fecha + "-" + numero;
+    }
 
     @Transactional
     public Abono aprobarAbono(Long abonoId) {
@@ -229,17 +293,32 @@ public class PrestamoService {
             throw new RuntimeException("El abono no tiene préstamo asociado.");
         }
 
-        /*
-         * Este método viene de la versión mejorada de Prestamo.java.
-         * Descuenta saldo, recalcula cuotas y cambia a PAGADO si el saldo llega a cero.
-         */
         prestamo.aplicarAbono(abono.getMonto());
-
         prestamoRepository.save(prestamo);
 
-        abono.setEstado("APROBADO");
+        abono.aprobar();
 
-        return abonoRepository.save(abono);
+        Abono abonoGuardado = abonoRepository.save(abono);
+
+        notificacionService.crearAdministrativa(
+                "✅",
+                "Abono manual aprobado",
+                "Se aprobó un abono manual por " + formatearDinero(abonoGuardado.getMonto()) +
+                        " del cliente " + obtenerNombreCliente(prestamo.getCliente()) +
+                        " para el préstamo #" + prestamo.getId() + "."
+        );
+
+        if (prestamo.getEstado() == EstadoPrestamo.PAGADO) {
+            notificacionService.crearAdministrativa(
+                    "🏁",
+                    "Préstamo pagado totalmente",
+                    "El préstamo #" + prestamo.getId() +
+                            " del cliente " + obtenerNombreCliente(prestamo.getCliente()) +
+                            " quedó completamente pagado."
+            );
+        }
+
+        return abonoGuardado;
     }
 
     @Transactional
@@ -249,18 +328,42 @@ public class PrestamoService {
 
         validarAbonoPendiente(abono);
 
-        /*
-         * Al rechazar un abono no se toca el saldo del préstamo.
-         * Solo se cambia el estado del abono.
-         */
-        abono.setEstado("RECHAZADO");
+        abono.rechazar("Abono rechazado por validación administrativa.");
 
-        return abonoRepository.save(abono);
+        Abono abonoGuardado = abonoRepository.save(abono);
+
+        Prestamo prestamo = abonoGuardado.getPrestamo();
+
+        notificacionService.crearAdministrativa(
+                "❌",
+                "Abono manual rechazado",
+                "Se rechazó un abono manual por " + formatearDinero(abonoGuardado.getMonto()) +
+                        " del cliente " + obtenerNombreCliente(prestamo != null ? prestamo.getCliente() : null) + "."
+        );
+
+        return abonoGuardado;
     }
 
     private void validarAbonoPendiente(Abono abono) {
         if (!"PENDIENTE".equals(abono.getEstado())) {
             throw new RuntimeException("Este abono ya fue procesado.");
         }
+    }
+
+    private String obtenerNombreCliente(Cliente cliente) {
+        if (cliente == null || cliente.getNombre() == null || cliente.getNombre().trim().isEmpty()) {
+            return "Cliente no registrado";
+        }
+
+        return cliente.getNombre();
+    }
+
+    private String formatearDinero(Double valor) {
+        if (valor == null) {
+            valor = 0.0;
+        }
+
+        NumberFormat formato = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
+        return formato.format(valor);
     }
 }

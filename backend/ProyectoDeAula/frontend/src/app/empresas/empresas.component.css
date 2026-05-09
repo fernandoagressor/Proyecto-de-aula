@@ -1,0 +1,500 @@
+.empresas-page {
+  min-height: 100vh;
+  background: #f1f7ff;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #0f172a;
+}
+
+/* NAVBAR */
+
+.empresas-navbar {
+  margin: 18px 22px 0;
+  min-height: 86px;
+  background: #042f6f;
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 34px;
+  color: white;
+  box-shadow: 0 18px 45px rgba(6, 71, 173, 0.18);
+}
+
+.brand-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffd447 0%, #ffffff 45%, #0f766e 100%);
+  color: #042f6f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 950;
+  font-size: 18px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-text strong {
+  font-size: 29px;
+  font-weight: 950;
+  letter-spacing: -1px;
+}
+
+.brand-text span {
+  color: #ffd447;
+}
+
+.brand-text small {
+  color: #bfdbfe;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.navbar-links button {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 15px;
+  font-weight: 850;
+  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: 14px;
+  transition: all 0.2s ease;
+}
+
+.navbar-links button:hover,
+.navbar-links button.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffd447;
+}
+
+.navbar-links .login-link {
+  background: white;
+  color: #042f6f;
+}
+
+.navbar-links .login-link:hover {
+  background: #ffd447;
+  color: #042f6f;
+}
+
+/* HERO */
+
+.empresas-hero {
+  margin: 24px 22px;
+  min-height: 520px;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 82% 22%, rgba(255, 212, 71, 0.9) 0 10%, transparent 11%),
+    linear-gradient(135deg, #042f6f 0%, #0647ad 50%, #0f766e 100%);
+  color: white;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+  padding: 58px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.eyebrow {
+  display: inline-block;
+  color: #ffd447;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+
+.hero-content h1 {
+  margin: 0;
+  font-size: 54px;
+  line-height: 1.04;
+  letter-spacing: -1.5px;
+  font-weight: 950;
+}
+
+.hero-content p {
+  margin: 22px 0 0;
+  max-width: 700px;
+  color: #dbeafe;
+  font-size: 19px;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  margin-top: 34px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary {
+  height: 52px;
+  border: none;
+  border-radius: 15px;
+  padding: 0 24px;
+  font-size: 15px;
+  font-weight: 950;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: #ffd447;
+  color: #042f6f;
+}
+
+.btn-primary:hover {
+  background: #ffe27a;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* VISUAL */
+
+.hero-visual {
+  position: relative;
+  min-height: 420px;
+}
+
+.company-card {
+  position: absolute;
+  right: 35px;
+  top: 70px;
+  width: 340px;
+  background: white;
+  color: #0f172a;
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.22);
+}
+
+.company-card span {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.company-card strong {
+  display: block;
+  margin: 8px 0 22px;
+  font-size: 24px;
+  font-weight: 950;
+}
+
+.company-stat {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.company-stat div {
+  background: #eff6ff;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.company-stat small {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.company-stat b {
+  display: block;
+  margin-top: 7px;
+  color: #0647ad;
+  font-size: 16px;
+}
+
+.floating-card {
+  position: absolute;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 18px;
+  padding: 17px;
+  min-width: 180px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+}
+
+.floating-card span {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.floating-card strong {
+  color: #0f766e;
+  font-size: 22px;
+  font-weight: 950;
+}
+
+.floating-card.one {
+  left: 28px;
+  bottom: 70px;
+}
+
+.floating-card.two {
+  right: 0;
+  bottom: 22px;
+}
+
+/* SECTIONS */
+
+.benefits-section,
+.flow-section {
+  margin: 34px 22px;
+  background: white;
+  border: 1px solid #dbe3ef;
+  border-radius: 28px;
+  padding: 46px;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.06);
+}
+
+.section-title {
+  max-width: 840px;
+  margin-bottom: 28px;
+}
+
+.section-title span {
+  color: #0647ad;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.section-title h2 {
+  margin: 8px 0 10px;
+  color: #0f172a;
+  font-size: 38px;
+  font-weight: 950;
+  letter-spacing: -1px;
+}
+
+.section-title p {
+  margin: 0;
+  color: #64748b;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+/* BENEFITS */
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.benefit-card {
+  background: #f8fbff;
+  border: 1px solid #dbe3ef;
+  border-radius: 22px;
+  padding: 24px;
+  transition: all 0.2s ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.08);
+}
+
+.benefit-icon {
+  width: 54px;
+  height: 54px;
+  background: #eff6ff;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+  margin-bottom: 16px;
+}
+
+.benefit-card h3 {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 19px;
+  font-weight: 950;
+}
+
+.benefit-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* FLOW */
+
+.flow-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.flow-card {
+  background: #f1f7ff;
+  border-radius: 22px;
+  padding: 24px;
+  border: 1px solid #dbe3ef;
+}
+
+.flow-card span {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #0647ad;
+  color: white;
+  font-weight: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.flow-card h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.flow-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* CTA */
+
+.cta-section {
+  margin: 34px 22px 42px;
+  background: linear-gradient(135deg, #042f6f, #0647ad);
+  color: white;
+  border-radius: 28px;
+  padding: 38px;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+}
+
+.cta-section span {
+  color: #ffd447;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.cta-section h2 {
+  margin: 8px 0;
+  font-size: 30px;
+  font-weight: 950;
+  max-width: 760px;
+}
+
+.cta-section p {
+  margin: 0;
+  color: #dbeafe;
+  max-width: 800px;
+  line-height: 1.5;
+}
+
+.cta-section button {
+  height: 50px;
+  border: none;
+  border-radius: 15px;
+  padding: 0 24px;
+  background: #ffd447;
+  color: #042f6f;
+  font-size: 15px;
+  font-weight: 950;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+  .empresas-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visual {
+    display: none;
+  }
+
+  .benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .flow-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cta-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .empresas-navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .navbar-links {
+    flex-wrap: wrap;
+  }
+
+  .empresas-hero {
+    padding: 34px 24px;
+  }
+
+  .hero-content h1 {
+    font-size: 36px;
+  }
+
+  .benefits-section,
+  .flow-section {
+    padding: 28px;
+  }
+
+  .benefits-grid,
+  .flow-grid {
+    grid-template-columns: 1fr;
+  }
+}

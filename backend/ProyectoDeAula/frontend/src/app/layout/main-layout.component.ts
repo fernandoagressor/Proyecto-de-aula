@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+
+import { NotificacionService, Notificacion } from '../services/notificacion.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -16,13 +18,22 @@ export class MainLayoutComponent implements OnInit {
   menuPerfilAbierto: boolean = false;
   notificacionesAbiertas: boolean = false;
 
-  notificaciones: any[] = [];
+  notificaciones: Notificacion[] = [];
+  totalNoLeidas: number = 0;
+  cargandoNotificaciones: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private notificacionService: NotificacionService,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.cargarUsuarioLogueado();
-    this.cargarNotificacionesDemo();
+
+    if (this.puedeVerNotificaciones()) {
+      this.cargarNotificaciones();
+    }
   }
 
   cargarUsuarioLogueado(): void {
@@ -33,43 +44,78 @@ export class MainLayoutComponent implements OnInit {
     }
   }
 
-  cargarNotificacionesDemo(): void {
-    if (this.esAdmin() || this.esEmpleado()) {
-      this.notificaciones = [
-        {
-          icono: '💰',
-          titulo: 'Nueva solicitud',
-          mensaje: 'Hay solicitudes de préstamo pendientes por revisar.'
-        },
-        {
-          icono: '⏳',
-          titulo: 'Abonos pendientes',
-          mensaje: 'Existen pagos esperando aprobación administrativa.'
-        },
-        {
-          icono: '📊',
-          titulo: 'Resumen actualizado',
-          mensaje: 'El dashboard financiero ya está disponible.'
-        }
-      ];
-
+  cargarNotificaciones(): void {
+    if (!this.puedeVerNotificaciones()) {
+      this.notificaciones = [];
+      this.totalNoLeidas = 0;
+      this.cargandoNotificaciones = false;
+      this.cd.detectChanges();
       return;
     }
 
-    if (this.esCliente()) {
-      this.notificaciones = [
-        {
-          icono: '💳',
-          titulo: 'Mis préstamos',
-          mensaje: 'Consulta tu saldo, cuotas y estado actualizado.'
-        },
-        {
-          icono: '🧾',
-          titulo: 'Comprobantes',
-          mensaje: 'Próximamente podrás descargar tus recibos en PDF.'
-        }
-      ];
+    const rol = this.usuarioLogueado?.rol;
+
+    if (!rol) {
+      this.notificaciones = [];
+      this.totalNoLeidas = 0;
+      this.cargandoNotificaciones = false;
+      this.cd.detectChanges();
+      return;
     }
+
+    this.cargandoNotificaciones = true;
+    this.cd.detectChanges();
+
+    this.notificacionService.listarPorRol(rol).subscribe({
+      next: (data: Notificacion[]) => {
+        this.notificaciones = data || [];
+        this.totalNoLeidas = this.notificaciones.filter((n: Notificacion) => !n.leida).length;
+      },
+      error: (err: any) => {
+        console.error('Error cargando notificaciones', err);
+        this.notificaciones = [];
+        this.totalNoLeidas = 0;
+      },
+      complete: () => {
+        this.cargandoNotificaciones = false;
+        this.cd.detectChanges();
+      }
+    });
+
+    // Seguro extra para que nunca quede pegado en "Cargando..."
+    setTimeout(() => {
+      this.cargandoNotificaciones = false;
+      this.cd.detectChanges();
+    }, 1200);
+  }
+
+  puedeVerNotificaciones(): boolean {
+    return this.esAdmin() || this.esEmpleado();
+  }
+
+  cantidadNotificacionesNoLeidas(): number {
+    return this.totalNoLeidas;
+  }
+
+  marcarNotificacionesComoLeidas(): void {
+    if (!this.puedeVerNotificaciones()) {
+      return;
+    }
+
+    const rol = this.usuarioLogueado?.rol;
+
+    if (!rol) {
+      return;
+    }
+
+    this.notificacionService.marcarComoLeidas(rol).subscribe({
+      next: () => {
+        this.cargarNotificaciones();
+      },
+      error: (err: any) => {
+        console.error('Error marcando notificaciones como leídas', err);
+      }
+    });
   }
 
   toggleMenuPerfil(): void {
@@ -81,10 +127,15 @@ export class MainLayoutComponent implements OnInit {
   }
 
   toggleNotificaciones(): void {
+    if (!this.puedeVerNotificaciones()) {
+      return;
+    }
+
     this.notificacionesAbiertas = !this.notificacionesAbiertas;
 
     if (this.notificacionesAbiertas) {
       this.menuPerfilAbierto = false;
+      this.cargarNotificaciones();
     }
   }
 
@@ -130,6 +181,22 @@ export class MainLayoutComponent implements OnInit {
     }
 
     return 'Usuario';
+  }
+
+  formatearFecha(fecha: string): string {
+    if (!fecha) {
+      return 'Sin fecha';
+    }
+
+    const fechaObj = new Date(fecha);
+
+    return fechaObj.toLocaleString('es-CO', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 
   esAdmin(): boolean {

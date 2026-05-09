@@ -28,17 +28,22 @@
     <!-- Usuario logueado -->
     <div class="topbar-right" *ngIf="usuarioLogueado">
 
-      <!-- Notificaciones -->
-      <div class="notification-wrapper">
+      <!-- Notificaciones: SOLO ADMINISTRADOR Y EMPLEADO -->
+      <div class="notification-wrapper" *ngIf="puedeVerNotificaciones()">
 
         <button
           class="notification-btn"
           type="button"
           (click)="toggleNotificaciones()"
+          title="Notificaciones administrativas"
         >
           🔔
-          <span class="notification-dot" *ngIf="notificaciones.length > 0">
-            {{ notificaciones.length }}
+
+          <span
+            class="notification-dot"
+            *ngIf="cantidadNotificacionesNoLeidas() > 0"
+          >
+            {{ cantidadNotificacionesNoLeidas() }}
           </span>
         </button>
 
@@ -47,32 +52,74 @@
           <div class="notification-header">
             <div>
               <strong>Notificaciones</strong>
-              <span>Actividad reciente</span>
+              <span>Actividad administrativa reciente</span>
             </div>
 
-            <button type="button" (click)="toggleNotificaciones()">×</button>
+            <button
+              type="button"
+              (click)="toggleNotificaciones()"
+            >
+              ×
+            </button>
           </div>
 
-          <div class="notification-list">
+          <div class="notification-actions" *ngIf="notificaciones.length > 0">
+            <button
+              type="button"
+              (click)="marcarNotificacionesComoLeidas()"
+            >
+              Marcar como leídas
+            </button>
+          </div>
+
+          <div
+            class="notification-loading"
+            *ngIf="cargandoNotificaciones && notificaciones.length === 0"
+          >
+            Cargando notificaciones...
+          </div>
+
+          <div
+            class="notification-list"
+            *ngIf="notificaciones.length > 0; else sinNotificaciones"
+          >
 
             <div
               class="notification-item"
               *ngFor="let notificacion of notificaciones"
+              [ngClass]="{ 'notification-read': notificacion.leida }"
             >
               <div class="notification-icon">
                 {{ notificacion.icono }}
               </div>
 
-              <div>
+              <div class="notification-content">
                 <strong>{{ notificacion.titulo }}</strong>
                 <p>{{ notificacion.mensaje }}</p>
+                <small>{{ formatearFecha(notificacion.fecha) }}</small>
               </div>
+
+              <span
+                class="unread-mark"
+                *ngIf="!notificacion.leida"
+              ></span>
             </div>
 
           </div>
 
+          <ng-template #sinNotificaciones>
+            <div
+              class="notification-empty"
+              *ngIf="!cargandoNotificaciones"
+            >
+              <div>🔕</div>
+              <strong>Sin notificaciones</strong>
+              <p>No hay actividad administrativa reciente.</p>
+            </div>
+          </ng-template>
+
           <div class="notification-footer">
-            Mensajes del sistema PrestaFácil
+            Visible solo para administrador y empleado.
           </div>
 
         </div>
@@ -203,6 +250,7 @@
             <span class="menu-icon">🧾</span>
             <span>Clientes</span>
           </a>
+
 
           <a
             class="menu-titulo"

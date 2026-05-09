@@ -23,19 +23,11 @@ public class PrestamoController {
         this.prestamoService = prestamoService;
     }
 
-    // =============================
-    // LISTAR TODOS LOS PRÉSTAMOS
-    // =============================
-
     @GetMapping
     public ResponseEntity<List<Prestamo>> listar() {
         List<Prestamo> prestamos = prestamoService.listarPrestamos();
         return ResponseEntity.ok(prestamos);
     }
-
-    // =============================
-    // LISTAR PRÉSTAMOS POR CLIENTE
-    // =============================
 
     @GetMapping("/cliente/{clienteId}")
     public ResponseEntity<?> listarPorCliente(@PathVariable Long clienteId) {
@@ -50,10 +42,6 @@ public class PrestamoController {
         }
     }
 
-    // =============================
-    // OBTENER PRÉSTAMO POR ID
-    // =============================
-
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerPorId(@PathVariable Long id) {
         try {
@@ -66,10 +54,6 @@ public class PrestamoController {
                     .body(respuestaError(e.getMessage()));
         }
     }
-
-    // =============================
-    // SOLICITAR PRÉSTAMO
-    // =============================
 
     @PostMapping("/solicitar")
     public ResponseEntity<?> solicitar(@RequestBody Map<String, Object> datos) {
@@ -96,10 +80,6 @@ public class PrestamoController {
         }
     }
 
-    // =============================
-    // APROBAR PRÉSTAMO
-    // =============================
-
     @PutMapping("/{id}/aprobar")
     public ResponseEntity<?> aprobar(@PathVariable Long id) {
         try {
@@ -118,10 +98,6 @@ public class PrestamoController {
         }
     }
 
-    // =============================
-    // RECHAZAR PRÉSTAMO
-    // =============================
-
     @PutMapping("/{id}/rechazar")
     public ResponseEntity<?> rechazar(@PathVariable Long id) {
         try {
@@ -139,10 +115,6 @@ public class PrestamoController {
                     .body(respuestaError(e.getMessage()));
         }
     }
-
-    // =============================
-    // SOLICITAR ABONO A UN PRÉSTAMO
-    // =============================
 
     @PutMapping("/{id}/abonar")
     public ResponseEntity<?> abonar(@PathVariable Long id, @RequestBody Map<String, Object> body) {
@@ -167,9 +139,26 @@ public class PrestamoController {
         }
     }
 
-    // =============================
-    // APROBAR ABONO
-    // =============================
+    @PostMapping("/{id}/pagar-pse")
+    public ResponseEntity<?> pagarPorPse(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+        try {
+            Double montoPago = convertirDouble(body.get("monto"), "monto");
+
+            Map<String, Object> respuesta = prestamoService.pagarPorPse(id, montoPago);
+
+            return ResponseEntity.ok(respuesta);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(respuestaError(e.getMessage()));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(respuestaError(e.getMessage()));
+        }
+    }
 
     @PutMapping("/abonos/{abonoId}/aprobar")
     public ResponseEntity<?> aprobarAbono(@PathVariable Long abonoId) {
@@ -189,10 +178,6 @@ public class PrestamoController {
         }
     }
 
-    // =============================
-    // RECHAZAR ABONO
-    // =============================
-
     @PutMapping("/abonos/{abonoId}/rechazar")
     public ResponseEntity<?> rechazarAbono(@PathVariable Long abonoId) {
         try {
@@ -210,10 +195,6 @@ public class PrestamoController {
                     .body(respuestaError(e.getMessage()));
         }
     }
-
-    // =============================
-    // MÉTODOS AUXILIARES
-    // =============================
 
     private Map<String, Object> respuestaError(String mensaje) {
         Map<String, Object> respuesta = new LinkedHashMap<>();

@@ -1319,4 +1319,265 @@
     left: 16px;
     width: auto;
   }
+  /* =========================
+     DROPDOWNS NAVBAR
+  ========================= */
+
+  .nav-dropdown-wrapper {
+    position: relative;
+  }
+
+  .nav-active {
+    color: #ffd447;
+  }
+
+  .nav-dropdown {
+    position: absolute;
+    top: 44px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 310px;
+    background: #ffffff;
+    border: 1px solid #dbe3ef;
+    border-radius: 20px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+    padding: 10px;
+    z-index: 80;
+    animation: loginDropIn 0.22s ease;
+  }
+
+  @keyframes loginDropIn {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-8px) scale(0.98);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+  }
+
+  .nav-dropdown button {
+    width: 100%;
+    border: none;
+    background: transparent;
+    border-radius: 15px;
+    padding: 13px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .nav-dropdown button:hover {
+    background: #eff6ff;
+  }
+
+  .nav-dropdown button strong {
+    display: block;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 950;
+    margin-bottom: 4px;
+  }
+
+  .nav-dropdown button span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  /* =========================
+     HERO VARIANTS
+  ========================= */
+
+  .hero-personas {
+    background:
+      radial-gradient(circle at 72% 42%, rgba(255, 212, 71, 0.95) 0 12%, transparent 13%),
+      linear-gradient(135deg, #0647ad 0%, #003b9e 45%, #0753c7 100%);
+  }
+
+  .hero-empresas {
+    background:
+      radial-gradient(circle at 75% 38%, rgba(255, 212, 71, 0.95) 0 12%, transparent 13%),
+      linear-gradient(135deg, #042f6f 0%, #0647ad 45%, #0f766e 100%);
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .hero-btn.secondary {
+    background: rgba(255, 255, 255, 0.14);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+  }
+
+  /* =========================
+     PASSWORD BUTTON
+  ========================= */
+
+  .password-field {
+    padding-right: 7px;
+  }
+
+  .password-toggle {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 10px;
+    background: #eff6ff;
+    color: #0647ad;
+    cursor: pointer;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .password-toggle:hover {
+    background: #dbeafe;
+  }
+
+  /* =========================
+     MODALES LOGIN
+  ========================= */
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.62);
+    backdrop-filter: blur(4px);
+    z-index: 120;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .modal-card {
+    width: min(460px, 100%);
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.24);
+    animation: modalInLogin 0.24s ease;
+  }
+
+  @keyframes modalInLogin {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.98);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .modal-header span {
+    color: #0647ad;
+    font-size: 12px;
+    font-weight: 950;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .modal-header h2 {
+    margin: 5px 0 0;
+    font-size: 24px;
+    font-weight: 950;
+    color: #0f172a;
+  }
+
+  .modal-header button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 12px;
+    background: #f1f5f9;
+    color: #334155;
+    font-size: 22px;
+    cursor: pointer;
+  }
+
+  .modal-header button:hover {
+    background: #e2e8f0;
+  }
+
+  .modal-card p {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 18px;
+  }
+
+  .request-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 18px;
+  }
+
+  .request-box strong {
+    display: block;
+    color: #0647ad;
+    font-size: 14px;
+    font-weight: 950;
+    margin-bottom: 5px;
+  }
+
+  .request-box span {
+    display: block;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  /* =========================
+     FOOTER CLICKABLES
+  ========================= */
+
+  .footer-grid p,
+  .footer-bottom span {
+    cursor: pointer;
+  }
+
+  .footer-grid p:hover,
+  .footer-bottom span:hover {
+    color: #ffd447;
+  }
+
+  /* =========================
+     RESPONSIVE EXTRA
+  ========================= */
+
+  @media (max-width: 1200px) {
+    .nav-dropdown {
+      display: none;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .modal-card {
+      padding: 20px;
+      border-radius: 20px;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
 }

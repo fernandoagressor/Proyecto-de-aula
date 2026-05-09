@@ -1,258 +1,328 @@
-// Importa Component, OnInit y ChangeDetectorRef desde Angular
-// Component: permite crear el componente
-// OnInit: permite ejecutar código cuando carga la pantalla
-// ChangeDetectorRef: ayuda a actualizar la vista manualmente
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-
-// Importa CommonModule para usar directivas como *ngIf y *ngFor
 import { CommonModule } from '@angular/common';
-
-// Importa FormsModule para usar [(ngModel)] en los formularios
 import { FormsModule } from '@angular/forms';
 
-// Importa el servicio de préstamos para comunicarse con el backend
 import { PrestamoService } from '../services/prestamo.service';
-
-// Importa el modelo Prestamo
 import { Prestamo } from '../services/prestamo';
 
-// Importa el servicio de abonos para consultar historial
 import { AbonoService } from '../services/abono.service';
-
-// Importa el modelo Abono
 import { Abono } from '../services/abono';
 
-// Decorador que configura el componente
 @Component({
-  // Nombre del componente
   selector: 'app-mis-prestamos',
-
-  // Indica que es standalone
   standalone: true,
-
-  // Módulos que usa este componente
   imports: [CommonModule, FormsModule],
-
-  // Archivo HTML conectado
   templateUrl: './mis-prestamos.html',
-
-  // Archivo CSS conectado
   styleUrls: ['./mis-prestamos.css']
 })
-
-// Clase principal del componente
 export class MisPrestamosComponent implements OnInit {
 
-  // Lista donde se guardan los préstamos del cliente
   prestamos: Prestamo[] = [];
-
-  // Guarda el usuario que inició sesión
   usuarioLogueado: any = null;
 
-  // Objeto para guardar el valor del abono por cada préstamo
-  // Ejemplo: abonos[5] = "50000"
   abonos: { [key: number]: string } = {};
 
-  // Lista donde se guarda el historial de abonos de un préstamo
   historialAbonos: Abono[] = [];
-
-  // Guarda el id del préstamo seleccionado para ver historial
   prestamoSeleccionadoHistorial: number | null = null;
 
-  // Mensaje que se muestra en pantalla
   mensaje: string = '';
 
-  // Constructor: Angular inyecta los servicios
+  pseModalVisible: boolean = false;
+  pseProcesando: boolean = false;
+  pseFinalizado: boolean = false;
+  psePaso: number = 0;
+
+  prestamoSeleccionadoPse: Prestamo | null = null;
+  montoSeleccionadoPse: number = 0;
+
+  respuestaPse: any = null;
+
+  toastVisible: boolean = false;
+  toastMensaje: string = '';
+  toastTipo: 'success' | 'error' | 'warning' | 'info' = 'info';
+
   constructor(
     private prestamoService: PrestamoService,
     private abonoService: AbonoService,
     private cd: ChangeDetectorRef
   ) {}
 
-  // Se ejecuta automáticamente cuando abre la vista
   ngOnInit(): void {
-
-    // Obtiene el usuario guardado en localStorage
     const usuarioGuardado = localStorage.getItem('usuarioLogueado');
 
-    // Si existe un usuario guardado
     if (usuarioGuardado) {
-
-      // Convierte el texto JSON en objeto
       this.usuarioLogueado = JSON.parse(usuarioGuardado);
 
-      // Si el usuario tiene clienteId
       if (this.usuarioLogueado.clienteId) {
-
-        // Carga los préstamos de ese cliente
         this.cargarMisPrestamos(this.usuarioLogueado.clienteId);
       }
     }
   }
 
-  // Método para cargar préstamos del cliente
   cargarMisPrestamos(clienteId: number): void {
-
-    // Llama al backend para listar préstamos por cliente
     this.prestamoService.listarPorCliente(clienteId).subscribe({
-
-      // Si la respuesta es correcta
       next: (data: Prestamo[]) => {
-
-        // Guarda los préstamos en la variable
-        this.prestamos = data;
-
-        // Fuerza actualización de la vista
+        this.prestamos = data || [];
         this.cd.detectChanges();
       },
-
-      // Si ocurre error
       error: (err: any) => {
         console.error('Error al cargar mis préstamos', err);
+        this.prestamos = [];
+        this.mostrarToast('No fue posible cargar tus préstamos.', 'error');
+        this.cd.detectChanges();
       }
     });
   }
 
-  // Método para abonar a un préstamo
-  abonarPrestamo(id: number): void {
-
-    // Toma el valor escrito en el input de ese préstamo
-    const valorAbono = this.abonos[id];
-
-    // Valida que el usuario haya escrito algo
-    if (!valorAbono || valorAbono.trim() === '') {
-      this.mensaje = 'Debes escribir un valor para abonar';
-      return;
-    }
-
-    // Convierte el valor escrito a número
-    const abonoNumero = Number(valorAbono);
-
-    // Valida que sea número y mayor que cero
-    if (isNaN(abonoNumero) || abonoNumero <= 0) {
-      this.mensaje = 'El abono debe ser mayor a 0';
-      return;
-    }
-
-    // Envía el abono al backend
-    this.prestamoService.abonarPrestamo(id, valorAbono).subscribe({
-
-      // Si el backend responde correctamente
-      next: () => {
-
-        // Muestra mensaje
-        this.mensaje = 'Abono enviado. Queda pendiente de aprobación del administrador';
-
-        // Limpia el input de ese préstamo
-        this.abonos[id] = '';
-
-        // Recarga los préstamos del cliente
-        this.cargarMisPrestamos(this.usuarioLogueado.clienteId);
-      },
-
-      // Si ocurre error
-      error: (err: any) => {
-        console.error('Error al abonar préstamo', err);
-        this.mensaje = err?.error?.message || 'No se pudo realizar el abono';
-      }
-    });
-  }
-
-  // Método para pagar todo el saldo pendiente
-  pagarTotal(prestamo: Prestamo): void {
-
-    // Verifica si el préstamo permite abonar
+  iniciarPagoPse(prestamo: Prestamo): void {
     if (!this.puedeAbonar(prestamo.estado)) {
+      this.mostrarToast('Solo puedes pagar préstamos aprobados.', 'warning');
       return;
     }
 
-    // Obtiene el saldo pendiente total
-    const saldoTotal = prestamo.saldoPendiente;
+    const valorAbono = this.abonos[prestamo.id!];
 
-    // Envía como abono el saldo completo
-    this.prestamoService.abonarPrestamo(prestamo.id!, String(saldoTotal)).subscribe({
+    if (!valorAbono || valorAbono.trim() === '') {
+      this.mostrarToast('Debes escribir un valor para pagar por PSE.', 'warning');
+      return;
+    }
 
-      // Si responde correctamente
-      next: () => {
+    const monto = Number(valorAbono);
 
-        // Mensaje de confirmación
-        this.mensaje = 'Solicitud de pago total enviada. Queda pendiente de aprobación del administrador';
+    if (isNaN(monto) || monto <= 0) {
+      this.mostrarToast('El valor del pago debe ser mayor a cero.', 'warning');
+      return;
+    }
 
-        // Limpia el input
-        this.abonos[prestamo.id!] = '';
+    if (monto > prestamo.saldoPendiente) {
+      this.mostrarToast('El pago no puede ser mayor al saldo pendiente.', 'warning');
+      return;
+    }
 
-        // Recarga préstamos
-        this.cargarMisPrestamos(this.usuarioLogueado.clienteId);
-      },
+    this.prestamoSeleccionadoPse = prestamo;
+    this.montoSeleccionadoPse = monto;
+    this.respuestaPse = null;
 
-      // Si ocurre error
-      error: (err: any) => {
-        console.error('Error al pagar total del préstamo', err);
-        this.mensaje = err?.error?.message || 'No se pudo pagar el préstamo completo';
-      }
-    });
+    this.pseModalVisible = true;
+    this.pseProcesando = true;
+    this.pseFinalizado = false;
+    this.psePaso = 1;
+
+    this.simularFlujoPse();
   }
 
-  // Método para ver historial de abonos de un préstamo
-  verHistorial(prestamoId: number): void {
+  pagarTotalPse(prestamo: Prestamo): void {
+    if (!this.puedeAbonar(prestamo.estado)) {
+      this.mostrarToast('Solo puedes pagar préstamos aprobados.', 'warning');
+      return;
+    }
 
-    // Guarda el préstamo seleccionado
-    this.prestamoSeleccionadoHistorial = prestamoId;
+    const saldoTotal = Number(prestamo.saldoPendiente || 0);
 
-    // Consulta los abonos de ese préstamo en el backend
-    this.abonoService.listarAbonosPorPrestamo(prestamoId).subscribe({
+    if (saldoTotal <= 0) {
+      this.mostrarToast('Este préstamo no tiene saldo pendiente.', 'warning');
+      return;
+    }
 
-      // Si llegan datos
-      next: (data: Abono[]) => {
+    this.abonos[prestamo.id!] = String(saldoTotal);
+    this.iniciarPagoPse(prestamo);
+  }
 
-        // Guarda el historial en la variable
-        this.historialAbonos = data;
+  simularFlujoPse(): void {
+    setTimeout(() => {
+      this.psePaso = 2;
+      this.cd.detectChanges();
+    }, 900);
 
-        // Actualiza la vista
+    setTimeout(() => {
+      this.psePaso = 3;
+      this.cd.detectChanges();
+    }, 1800);
+
+    setTimeout(() => {
+      this.confirmarPagoPse();
+    }, 2800);
+  }
+
+  confirmarPagoPse(): void {
+    if (!this.prestamoSeleccionadoPse || !this.prestamoSeleccionadoPse.id) {
+      this.mostrarToast('No se encontró el préstamo seleccionado.', 'error');
+      this.cerrarModalPse();
+      return;
+    }
+
+    this.prestamoService.pagarPorPse(
+      this.prestamoSeleccionadoPse.id,
+      this.montoSeleccionadoPse
+    ).subscribe({
+      next: (respuesta: any) => {
+        this.respuestaPse = respuesta;
+
+        this.pseProcesando = false;
+        this.pseFinalizado = true;
+        this.psePaso = 4;
+
+        this.mensaje = respuesta?.mensaje || 'Pago PSE aprobado correctamente.';
+        this.mostrarToast('Pago PSE aprobado correctamente.', 'success');
+
+        this.abonos[this.prestamoSeleccionadoPse!.id!] = '';
+
+        if (this.usuarioLogueado?.clienteId) {
+          this.cargarMisPrestamos(this.usuarioLogueado.clienteId);
+        }
+
+        if (this.prestamoSeleccionadoHistorial !== null) {
+          this.verHistorial(this.prestamoSeleccionadoHistorial);
+        }
+
         this.cd.detectChanges();
       },
-
-      // Si ocurre error
       error: (err: any) => {
-        console.error('Error al cargar historial de abonos', err);
+        console.error('Error al pagar por PSE', err);
+
+        this.pseProcesando = false;
+        this.pseFinalizado = false;
+
+        const mensaje = err?.error?.mensaje || 'No se pudo procesar el pago PSE.';
+        this.mostrarToast(mensaje, 'error');
+        this.mensaje = mensaje;
+
+        this.cd.detectChanges();
       }
     });
   }
 
-  // Método que indica si se puede abonar
-  puedeAbonar(estado: string): boolean {
+  cerrarModalPse(): void {
+    this.pseModalVisible = false;
+    this.pseProcesando = false;
+    this.pseFinalizado = false;
+    this.psePaso = 0;
+    this.prestamoSeleccionadoPse = null;
+    this.montoSeleccionadoPse = 0;
+    this.respuestaPse = null;
+  }
 
-    // Solo se puede abonar si el préstamo está APROBADO
+  verHistorial(prestamoId: number): void {
+    this.prestamoSeleccionadoHistorial = prestamoId;
+
+    this.abonoService.listarAbonosPorPrestamo(prestamoId).subscribe({
+      next: (data: Abono[]) => {
+        this.historialAbonos = data || [];
+        this.cd.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Error al cargar historial de abonos', err);
+        this.historialAbonos = [];
+        this.mostrarToast('No fue posible cargar el historial.', 'error');
+        this.cd.detectChanges();
+      }
+    });
+  }
+
+  cerrarHistorial(): void {
+    this.prestamoSeleccionadoHistorial = null;
+    this.historialAbonos = [];
+  }
+
+  descargarComprobante(abonoId: number | undefined): void {
+    if (!abonoId) {
+      this.mostrarToast('No se encontró el comprobante del abono.', 'warning');
+      return;
+    }
+
+    this.prestamoService.descargarComprobanteAbono(abonoId).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const enlace = document.createElement('a');
+
+        enlace.href = url;
+        enlace.download = `comprobante-abono-${abonoId}.pdf`;
+        enlace.click();
+
+        window.URL.revokeObjectURL(url);
+
+        this.mostrarToast('Comprobante descargado correctamente.', 'success');
+      },
+      error: (err: any) => {
+        console.error('Error descargando comprobante', err);
+        this.mostrarToast('No fue posible descargar el comprobante.', 'error');
+      }
+    });
+  }
+
+  abrirComprobanteDesdeModal(): void {
+    if (!this.respuestaPse?.abonoId) {
+      this.mostrarToast('No se encontró el comprobante del pago.', 'warning');
+      return;
+    }
+
+    this.descargarComprobante(this.respuestaPse.abonoId);
+  }
+
+  puedeAbonar(estado: string): boolean {
     return estado === 'APROBADO';
   }
 
-  // Calcula el porcentaje pagado del préstamo
   calcularProgreso(prestamo: Prestamo): number {
+    const monto = Number(prestamo.monto || 0);
+    const interes = Number(prestamo.interes || 0);
+    const saldoPendiente = Number(prestamo.saldoPendiente || 0);
 
-    // Calcula el total con interés
-    const total = prestamo.monto + (prestamo.monto * prestamo.interes);
+    const total = monto + (monto * interes);
 
-    // Si el total es cero o negativo, retorna 0
     if (total <= 0) {
       return 0;
     }
 
-    // Calcula cuánto se ha pagado
-    const pagado = total - prestamo.saldoPendiente;
-
-    // Convierte lo pagado en porcentaje
-    // Math.max evita negativos
-    // Math.min evita que pase de 100
+    const pagado = total - saldoPendiente;
     return Math.max(0, Math.min(100, (pagado / total) * 100));
   }
 
-  // Formatea dinero en pesos colombianos
   formatearDinero(valor: number): string {
+    if (valor === null || valor === undefined || isNaN(Number(valor))) {
+      return '$ 0';
+    }
 
-    // Convierte el número a formato colombiano
-    return '$ ' + valor.toLocaleString('es-CO', {
+    return '$ ' + Number(valor).toLocaleString('es-CO', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 2
     });
+  }
+
+  obtenerTotalSaldoPendiente(): number {
+    return this.prestamos.reduce(
+      (sum: number, prestamo: Prestamo) => sum + Number(prestamo.saldoPendiente || 0),
+      0
+    );
+  }
+
+  obtenerPrestamosActivos(): number {
+    return this.prestamos.filter((p: Prestamo) => p.estado === 'APROBADO').length;
+  }
+
+  obtenerEstadoAbono(abono: any): string {
+    return abono?.estado || 'SIN ESTADO';
+  }
+
+  obtenerMetodoPago(abono: any): string {
+    return abono?.metodoPago || 'MANUAL';
+  }
+
+  obtenerReferenciaPago(abono: any): string {
+    return abono?.referenciaPago || 'Sin referencia';
+  }
+
+  mostrarToast(
+    mensaje: string,
+    tipo: 'success' | 'error' | 'warning' | 'info' = 'info'
+  ): void {
+    this.toastMensaje = mensaje;
+    this.toastTipo = tipo;
+    this.toastVisible = true;
+
+    setTimeout(() => {
+      this.toastVisible = false;
+      this.cd.detectChanges();
+    }, 4200);
   }
 }

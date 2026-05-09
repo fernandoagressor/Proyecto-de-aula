@@ -1,0 +1,288 @@
+<div class="empresas-admin-page">
+
+  <!-- Encabezado -->
+  <section class="page-header">
+    <div>
+      <span class="page-eyebrow">Módulo empresarial</span>
+      <h1 class="page-title">Empresas aliadas</h1>
+      <p class="page-description">
+        Registra y administra empresas que ofrecen préstamos empresariales a sus empleados.
+      </p>
+    </div>
+  </section>
+
+  <!-- Mensaje -->
+  <div class="alert-message" *ngIf="mensaje">
+    {{ mensaje }}
+  </div>
+
+  <!-- Estadísticas -->
+  <section class="stats-grid">
+
+    <article class="stat-card">
+      <div class="stat-icon blue">🏢</div>
+      <span>Total empresas</span>
+      <strong>{{ empresas.length }}</strong>
+      <p>Empresas registradas en el sistema.</p>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon green">✅</div>
+      <span>Empresas activas</span>
+      <strong>{{ totalEmpresasActivas() }}</strong>
+      <p>Empresas habilitadas para operar.</p>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon amber">💰</div>
+      <span>Cupo aprobado</span>
+      <strong>{{ formatearDinero(totalCupoAprobado()) }}</strong>
+      <p>Cupo empresarial total asignado.</p>
+    </article>
+
+  </section>
+
+  <!-- Formulario -->
+  <section class="form-card">
+
+    <div class="section-header">
+      <div>
+        <h2>{{ empresaEditando ? 'Editar empresa' : 'Registrar empresa aliada' }}</h2>
+        <p>
+          {{ empresaEditando ? 'Actualiza la información de la empresa seleccionada.' : 'Agrega una empresa para asociar empleados y préstamos empresariales.' }}
+        </p>
+      </div>
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+        <label>Nombre de empresa</label>
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevaEmpresa.nombre"
+          placeholder="Ej: Empresa S.A.S"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>NIT</label>
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevaEmpresa.nit"
+          placeholder="Ej: 900123456-7"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Responsable</label>
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevaEmpresa.responsable"
+          placeholder="Nombre del contacto"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Teléfono</label>
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevaEmpresa.telefono"
+          placeholder="Teléfono"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Correo</label>
+        <input
+          class="input-modern"
+          type="email"
+          [(ngModel)]="nuevaEmpresa.correo"
+          placeholder="correo@empresa.com"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Cupo aprobado</label>
+        <input
+          class="input-modern"
+          type="number"
+          [(ngModel)]="nuevaEmpresa.cupoAprobado"
+          placeholder="Cupo aprobado"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Estado</label>
+        <select
+          class="select-modern"
+          [(ngModel)]="nuevaEmpresa.estado"
+        >
+          <option value="ACTIVA">Activa</option>
+          <option value="INACTIVA">Inactiva</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+
+      <button
+        class="btn-primary"
+        type="button"
+        *ngIf="!empresaEditando"
+        (click)="crearEmpresa()"
+      >
+        Registrar empresa
+      </button>
+
+      <button
+        class="btn-primary"
+        type="button"
+        *ngIf="empresaEditando"
+        (click)="actualizarEmpresa()"
+      >
+        Actualizar empresa
+      </button>
+
+      <button
+        class="btn-secondary"
+        type="button"
+        *ngIf="empresaEditando"
+        (click)="cancelarEdicion()"
+      >
+        Cancelar
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- Tabla -->
+  <section class="table-card">
+
+    <div class="section-header table-header">
+      <div>
+        <h2>Listado de empresas</h2>
+        <p>Consulta, edita o desactiva empresas aliadas.</p>
+      </div>
+
+      <span class="counter-chip">
+        {{ empresas.length }} empresas
+      </span>
+    </div>
+
+    <div class="table-wrapper">
+
+      <table class="table-modern">
+
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Empresa</th>
+          <th>NIT</th>
+          <th>Responsable</th>
+          <th>Contacto</th>
+          <th>Cupo aprobado</th>
+          <th>Estado</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr *ngFor="let empresa of empresas">
+
+          <td>
+            <span class="id-text">#{{ empresa.id }}</span>
+          </td>
+
+          <td>
+            <div class="company-cell">
+              <div class="company-avatar">
+                {{ empresa.nombre.charAt(0).toUpperCase() }}
+              </div>
+
+              <div>
+                <strong>{{ empresa.nombre }}</strong>
+                <span>Empresa aliada</span>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <span class="document-text">{{ empresa.nit }}</span>
+          </td>
+
+          <td>
+            <span class="muted-text">{{ empresa.responsable }}</span>
+          </td>
+
+          <td>
+            <div class="contact-cell">
+              <strong>{{ empresa.telefono }}</strong>
+              <span>{{ empresa.correo }}</span>
+            </div>
+          </td>
+
+          <td>
+            <span class="money-text">{{ formatearDinero(empresa.cupoAprobado) }}</span>
+          </td>
+
+          <td>
+              <span
+                class="badge-status"
+                [ngClass]="{
+                  'status-active': empresa.estado === 'ACTIVA',
+                  'status-inactive': empresa.estado === 'INACTIVA'
+                }"
+              >
+                {{ empresa.estado }}
+              </span>
+          </td>
+
+          <td>
+            <div class="actions-box">
+
+              <button
+                class="btn-table edit"
+                type="button"
+                (click)="editarEmpresa(empresa)"
+              >
+                Editar
+              </button>
+
+              <button
+                class="btn-table toggle"
+                type="button"
+                (click)="cambiarEstado(empresa)"
+              >
+                {{ empresa.estado === 'ACTIVA' ? 'Desactivar' : 'Activar' }}
+              </button>
+
+              <button
+                class="btn-table delete"
+                type="button"
+                (click)="eliminarEmpresa(empresa.id)"
+              >
+                Eliminar
+              </button>
+
+            </div>
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>

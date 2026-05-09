@@ -1,46 +1,227 @@
-<!-- Contenedor principal -->
 <div class="mis-prestamos-page">
 
-  <!-- Encabezado -->
-  <section class="page-header">
-    <div>
-      <span class="page-eyebrow">Área del cliente</span>
-      <h1 class="page-title">Mis préstamos</h1>
-      <p class="page-description">
-        Consulta tus préstamos, revisa el saldo pendiente, realiza abonos y verifica tu historial de pagos.
+  <!-- TOAST -->
+  <div
+    class="toast-message"
+    *ngIf="toastVisible"
+    [ngClass]="{
+      'toast-success': toastTipo === 'success',
+      'toast-error': toastTipo === 'error',
+      'toast-warning': toastTipo === 'warning',
+      'toast-info': toastTipo === 'info'
+    }"
+  >
+    <div class="toast-icon">
+      <span *ngIf="toastTipo === 'success'">✓</span>
+      <span *ngIf="toastTipo === 'error'">!</span>
+      <span *ngIf="toastTipo === 'warning'">!</span>
+      <span *ngIf="toastTipo === 'info'">ℹ</span>
+    </div>
+
+    <div class="toast-content">
+      <strong>
+        {{
+        toastTipo === 'success'
+        ? 'Operación exitosa'
+        : toastTipo === 'error'
+        ? 'Error'
+        : toastTipo === 'warning'
+        ? 'Atención'
+        : 'Información'
+        }}
+      </strong>
+      <p>{{ toastMensaje }}</p>
+    </div>
+
+    <button class="toast-close" type="button" (click)="toastVisible = false">×</button>
+  </div>
+
+  <!-- MODAL PSE -->
+  <div class="pse-overlay" *ngIf="pseModalVisible">
+
+    <div class="pse-modal">
+
+      <div class="pse-header">
+        <div>
+          <span>Pasarela de pagos</span>
+          <h2>PSE Simulado</h2>
+        </div>
+
+        <button
+          class="pse-close"
+          type="button"
+          (click)="cerrarModalPse()"
+          [disabled]="pseProcesando"
+          title="Cerrar"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="pse-bank-box">
+
+        <div class="pse-logo">
+          PSE
+        </div>
+
+        <div>
+          <strong>Pago seguro en línea</strong>
+          <p>PrestaFácil valida tu pago con una simulación de pasarela bancaria.</p>
+        </div>
+
+      </div>
+
+      <div class="pse-payment-info">
+
+        <div>
+          <span>Préstamo</span>
+          <strong>#{{ prestamoSeleccionadoPse?.id }}</strong>
+        </div>
+
+        <div>
+          <span>Valor a pagar</span>
+          <strong>{{ formatearDinero(montoSeleccionadoPse) }}</strong>
+        </div>
+
+      </div>
+
+      <div class="pse-steps" *ngIf="pseProcesando">
+
+        <div class="pse-step" [class.active]="psePaso >= 1">
+          <span>1</span>
+          <p>Conectando con PSE</p>
+        </div>
+
+        <div class="pse-step" [class.active]="psePaso >= 2">
+          <span>2</span>
+          <p>Validando banco</p>
+        </div>
+
+        <div class="pse-step" [class.active]="psePaso >= 3">
+          <span>3</span>
+          <p>Confirmando transacción</p>
+        </div>
+
+      </div>
+
+      <div class="pse-loader" *ngIf="pseProcesando">
+        <div class="spinner"></div>
+        <p>Procesando pago, por favor espera...</p>
+      </div>
+
+      <div class="pse-success" *ngIf="pseFinalizado && respuestaPse">
+
+        <div class="success-icon">✓</div>
+
+        <h3>Pago aprobado</h3>
+
+        <p>
+          Tu pago fue aprobado correctamente y se aplicó al saldo del préstamo.
+        </p>
+
+        <div class="receipt-box">
+          <div>
+            <span>Referencia</span>
+            <strong>{{ respuestaPse.referenciaPago }}</strong>
+          </div>
+
+          <div>
+            <span>Monto pagado</span>
+            <strong>{{ formatearDinero(respuestaPse.montoPagado) }}</strong>
+          </div>
+
+          <div>
+            <span>Saldo anterior</span>
+            <strong>{{ formatearDinero(respuestaPse.saldoAnterior) }}</strong>
+          </div>
+
+          <div>
+            <span>Saldo nuevo</span>
+            <strong>{{ formatearDinero(respuestaPse.saldoPendiente) }}</strong>
+          </div>
+
+          <div>
+            <span>Estado del préstamo</span>
+            <strong>{{ respuestaPse.estadoPrestamo }}</strong>
+          </div>
+        </div>
+
+        <div class="pse-actions">
+          <button
+            class="btn-pse primary"
+            type="button"
+            (click)="abrirComprobanteDesdeModal()"
+          >
+            Descargar comprobante
+          </button>
+
+          <button
+            class="btn-pse secondary"
+            type="button"
+            (click)="cerrarModalPse()"
+          >
+            Cerrar
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- HERO -->
+  <section class="client-hero">
+
+    <div class="hero-content">
+      <span class="hero-eyebrow">Área del cliente</span>
+
+      <h1>Mis préstamos</h1>
+
+      <p>
+        Consulta tus préstamos, revisa el saldo pendiente, realiza pagos por PSE
+        y descarga tus comprobantes.
       </p>
     </div>
+
+    <div class="hero-summary">
+      <span>Saldo pendiente total</span>
+      <strong>{{ formatearDinero(obtenerTotalSaldoPendiente()) }}</strong>
+      <p>{{ prestamos.length }} préstamos registrados</p>
+    </div>
+
   </section>
 
-  <!-- Mensaje dinámico -->
+  <!-- MENSAJE -->
   <div class="alert-message" *ngIf="mensaje">
     {{ mensaje }}
   </div>
 
-  <!-- Resumen -->
+  <!-- RESUMEN -->
   <section class="summary-card">
+
     <div class="summary-item">
       <span class="summary-label">Total préstamos</span>
       <strong>{{ prestamos.length }}</strong>
     </div>
 
     <div class="summary-item">
-      <span class="summary-label">Seguimiento</span>
-      <strong>Activo</strong>
+      <span class="summary-label">Préstamos activos</span>
+      <strong>{{ obtenerPrestamosActivos() }}</strong>
     </div>
 
     <div class="summary-item">
-      <span class="summary-label">Gestión</span>
-      <strong>Abonos e historial</strong>
+      <span class="summary-label">Saldo pendiente</span>
+      <strong>{{ formatearDinero(obtenerTotalSaldoPendiente()) }}</strong>
     </div>
+
   </section>
 
-  <!-- Grid de préstamos -->
-  <section class="grid-prestamos">
+  <!-- GRID -->
+  <section class="grid-prestamos" *ngIf="prestamos.length > 0; else sinPrestamos">
 
     <article class="loan-card" *ngFor="let prestamo of prestamos">
 
-      <!-- Encabezado de tarjeta -->
       <div class="loan-header">
 
         <div>
@@ -54,8 +235,7 @@
             'status-pendiente': prestamo.estado === 'PENDIENTE',
             'status-aprobado': prestamo.estado === 'APROBADO',
             'status-rechazado': prestamo.estado === 'RECHAZADO',
-            'status-pagado': prestamo.estado === 'PAGADO',
-            'status-abono-pendiente': prestamo.estado === 'ABONO_PENDIENTE'
+            'status-pagado': prestamo.estado === 'PAGADO'
           }"
         >
           {{ prestamo.estado }}
@@ -63,7 +243,6 @@
 
       </div>
 
-      <!-- Información principal -->
       <div class="loan-details">
 
         <div class="detail-item">
@@ -83,7 +262,6 @@
 
       </div>
 
-      <!-- Progreso -->
       <div class="progress-section">
 
         <div class="progress-header">
@@ -100,32 +278,39 @@
 
       </div>
 
-      <!-- Acciones -->
+      <div class="pse-banner" *ngIf="puedeAbonar(prestamo.estado)">
+        <div>
+          <strong>Paga en línea por PSE</strong>
+          <p>Pago aprobado automáticamente y comprobante disponible al instante.</p>
+        </div>
+        <span>Seguro</span>
+      </div>
+
       <div class="loan-actions">
 
         <input
           class="input-abono"
           type="text"
           [(ngModel)]="abonos[prestamo.id!]"
-          placeholder="Valor del abono"
+          placeholder="Valor a pagar por PSE"
           [disabled]="!puedeAbonar(prestamo.estado)"
         />
 
         <div class="buttons-row">
 
           <button
-            class="btn-action pay"
+            class="btn-action pse"
             type="button"
-            (click)="abonarPrestamo(prestamo.id!)"
+            (click)="iniciarPagoPse(prestamo)"
             [disabled]="!puedeAbonar(prestamo.estado)"
           >
-            Abonar
+            Pagar por PSE
           </button>
 
           <button
             class="btn-action total"
             type="button"
-            (click)="pagarTotal(prestamo)"
+            (click)="pagarTotalPse(prestamo)"
             [disabled]="!puedeAbonar(prestamo.estado)"
           >
             Pagar total
@@ -147,24 +332,44 @@
 
   </section>
 
-  <!-- Historial -->
+  <ng-template #sinPrestamos>
+    <div class="empty-state">
+      <div>📭</div>
+      <strong>No tienes préstamos registrados</strong>
+      <p>Cuando tengas una solicitud o préstamo aprobado, aparecerá aquí.</p>
+    </div>
+  </ng-template>
+
+  <!-- HISTORIAL -->
   <section
     class="history-card"
     *ngIf="prestamoSeleccionadoHistorial !== null"
   >
 
     <div class="section-header">
+
       <div>
-        <h2>Historial de abonos</h2>
+        <h2>Historial de pagos</h2>
         <p>Préstamo seleccionado: #{{ prestamoSeleccionadoHistorial }}</p>
       </div>
 
-      <span class="counter-chip">
-        {{ historialAbonos.length }} abonos
-      </span>
+      <div class="history-actions">
+        <span class="counter-chip">
+          {{ historialAbonos.length }} abonos
+        </span>
+
+        <button
+          class="btn-close-history"
+          type="button"
+          (click)="cerrarHistorial()"
+        >
+          Cerrar
+        </button>
+      </div>
+
     </div>
 
-    <div class="table-wrapper">
+    <div class="table-wrapper" *ngIf="historialAbonos.length > 0; else sinHistorial">
 
       <table class="table-modern">
 
@@ -173,12 +378,17 @@
           <th>ID</th>
           <th>Monto</th>
           <th>Fecha</th>
+          <th>Estado</th>
+          <th>Método</th>
+          <th>Referencia</th>
+          <th>Comprobante</th>
         </tr>
         </thead>
 
         <tbody>
 
         <tr *ngFor="let abono of historialAbonos">
+
           <td>
             <span class="id-text">#{{ abono.id }}</span>
           </td>
@@ -190,6 +400,43 @@
           <td>
             <span class="date-text">{{ abono.fecha }}</span>
           </td>
+
+          <td>
+              <span
+                class="badge-status small"
+                [ngClass]="{
+                  'status-pendiente': obtenerEstadoAbono(abono) === 'PENDIENTE',
+                  'status-aprobado': obtenerEstadoAbono(abono) === 'APROBADO',
+                  'status-rechazado': obtenerEstadoAbono(abono) === 'RECHAZADO'
+                }"
+              >
+                {{ obtenerEstadoAbono(abono) }}
+              </span>
+          </td>
+
+          <td>
+              <span class="method-chip">
+                {{ obtenerMetodoPago(abono) }}
+              </span>
+          </td>
+
+          <td>
+              <span class="reference-text">
+                {{ obtenerReferenciaPago(abono) }}
+              </span>
+          </td>
+
+          <td>
+            <button
+              class="btn-pdf"
+              type="button"
+              (click)="descargarComprobante(abono.id)"
+              [disabled]="obtenerEstadoAbono(abono) !== 'APROBADO'"
+            >
+              PDF
+            </button>
+          </td>
+
         </tr>
 
         </tbody>
@@ -197,6 +444,14 @@
       </table>
 
     </div>
+
+    <ng-template #sinHistorial>
+      <div class="empty-state small-empty">
+        <div>🧾</div>
+        <strong>Sin pagos registrados</strong>
+        <p>Cuando realices pagos por PSE, aparecerán aquí.</p>
+      </div>
+    </ng-template>
 
   </section>
 

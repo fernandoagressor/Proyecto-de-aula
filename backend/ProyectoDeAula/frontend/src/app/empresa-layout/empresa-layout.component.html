@@ -1,0 +1,198 @@
+<div class="empresa-layout">
+
+  <!-- TOPBAR EMPRESAS -->
+  <header class="empresa-topbar">
+
+    <div class="brand-box">
+      <div class="brand-logo">PF</div>
+
+      <div class="brand-text">
+        <strong>Presta<span>Fácil</span></strong>
+        <small>Panel empresarial</small>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <div class="search-box">
+        <span>🔎</span>
+        <input
+          type="text"
+          placeholder="Buscar empresas, empleados, préstamos..."
+          disabled
+        />
+      </div>
+    </div>
+
+    <div class="topbar-right">
+
+      <button
+        class="switch-btn"
+        type="button"
+        (click)="irAPersonas()"
+      >
+        Personas
+      </button>
+
+      <button
+        class="switch-btn secondary"
+        type="button"
+        (click)="irLandingEmpresas()"
+      >
+        Landing
+      </button>
+
+      <div class="user-chip" *ngIf="usuarioLogueado">
+        <div class="user-avatar-mini">
+          {{ obtenerInicialUsuario() }}
+        </div>
+
+        <div class="user-info">
+          <strong>{{ usuarioLogueado.nombre }}</strong>
+          <span>{{ obtenerRolFormateado() }}</span>
+        </div>
+      </div>
+
+      <div class="perfil-menu">
+
+        <button
+          class="avatar-btn"
+          type="button"
+          (click)="toggleMenuPerfil()"
+        >
+          ⋮
+        </button>
+
+        <div class="dropdown" *ngIf="menuPerfilAbierto">
+
+          <div class="dropdown-user">
+            <div class="dropdown-avatar">
+              {{ obtenerInicialUsuario() }}
+            </div>
+
+            <div>
+              <strong>{{ usuarioLogueado?.nombre || 'Usuario' }}</strong>
+              <span>{{ obtenerRolFormateado() }}</span>
+            </div>
+          </div>
+
+          <button
+            class="dropdown-item"
+            type="button"
+            (click)="irLandingEmpresas()"
+          >
+            🏢 Ver landing empresas
+          </button>
+
+          <button
+            class="dropdown-item"
+            type="button"
+            (click)="irAPersonas()"
+          >
+            👤 Ir a panel personas
+          </button>
+
+          <button
+            class="dropdown-item logout"
+            type="button"
+            (click)="cerrarSesion()"
+          >
+            🚪 Cerrar sesión
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
+
+  <!-- CUERPO -->
+  <div class="empresa-body">
+
+    <!-- SIDEBAR EMPRESAS -->
+    <aside class="empresa-sidebar">
+
+      <div class="sidebar-header">
+        <span class="sidebar-label">Sistema empresarial</span>
+
+        <h2 class="sidebar-title">
+          Empresas
+        </h2>
+
+        <p>
+          Administra empresas aliadas, empleados, préstamos empresariales,
+          pagos y reportes.
+        </p>
+      </div>
+
+      <div class="sidebar-summary">
+        <span class="summary-label">Estado del módulo</span>
+        <strong>Activo</strong>
+        <small>Operación empresarial segura</small>
+      </div>
+
+      <nav class="menu-lista">
+
+        <a
+          class="menu-titulo"
+          routerLink="/empresa-panel/empresas"
+          routerLinkActive="active"
+        >
+          <span class="menu-icon">🏢</span>
+          <span>Empresas aliadas</span>
+        </a>
+
+        <a
+          class="menu-titulo disabled"
+          href="javascript:void(0)"
+        >
+          <span class="menu-icon">👷</span>
+          <span>Empleados</span>
+        </a>
+
+        <a
+          class="menu-titulo disabled"
+          href="javascript:void(0)"
+        >
+          <span class="menu-icon">💰</span>
+          <span>Préstamos empresariales</span>
+        </a>
+
+        <a
+          class="menu-titulo disabled"
+          href="javascript:void(0)"
+        >
+          <span class="menu-icon">💳</span>
+          <span>Pagos empresariales</span>
+        </a>
+
+        <a
+          class="menu-titulo disabled"
+          href="javascript:void(0)"
+        >
+          <span class="menu-icon">📊</span>
+          <span>Reportes</span>
+        </a>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <strong>PrestaFácil Empresas</strong>
+        <span>Versión empresarial 1.0</span>
+      </div>
+
+    </aside>
+
+    <!-- CONTENIDO EMPRESARIAL -->
+    <main class="empresa-panel">
+
+      <div class="content-shell">
+        <router-outlet></router-outlet>
+      </div>
+
+    </main>
+
+  </div>
+
+</div>

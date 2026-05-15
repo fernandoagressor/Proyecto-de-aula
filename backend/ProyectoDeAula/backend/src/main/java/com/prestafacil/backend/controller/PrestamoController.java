@@ -3,12 +3,8 @@ package com.prestafacil.backend.controller;
 import com.prestafacil.backend.model.Abono;
 import com.prestafacil.backend.model.Prestamo;
 import com.prestafacil.backend.service.PrestamoService;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,218 +20,93 @@ public class PrestamoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Prestamo>> listar() {
-        List<Prestamo> prestamos = prestamoService.listarPrestamos();
-        return ResponseEntity.ok(prestamos);
+    public List<Prestamo> listarPrestamos() {
+        return prestamoService.listarPrestamos();
+    }
+
+    // ADMIN → SOLO PRÉSTAMOS DE CLIENTES
+    @GetMapping("/clientes")
+    public List<Prestamo> listarPrestamosClientes() {
+        return prestamoService.listarPrestamosClientes();
     }
 
     @GetMapping("/cliente/{clienteId}")
-    public ResponseEntity<?> listarPorCliente(@PathVariable Long clienteId) {
-        try {
-            List<Prestamo> prestamos = prestamoService.listarPrestamosPorCliente(clienteId);
-            return ResponseEntity.ok(prestamos);
+    public List<Prestamo> listarPorCliente(@PathVariable Long clienteId) {
+        return prestamoService.listarPrestamosPorCliente(clienteId);
+    }
 
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(respuestaError(e.getMessage()));
-        }
+    @GetMapping("/empleado/{empleadoId}")
+    public List<Prestamo> listarPorEmpleado(@PathVariable Long empleadoId) {
+        return prestamoService.listarPrestamosPorEmpleado(empleadoId);
+    }
+
+    @GetMapping("/empresa/{empresaId}")
+    public List<Prestamo> listarPorEmpresa(@PathVariable Long empresaId) {
+        return prestamoService.listarPrestamosPorEmpresa(empresaId);
+    }
+
+    // EMPRESA → SOLO PRÉSTAMOS DE EMPLEADOS
+    @GetMapping("/empresa/{empresaId}/empleados")
+    public List<Prestamo> listarPrestamosEmpleadosPorEmpresa(
+            @PathVariable Long empresaId
+    ) {
+        return prestamoService.listarPrestamosEmpleadosPorEmpresa(empresaId);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerPorId(@PathVariable Long id) {
-        try {
-            Prestamo prestamo = prestamoService.obtenerPorId(id);
-            return ResponseEntity.ok(prestamo);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(respuestaError(e.getMessage()));
-        }
+    public Prestamo obtenerPorId(@PathVariable Long id) {
+        return prestamoService.obtenerPorId(id);
     }
 
     @PostMapping("/solicitar")
-    public ResponseEntity<?> solicitar(@RequestBody Map<String, Object> datos) {
-        try {
-            Long clienteId = convertirLong(datos.get("clienteId"), "clienteId");
-            Double monto = convertirDouble(datos.get("monto"), "monto");
-            Integer plazoMeses = convertirInteger(datos.get("plazoMeses"), "plazoMeses");
+    public Prestamo solicitarPrestamo(@RequestBody Map<String, Object> body) {
+        Long clienteId = Long.valueOf(body.get("clienteId").toString());
+        Double monto = Double.valueOf(body.get("monto").toString());
+        Integer plazoMeses = Integer.valueOf(body.get("plazoMeses").toString());
 
-            Prestamo prestamo = prestamoService.solicitarPrestamo(clienteId, monto, plazoMeses);
+        return prestamoService.solicitarPrestamo(clienteId, monto, plazoMeses);
+    }
 
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(prestamo);
+    @PostMapping("/solicitar-empleado")
+    public Prestamo solicitarPrestamoEmpleado(@RequestBody Map<String, Object> body) {
+        Long empleadoId = Long.valueOf(body.get("empleadoId").toString());
+        Long empresaId = Long.valueOf(body.get("empresaId").toString());
+        Double monto = Double.valueOf(body.get("monto").toString());
+        Integer plazoMeses = Integer.valueOf(body.get("plazoMeses").toString());
 
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(respuestaError(e.getMessage()));
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(respuestaError(e.getMessage()));
-        }
+        return prestamoService.solicitarPrestamoEmpleado(
+                empleadoId,
+                empresaId,
+                monto,
+                plazoMeses
+        );
     }
 
     @PutMapping("/{id}/aprobar")
-    public ResponseEntity<?> aprobar(@PathVariable Long id) {
-        try {
-            Prestamo prestamo = prestamoService.aprobarPrestamo(id);
-            return ResponseEntity.ok(prestamo);
-
-        } catch (IllegalStateException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(respuestaError(e.getMessage()));
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(respuestaError(e.getMessage()));
-        }
+    public Prestamo aprobarPrestamo(@PathVariable Long id) {
+        return prestamoService.aprobarPrestamo(id);
     }
 
     @PutMapping("/{id}/rechazar")
-    public ResponseEntity<?> rechazar(@PathVariable Long id) {
-        try {
-            Prestamo prestamo = prestamoService.rechazarPrestamo(id);
-            return ResponseEntity.ok(prestamo);
-
-        } catch (IllegalStateException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(respuestaError(e.getMessage()));
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(respuestaError(e.getMessage()));
-        }
+    public Prestamo rechazarPrestamo(@PathVariable Long id) {
+        return prestamoService.rechazarPrestamo(id);
     }
 
     @PutMapping("/{id}/abonar")
-    public ResponseEntity<?> abonar(@PathVariable Long id, @RequestBody Map<String, Object> body) {
-        try {
-            Double montoAbono = convertirDouble(body.get("abono"), "abono");
-
-            Abono abono = prestamoService.abonarPrestamo(id, montoAbono);
-
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(abono);
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(respuestaError(e.getMessage()));
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(respuestaError(e.getMessage()));
-        }
+    public Abono abonarPrestamo(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> body
+    ) {
+        Double montoAbono = Double.valueOf(body.get("abono").toString());
+        return prestamoService.abonarPrestamo(id, montoAbono);
     }
 
     @PostMapping("/{id}/pagar-pse")
-    public ResponseEntity<?> pagarPorPse(@PathVariable Long id, @RequestBody Map<String, Object> body) {
-        try {
-            Double montoPago = convertirDouble(body.get("monto"), "monto");
-
-            Map<String, Object> respuesta = prestamoService.pagarPorPse(id, montoPago);
-
-            return ResponseEntity.ok(respuesta);
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(respuestaError(e.getMessage()));
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(respuestaError(e.getMessage()));
-        }
-    }
-
-    @PutMapping("/abonos/{abonoId}/aprobar")
-    public ResponseEntity<?> aprobarAbono(@PathVariable Long abonoId) {
-        try {
-            Abono abono = prestamoService.aprobarAbono(abonoId);
-            return ResponseEntity.ok(abono);
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(respuestaError(e.getMessage()));
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(respuestaError(e.getMessage()));
-        }
-    }
-
-    @PutMapping("/abonos/{abonoId}/rechazar")
-    public ResponseEntity<?> rechazarAbono(@PathVariable Long abonoId) {
-        try {
-            Abono abono = prestamoService.rechazarAbono(abonoId);
-            return ResponseEntity.ok(abono);
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(respuestaError(e.getMessage()));
-
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(respuestaError(e.getMessage()));
-        }
-    }
-
-    private Map<String, Object> respuestaError(String mensaje) {
-        Map<String, Object> respuesta = new LinkedHashMap<>();
-        respuesta.put("ok", false);
-        respuesta.put("mensaje", mensaje);
-        return respuesta;
-    }
-
-    private Long convertirLong(Object valor, String campo) {
-        if (valor == null || valor.toString().trim().isEmpty()) {
-            throw new IllegalArgumentException("El campo " + campo + " es obligatorio.");
-        }
-
-        try {
-            return Long.parseLong(valor.toString());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("El campo " + campo + " debe ser un número válido.");
-        }
-    }
-
-    private Integer convertirInteger(Object valor, String campo) {
-        if (valor == null || valor.toString().trim().isEmpty()) {
-            throw new IllegalArgumentException("El campo " + campo + " es obligatorio.");
-        }
-
-        try {
-            return Integer.parseInt(valor.toString());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("El campo " + campo + " debe ser un número válido.");
-        }
-    }
-
-    private Double convertirDouble(Object valor, String campo) {
-        if (valor == null || valor.toString().trim().isEmpty()) {
-            throw new IllegalArgumentException("El campo " + campo + " es obligatorio.");
-        }
-
-        try {
-            return Double.parseDouble(valor.toString());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("El campo " + campo + " debe ser un número válido.");
-        }
+    public Map<String, Object> pagarPorPse(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> body
+    ) {
+        Double montoPago = Double.valueOf(body.get("monto").toString());
+        return prestamoService.pagarPorPse(id, montoPago);
     }
 }

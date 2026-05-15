@@ -52,6 +52,11 @@ public class UsuarioController {
         // Llama al servicio para traer todos los usuarios desde MySQL.
         return usuarioService.listarUsuarios();
     }
+    @GetMapping("/empresa/{empresaId}")
+    public List<Usuario> listarUsuariosPorEmpresa(@PathVariable Long empresaId) {
+
+        return usuarioService.listarUsuariosPorEmpresa(empresaId);
+    }
 
     // =============================
     // CREAR USUARIO

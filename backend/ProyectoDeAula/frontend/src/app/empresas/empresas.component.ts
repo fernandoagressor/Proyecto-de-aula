@@ -1,28 +1,103 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { UsuarioService } from '../services/usuario.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-empresas',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './empresas.component.html',
   styleUrls: ['./empresas.component.css']
 })
 export class EmpresasComponent {
 
-  constructor(private router: Router) {}
+  constructor(
+    private usuarioService: UsuarioService,
+    private router: Router
+  ) {}
 
-  irAIngresarEmpresa(): void {
-    const usuarioGuardado = localStorage.getItem('usuarioLogueado');
+  loginNombre: string = '';
+  loginPassword: string = '';
+  mensajeLogin: string = '';
 
-    if (usuarioGuardado) {
-      this.router.navigate(['/empresa-panel/empresas']);
+  irALoginEmpresa(): void {
+    const elemento = document.getElementById('loginEmpresaCard');
+
+    if (elemento) {
+      elemento.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  }
+
+  iniciarSesionEmpresa(): void {
+    this.mensajeLogin = '';
+
+    if (!this.loginNombre || !this.loginPassword) {
+      this.mensajeLogin = 'Debes ingresar usuario y contraseña.';
       return;
     }
 
+    const datosLogin = {
+      nombre: this.loginNombre,
+      password: this.loginPassword
+    };
+
+    this.usuarioService.login(datosLogin).subscribe({
+      next: (usuario: any) => {
+        if (!usuario) {
+          this.mensajeLogin = 'Usuario o contraseña incorrectos.';
+          return;
+        }
+
+        localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
+
+        if (usuario.rol === 'empresa') {
+          this.router.navigate(['/empresa-panel/empleados']);
+          return;
+        }
+
+        if (usuario.rol === 'empleado_empresa') {
+          this.router.navigate(['/empresa-panel/mis-prestamos-empleado']);
+          return;
+        }
+
+        this.mensajeLogin = 'Este acceso es solo para empresas o empleados empresariales.';
+      },
+      error: () => {
+        this.mensajeLogin = 'No fue posible iniciar sesión.';
+      }
+    });
+  }
+
+  irAIngresarEmpresa(): void {
     localStorage.setItem('destinoLogin', 'empresa');
-    this.router.navigate(['/ingresar']);
+
+    const usuarioGuardado = localStorage.getItem('usuarioLogueado');
+
+    if (usuarioGuardado) {
+      const usuario = JSON.parse(usuarioGuardado);
+
+      if (usuario?.rol === 'empresa') {
+        this.router.navigateByUrl('/empresa-panel/prestamos-empleados');
+        return;
+      }
+
+      if (usuario?.rol === 'administrador' || usuario?.rol === 'empleado') {
+        this.router.navigateByUrl('/panel/dashboard');
+        return;
+      }
+
+      if (usuario?.rol === 'cliente') {
+        this.router.navigateByUrl('/panel/mis-prestamos');
+        return;
+      }
+    }
+
+    this.router.navigateByUrl('/ingresar');
   }
 
   solicitarDemo(): void {
@@ -30,18 +105,19 @@ export class EmpresasComponent {
   }
 
   verProductos(): void {
-    alert('Productos empresariales: préstamos a empleados, cupos empresariales, pagos y reportes.');
+    alert('PrestaFácil Empresas es un software para que empresas administren préstamos internos a empleados.');
   }
 
   irAPersonas(): void {
-    this.router.navigate(['/personas']);
+    localStorage.removeItem('destinoLogin');
+    this.router.navigateByUrl('/personas');
   }
 
   irAPagos(): void {
-    alert('Pagos empresariales: próximamente podrás consultar pagos, abonos y comprobantes.');
+    alert('Los pagos de empleados estarán disponibles dentro del panel empresarial.');
   }
 
   irAtencion(): void {
-    alert('Atención empresarial: soporte para empresas, empleados y administradores.');
+    alert('Atención empresarial: soporte para empresas que usan PrestaFácil.');
   }
 }

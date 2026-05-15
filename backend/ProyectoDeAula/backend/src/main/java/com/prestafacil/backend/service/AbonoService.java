@@ -15,9 +15,30 @@ public class AbonoService {
         this.abonoRepository = abonoRepository;
     }
 
+    public List<Abono> listarAbonosPendientesClientes() {
+        return abonoRepository
+                .findByEstadoAndPrestamoClienteIsNotNullOrderByFechaDesc("PENDIENTE");
+    }
+
+
+
+    public List<Abono> listarAbonosPendientesEmpleadosPorEmpresa(Long empresaId) {
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El id de la empresa es obligatorio.");
+        }
+
+        return abonoRepository
+                .findByEstadoAndPrestamoClienteIsNullAndPrestamoEmpresaIdOrderByFechaDesc(
+                        "PENDIENTE",
+                        empresaId
+                );
+    }
+
     public List<Abono> listarAbonos() {
         return abonoRepository.findAll();
     }
+
+
 
     public List<Abono> listarAbonosPorPrestamo(Long prestamoId) {
         return abonoRepository.findByPrestamoId(prestamoId);

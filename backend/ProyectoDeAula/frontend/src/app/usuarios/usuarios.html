@@ -87,15 +87,6 @@
     </article>
 
     <article class="stat-card">
-      <div class="stat-icon green">💼</div>
-
-      <div>
-        <span>Empleados</span>
-        <strong>{{ contarPorRol('empleado') }}</strong>
-      </div>
-    </article>
-
-    <article class="stat-card">
       <div class="stat-icon amber">👤</div>
 
       <div>
@@ -103,6 +94,16 @@
         <strong>{{ contarPorRol('cliente') }}</strong>
       </div>
     </article>
+
+    <article class="stat-card">
+      <div class="stat-icon teal">🏢</div>
+
+      <div>
+        <span>Empresas</span>
+        <strong>{{ contarPorRol('empresa') }}</strong>
+      </div>
+    </article>
+
 
   </section>
 
@@ -122,7 +123,7 @@
         <p>
           {{
           usuarioEditando
-          ? 'Actualiza la información del usuario seleccionado. Si no deseas cambiar la contraseña, puedes dejarla vacía si tu backend lo permite.'
+          ? 'Actualiza la información del usuario seleccionado. Si no deseas cambiar la contraseña, déjala vacía.'
           : 'Registra un nuevo usuario para acceder al sistema.'
           }}
         </p>
@@ -166,8 +167,10 @@
         >
           <option value="">Seleccione un rol</option>
           <option value="administrador">Administrador</option>
-          <option value="empleado">Empleado</option>
+          <option value="empleado">Empleado PrestaFácil</option>
           <option value="cliente">Cliente</option>
+          <option value="empresa">Empresa</option>
+          <option value="empleado_empresa">Empleado empresa</option>
         </select>
       </div>
 
@@ -274,17 +277,19 @@
           </td>
 
           <td>
-              <span
-                class="badge-role"
-                [ngClass]="{
-                  'role-admin': usuario.rol === 'administrador',
-                  'role-empleado': usuario.rol === 'empleado',
-                  'role-cliente': usuario.rol === 'cliente',
-                  'role-empty': !usuario.rol
-                }"
-              >
-                {{ obtenerRolFormateado(usuario.rol) }}
-              </span>
+            <span
+              class="badge-role"
+              [ngClass]="{
+                'role-admin': usuario.rol === 'administrador',
+                'role-empleado': usuario.rol === 'empleado',
+                'role-cliente': usuario.rol === 'cliente',
+                'role-empresa': usuario.rol === 'empresa',
+                'role-empleado-empresa': usuario.rol === 'empleado_empresa',
+                'role-empty': !usuario.rol
+              }"
+            >
+              {{ obtenerRolFormateado(usuario.rol) }}
+            </span>
           </td>
 
           <td>

@@ -39,6 +39,50 @@ export class ClientesComponent implements OnInit {
   }
 
   cargarClientes(): void {
+
+    const usuarioLogueado = JSON.parse(
+      localStorage.getItem('usuarioLogueado') || '{}'
+    );
+
+    const rol = (
+      usuarioLogueado?.rol ||
+      usuarioLogueado?.tipoUsuario ||
+      ''
+    ).toUpperCase();
+
+    // EMPRESA → solo sus clientes
+    if (rol === 'EMPRESA') {
+
+      const empresaId = usuarioLogueado?.empresaId;
+
+      if (!empresaId) {
+        this.clientes = [];
+        return;
+      }
+
+      this.clienteService.listarPorEmpresa(empresaId).subscribe({
+        next: (data: any[]) => {
+          this.clientes = data || [];
+          this.cdr.detectChanges();
+        },
+
+        error: (err: any) => {
+          console.error('Error al cargar clientes de empresa', err);
+
+          this.clientes = [];
+          this.mostrarToast(
+            'No fue posible cargar los clientes.',
+            'error'
+          );
+
+          this.cdr.detectChanges();
+        }
+      });
+
+      return;
+    }
+
+    // ADMIN → todos los clientes
     this.clienteService.listarClientes().subscribe({
       next: (data: any[]) => {
         this.clientes = data || [];
@@ -49,7 +93,10 @@ export class ClientesComponent implements OnInit {
         console.error('Error al cargar clientes', err);
 
         this.clientes = [];
-        this.mostrarToast('No fue posible cargar los clientes.', 'error');
+        this.mostrarToast(
+          'No fue posible cargar los clientes.',
+          'error'
+        );
 
         this.cdr.detectChanges();
       }
@@ -57,24 +104,55 @@ export class ClientesComponent implements OnInit {
   }
 
   crearCliente(): void {
+
     if (!this.formularioValido()) {
-      this.mostrarToast('Debes completar nombre, cédula, teléfono y dirección.', 'warning');
+      this.mostrarToast(
+        'Debes completar nombre, cédula, teléfono y dirección.',
+        'warning'
+      );
       return;
     }
 
-    this.clienteService.crearCliente(this.nuevoCliente).subscribe({
+    const usuarioLogueado = JSON.parse(
+      localStorage.getItem('usuarioLogueado') || '{}'
+    );
+
+    const clienteCrear: any = {
+      ...this.nuevoCliente
+    };
+
+    const rol = (
+      usuarioLogueado?.rol ||
+      usuarioLogueado?.tipoUsuario ||
+      ''
+    ).toUpperCase();
+
+    // EMPRESA → guarda empresaId
+    if (rol === 'EMPRESA') {
+      clienteCrear.empresaId = usuarioLogueado?.empresaId;
+    }
+
+    this.clienteService.crearCliente(clienteCrear).subscribe({
       next: () => {
+
         this.limpiarFormulario();
         this.cargarClientes();
 
-        this.mostrarToast('Cliente creado correctamente.', 'success');
+        this.mostrarToast(
+          'Cliente creado correctamente.',
+          'success'
+        );
+
         this.cdr.detectChanges();
       },
 
       error: (err: any) => {
         console.error('Error al crear cliente', err);
 
-        const mensaje = err?.error?.mensaje || 'No fue posible crear el cliente.';
+        const mensaje =
+          err?.error?.mensaje ||
+          'No fue posible crear el cliente.';
+
         this.mostrarToast(mensaje, 'error');
 
         this.cdr.detectChanges();
@@ -83,6 +161,7 @@ export class ClientesComponent implements OnInit {
   }
 
   editarCliente(cliente: any): void {
+
     this.clienteEditando = cliente;
 
     this.nuevoCliente = {
@@ -92,28 +171,42 @@ export class ClientesComponent implements OnInit {
       direccion: cliente.direccion || ''
     };
 
-    this.mostrarToast('Modo edición activado para el cliente seleccionado.', 'info');
+    this.mostrarToast(
+      'Modo edición activado para el cliente seleccionado.',
+      'info'
+    );
+
     this.cdr.detectChanges();
 
     setTimeout(() => {
+
       const form = document.getElementById('formCliente');
+
       if (form) {
         form.scrollIntoView({
           behavior: 'smooth',
           block: 'center'
         });
       }
+
     }, 100);
   }
 
   actualizarCliente(): void {
+
     if (!this.clienteEditando) {
-      this.mostrarToast('No hay ningún cliente seleccionado para actualizar.', 'warning');
+      this.mostrarToast(
+        'No hay ningún cliente seleccionado para actualizar.',
+        'warning'
+      );
       return;
     }
 
     if (!this.formularioValido()) {
-      this.mostrarToast('Debes completar todos los campos antes de actualizar.', 'warning');
+      this.mostrarToast(
+        'Debes completar todos los campos antes de actualizar.',
+        'warning'
+      );
       return;
     }
 
@@ -122,48 +215,74 @@ export class ClientesComponent implements OnInit {
       nombre: this.nuevoCliente.nombre,
       cedula: this.nuevoCliente.cedula,
       telefono: this.nuevoCliente.telefono,
-      direccion: this.nuevoCliente.direccion
+      direccion: this.nuevoCliente.direccion,
+      empresaId: this.clienteEditando.empresaId
     };
 
-    this.clienteService.actualizarCliente(clienteActualizado.id, clienteActualizado).subscribe({
-      next: () => {
-        this.cancelarEdicion();
-        this.cargarClientes();
+    this.clienteService
+      .actualizarCliente(clienteActualizado.id, clienteActualizado)
+      .subscribe({
 
-        this.mostrarToast('Cliente actualizado correctamente.', 'success');
-        this.cdr.detectChanges();
-      },
+        next: () => {
 
-      error: (err: any) => {
-        console.error('Error al actualizar cliente', err);
+          this.cancelarEdicion();
+          this.cargarClientes();
 
-        const mensaje = err?.error?.mensaje || 'No fue posible actualizar el cliente.';
-        this.mostrarToast(mensaje, 'error');
+          this.mostrarToast(
+            'Cliente actualizado correctamente.',
+            'success'
+          );
 
-        this.cdr.detectChanges();
-      }
-    });
+          this.cdr.detectChanges();
+        },
+
+        error: (err: any) => {
+
+          console.error('Error al actualizar cliente', err);
+
+          const mensaje =
+            err?.error?.mensaje ||
+            'No fue posible actualizar el cliente.';
+
+          this.mostrarToast(mensaje, 'error');
+
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   eliminarCliente(id: number): void {
-    const confirmar = confirm('¿Seguro que deseas eliminar este cliente?');
+
+    const confirmar = confirm(
+      '¿Seguro que deseas eliminar este cliente?'
+    );
 
     if (!confirmar) {
       return;
     }
 
     this.clienteService.eliminarCliente(id).subscribe({
+
       next: () => {
+
         this.cargarClientes();
 
-        this.mostrarToast('Cliente eliminado correctamente.', 'success');
+        this.mostrarToast(
+          'Cliente eliminado correctamente.',
+          'success'
+        );
+
         this.cdr.detectChanges();
       },
 
       error: (err: any) => {
+
         console.error('Error al eliminar cliente', err);
 
-        const mensaje = err?.error?.mensaje || 'No fue posible eliminar el cliente.';
+        const mensaje =
+          err?.error?.mensaje ||
+          'No fue posible eliminar el cliente.';
+
         this.mostrarToast(mensaje, 'error');
 
         this.cdr.detectChanges();
@@ -172,12 +291,15 @@ export class ClientesComponent implements OnInit {
   }
 
   cancelarEdicion(): void {
+
     this.clienteEditando = null;
     this.limpiarFormulario();
+
     this.cdr.detectChanges();
   }
 
   limpiarFormulario(): void {
+
     this.nuevoCliente = {
       nombre: '',
       cedula: '',
@@ -187,6 +309,7 @@ export class ClientesComponent implements OnInit {
   }
 
   formularioValido(): boolean {
+
     return !!(
       this.nuevoCliente.nombre?.trim() &&
       this.nuevoCliente.cedula?.trim() &&
@@ -196,6 +319,7 @@ export class ClientesComponent implements OnInit {
   }
 
   obtenerClientesFiltrados(): any[] {
+
     const texto = this.busqueda.trim().toLowerCase();
 
     if (!texto) {
@@ -203,6 +327,7 @@ export class ClientesComponent implements OnInit {
     }
 
     return this.clientes.filter((cliente: any) => {
+
       const nombre = String(cliente.nombre || '').toLowerCase();
       const cedula = String(cliente.cedula || '').toLowerCase();
       const telefono = String(cliente.telefono || '').toLowerCase();
@@ -218,29 +343,40 @@ export class ClientesComponent implements OnInit {
   }
 
   obtenerInicialCliente(cliente: any): string {
+
     const nombre = cliente?.nombre || 'C';
+
     return nombre.charAt(0).toUpperCase();
   }
 
   contarConTelefono(): number {
-    return this.clientes.filter((cliente: any) => !!cliente.telefono).length;
+
+    return this.clientes.filter(
+      (cliente: any) => !!cliente.telefono
+    ).length;
   }
 
   contarConDireccion(): number {
-    return this.clientes.filter((cliente: any) => !!cliente.direccion).length;
+
+    return this.clientes.filter(
+      (cliente: any) => !!cliente.direccion
+    ).length;
   }
 
   mostrarToast(
     mensaje: string,
     tipo: 'success' | 'error' | 'warning' | 'info' = 'info'
   ): void {
+
     this.toastMensaje = mensaje;
     this.toastTipo = tipo;
     this.toastVisible = true;
 
     setTimeout(() => {
+
       this.toastVisible = false;
       this.cdr.detectChanges();
+
     }, 4200);
   }
 }

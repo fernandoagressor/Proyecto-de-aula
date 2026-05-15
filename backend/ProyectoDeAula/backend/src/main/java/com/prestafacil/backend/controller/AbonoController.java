@@ -38,6 +38,23 @@ public class AbonoController {
                 .map(this::convertirAbonoARespuesta)
                 .collect(Collectors.toList());
     }
+    @GetMapping("/pendientes/clientes")
+    public List<Map<String, Object>> listarPendientesClientes() {
+        return abonoService.listarAbonosPendientesClientes()
+                .stream()
+                .map(this::convertirAbonoARespuesta)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/pendientes/empresa/{empresaId}")
+    public List<Map<String, Object>> listarPendientesEmpresa(
+            @PathVariable Long empresaId
+    ) {
+        return abonoService.listarAbonosPendientesEmpleadosPorEmpresa(empresaId)
+                .stream()
+                .map(this::convertirAbonoARespuesta)
+                .collect(Collectors.toList());
+    }
 
     @GetMapping("/prestamo/{prestamoId}")
     public List<Map<String, Object>> listarAbonosPorPrestamo(@PathVariable Long prestamoId) {
@@ -88,6 +105,10 @@ public class AbonoController {
             prestamoMap.put("id", prestamo.getId());
             prestamoMap.put("monto", prestamo.getMonto());
             prestamoMap.put("plazoMeses", prestamo.getPlazoMeses());
+            prestamoMap.put("empleadoNombre", prestamo.getEmpleadoNombre());
+            prestamoMap.put("empleadoCedula", prestamo.getEmpleadoCedula());
+            prestamoMap.put("empleadoCargo", prestamo.getEmpleadoCargo());
+            prestamoMap.put("empresaId", prestamo.getEmpresaId());
             prestamoMap.put("interes", prestamo.getInteres());
             prestamoMap.put("saldoPendiente", prestamo.getSaldoPendiente());
             prestamoMap.put("cuotaMensual", prestamo.getCuotaMensual());

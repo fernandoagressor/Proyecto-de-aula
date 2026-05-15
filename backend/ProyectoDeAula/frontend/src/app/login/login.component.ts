@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,27 +11,15 @@ import { UsuarioService } from '../services/usuario.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+
 
   loginNombre: string = '';
   loginPassword: string = '';
   mensajeLogin: string = '';
 
-  recordarUsuario: boolean = false;
-  mostrarPassword: boolean = false;
-
   ayudaAbierta: boolean = false;
-  modalRecuperacionAbierto: boolean = false;
-  modalRegistroAbierto: boolean = false;
-
-  correoRecuperacion: string = '';
-
-  seccionActiva: 'personas' | 'empresas' | 'productos' | 'pagos' | 'atencion' | 'login' = 'personas';
-
-  menuProductosAbierto: boolean = false;
-  menuPagosAbierto: boolean = false;
-  menuAtencionAbierto: boolean = false;
-
+  seccionActiva: 'personas' | 'empresas' = 'personas';
   toastVisible: boolean = false;
   toastMensaje: string = '';
   toastTipo: 'info' | 'error' | 'success' | 'warning' = 'info';
@@ -41,168 +29,36 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    const usuarioRecordado = localStorage.getItem('usuarioRecordado');
-
-    if (usuarioRecordado) {
-      this.loginNombre = usuarioRecordado;
-      this.recordarUsuario = true;
-    }
-
-    const destinoLogin = localStorage.getItem('destinoLogin');
-
-    if (destinoLogin === 'empresa') {
-      this.seccionActiva = 'empresas';
-    }
-  }
-
-  // =============================
-  // MENÚ PRINCIPAL
-  // =============================
-
-  irPersonas(): void {
-    this.seccionActiva = 'personas';
-    this.cerrarMenus();
-    this.router.navigate(['/personas']);
-    this.mostrarToast('Estás en la sección de préstamos para personas.', 'info');
-  }
-
-  irEmpresas(): void {
-    this.seccionActiva = 'empresas';
-    this.cerrarMenus();
-    this.router.navigate(['/empresas']);
-    this.mostrarToast('Sección empresas: préstamos empresariales para empleados.', 'info');
-  }
-
-  toggleProductos(): void {
-    this.menuProductosAbierto = !this.menuProductosAbierto;
-    this.menuPagosAbierto = false;
-    this.menuAtencionAbierto = false;
-    this.seccionActiva = 'productos';
-  }
-
-  togglePagos(): void {
-    this.menuPagosAbierto = !this.menuPagosAbierto;
-    this.menuProductosAbierto = false;
-    this.menuAtencionAbierto = false;
-    this.seccionActiva = 'pagos';
-  }
-
-  toggleAtencion(): void {
-    this.menuAtencionAbierto = !this.menuAtencionAbierto;
-    this.menuProductosAbierto = false;
-    this.menuPagosAbierto = false;
-    this.seccionActiva = 'atencion';
-  }
-
-  irAIngresar(): void {
-    this.seccionActiva = 'login';
-    this.cerrarMenus();
-    this.router.navigate(['/ingresar']);
-    this.irALogin();
-  }
-
-  cerrarMenus(): void {
-    this.menuProductosAbierto = false;
-    this.menuPagosAbierto = false;
-    this.menuAtencionAbierto = false;
-  }
-
-  // =============================
-  // ACCIONES PRODUCTOS
-  // =============================
-
-  abrirProducto(tipo: string): void {
-    this.cerrarMenus();
-
-    if (tipo === 'personales') {
-      this.mostrarToast('Préstamos personales: solicita, consulta y paga tus créditos.', 'info');
-      this.seccionActiva = 'personas';
-      return;
-    }
-
-    if (tipo === 'empresariales') {
-      this.mostrarToast('Préstamos empresariales: financiación para empleados de empresas aliadas.', 'info');
-      this.seccionActiva = 'empresas';
-      this.router.navigate(['/empresas']);
-      return;
-    }
-
-    if (tipo === 'simulador') {
-      this.mostrarToast('Próximamente conectaremos un simulador de crédito.', 'warning');
-      return;
-    }
-
-    if (tipo === 'comprobantes') {
-      this.mostrarToast('Los comprobantes estarán disponibles al iniciar sesión.', 'info');
-      this.irAIngresar();
-    }
-  }
-
-  // =============================
-  // ACCIONES PAGOS
-  // =============================
-
-  abrirPago(tipo: string): void {
-    this.cerrarMenus();
-
-    if (tipo === 'pse') {
-      this.mostrarToast('Para pagar por PSE debes iniciar sesión como cliente.', 'info');
-      this.irAIngresar();
-      return;
-    }
-
-    if (tipo === 'historial') {
-      this.mostrarToast('El historial de pagos está disponible dentro del panel del cliente.', 'info');
-      this.irAIngresar();
-      return;
-    }
-
-    if (tipo === 'comprobante') {
-      this.mostrarToast('Para consultar comprobantes debes ingresar al sistema.', 'info');
-      this.irAIngresar();
-    }
-  }
-
-  // =============================
-  // ACCIONES ATENCIÓN
-  // =============================
-
-  abrirAtencion(tipo: string): void {
-    this.cerrarMenus();
-
-    if (tipo === 'ayuda') {
-      this.ayudaAbierta = true;
-      this.mostrarToast('Centro de ayuda abierto.', 'info');
-      return;
-    }
-
-    if (tipo === 'preguntas') {
-      this.mostrarToast('Preguntas frecuentes: préstamos, pagos PSE, comprobantes y solicitudes.', 'info');
-      return;
-    }
-
-    if (tipo === 'contacto') {
-      this.mostrarToast('Soporte PrestaFácil: soporte@prestafacil.com - Línea: 018000 123 456', 'info');
-      return;
-    }
-
-    if (tipo === 'soporte') {
-      this.ayudaAbierta = true;
-      this.mostrarToast('Un asesor simulado te guiará con el acceso al sistema.', 'info');
-    }
-  }
-
-  // =============================
-  // AYUDA
-  // =============================
-
   abrirCerrarAyuda(): void {
     this.ayudaAbierta = !this.ayudaAbierta;
   }
 
   cerrarAyuda(): void {
     this.ayudaAbierta = false;
+  }
+
+  irALogin(): void {
+    const elemento = document.getElementById('loginCard');
+
+    if (elemento) {
+      elemento.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  }
+
+  mostrarToast(
+    mensaje: string,
+    tipo: 'info' | 'error' | 'success' | 'warning' = 'info'
+  ): void {
+    this.toastMensaje = mensaje;
+    this.toastTipo = tipo;
+    this.toastVisible = true;
+
+    setTimeout(() => {
+      this.toastVisible = false;
+    }, 4200);
   }
 
   mostrarAyuda(mensaje: string): void {
@@ -221,26 +77,44 @@ export class LoginComponent implements OnInit {
     this.irALogin();
   }
 
-  // =============================
-  // LOGIN
-  // =============================
+  irPersonas(): void {
+    this.seccionActiva = 'personas';
+    localStorage.removeItem('destinoLogin');
 
-  irALogin(): void {
-    const elemento = document.getElementById('loginCard');
+    this.mostrarToast(
+      'Ingreso para personas activado.',
+      'info'
+    );
 
-    if (elemento) {
-      elemento.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
-      });
-    }
+    this.irALogin();
   }
 
-  alternarMostrarPassword(): void {
-    this.mostrarPassword = !this.mostrarPassword;
+  irEmpresas(): void {
+    localStorage.setItem('destinoLogin', 'empresa');
+    this.router.navigate(['/empresas']);
+  }
+
+  abrirProducto(tipo: string): void {
+    if (tipo === 'simulador') {
+      this.mostrarToast('Simulador de crédito disponible próximamente en esta sección.', 'info');
+      return;
+    }
+
+    this.mostrarToast('Producto disponible dentro del portal.', 'info');
+  }
+
+  abrirPago(tipo: string): void {
+    this.mostrarToast('Para realizar pagos debes iniciar sesión y entrar a Mis préstamos.', 'info');
+    this.irALogin();
+  }
+
+  abrirAtencion(tipo: string): void {
+    this.ayudaAbierta = true;
+    this.mostrarToast('Centro de ayuda abierto.', 'info');
   }
 
   iniciarSesion(): void {
+
     this.mensajeLogin = '';
 
     if (!this.loginNombre || !this.loginPassword) {
@@ -249,8 +123,10 @@ export class LoginComponent implements OnInit {
       return;
     }
 
+
+
     const datosLogin = {
-      nombre: this.loginNombre.trim(),
+      nombre: this.loginNombre,
       password: this.loginPassword
     };
 
@@ -264,32 +140,11 @@ export class LoginComponent implements OnInit {
           return;
         }
 
-        if (this.recordarUsuario) {
-          localStorage.setItem('usuarioRecordado', this.loginNombre.trim());
-        } else {
-          localStorage.removeItem('usuarioRecordado');
-        }
-
         localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
 
         this.mostrarToast('Inicio de sesión exitoso. Redirigiendo...', 'success');
 
         setTimeout(() => {
-          const destinoLogin = localStorage.getItem('destinoLogin');
-
-          if (destinoLogin === 'empresa') {
-            localStorage.removeItem('destinoLogin');
-
-            if (usuario.rol === 'administrador' || usuario.rol === 'empleado') {
-              this.router.navigate(['/empresa-panel/empresas']);
-              return;
-            }
-
-            this.mensajeLogin = 'Tu usuario no tiene permisos para ingresar al panel empresarial.';
-            this.mostrarToast(this.mensajeLogin, 'error');
-            return;
-          }
-
           if (usuario.rol === 'administrador' || usuario.rol === 'empleado') {
             this.router.navigate(['/panel/dashboard']);
             return;
@@ -297,6 +152,13 @@ export class LoginComponent implements OnInit {
 
           if (usuario.rol === 'cliente') {
             this.router.navigate(['/panel/mis-prestamos']);
+            return;
+          }
+
+          if (usuario.rol === 'empresa' || usuario.rol === 'empleado_empresa') {
+            this.mensajeLogin = 'Este acceso es solo para clientes. Ingresa desde la sección Empresas.';
+            this.mostrarToast(this.mensajeLogin, 'warning');
+            localStorage.removeItem('usuarioLogueado');
             return;
           }
 
@@ -319,71 +181,81 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+  irALoginEmpresa(): void {
+    const elemento = document.getElementById('loginEmpresaCard');
 
-  // =============================
-  // RECUPERAR CONTRASEÑA
-  // =============================
-
-  abrirRecuperacion(): void {
-    this.modalRecuperacionAbierto = true;
-    this.cerrarMenus();
+    if (elemento) {
+      elemento.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
   }
 
-  cerrarRecuperacion(): void {
-    this.modalRecuperacionAbierto = false;
-    this.correoRecuperacion = '';
-  }
+  iniciarSesionEmpresa(): void {
 
-  enviarRecuperacion(): void {
-    if (!this.correoRecuperacion || !this.correoRecuperacion.includes('@')) {
-      this.mostrarToast('Ingresa un correo válido para recuperar tu contraseña.', 'warning');
+    this.mensajeLogin = '';
+
+    if (!this.loginNombre || !this.loginPassword) {
+
+      this.mensajeLogin =
+        'Debes ingresar usuario y contraseña empresarial.';
+
+      this.mostrarToast(this.mensajeLogin, 'warning');
       return;
     }
 
-    this.mostrarToast(
-      'Solicitud enviada. Si el correo está registrado, recibirás instrucciones de recuperación.',
-      'success'
-    );
+    const datosLogin = {
+      nombre: this.loginNombre,
+      password: this.loginPassword
+    };
 
-    this.cerrarRecuperacion();
-  }
+    this.usuarioService.login(datosLogin).subscribe({
 
-  // =============================
-  // REGISTRO / CUENTA NUEVA SIMULADA
-  // =============================
+      next: (usuario: any) => {
 
-  abrirRegistroCliente(): void {
-    this.modalRegistroAbierto = true;
-    this.cerrarMenus();
-  }
+        if (!usuario) {
 
-  cerrarRegistroCliente(): void {
-    this.modalRegistroAbierto = false;
-  }
+          this.mensajeLogin =
+            'Usuario o contraseña incorrectos.';
 
-  solicitarCuentaCliente(): void {
-    this.mostrarToast(
-      'Solicitud recibida. Un administrador deberá crear tu usuario cliente desde el panel.',
-      'success'
-    );
+          this.mostrarToast(this.mensajeLogin, 'error');
+          return;
+        }
 
-    this.cerrarRegistroCliente();
-  }
+        localStorage.setItem(
+          'usuarioLogueado',
+          JSON.stringify(usuario)
+        );
 
-  // =============================
-  // TOAST
-  // =============================
+        if (usuario.rol === 'empresa') {
 
-  mostrarToast(
-    mensaje: string,
-    tipo: 'info' | 'error' | 'success' | 'warning' = 'info'
-  ): void {
-    this.toastMensaje = mensaje;
-    this.toastTipo = tipo;
-    this.toastVisible = true;
+          this.router.navigate(['/empresa-panel/empleados']);
+          return;
+        }
 
-    setTimeout(() => {
-      this.toastVisible = false;
-    }, 4200);
+        if (usuario.rol === 'empleado_empresa') {
+
+          this.router.navigate([
+            '/empresa-panel/mis-prestamos-empleado'
+          ]);
+
+          return;
+        }
+
+        this.mensajeLogin =
+          'Este acceso es solo para empresas o empleados empresariales.';
+
+        this.mostrarToast(this.mensajeLogin, 'error');
+      },
+
+      error: () => {
+
+        this.mensajeLogin =
+          'No fue posible iniciar sesión.';
+
+        this.mostrarToast(this.mensajeLogin, 'error');
+      }
+    });
   }
 }

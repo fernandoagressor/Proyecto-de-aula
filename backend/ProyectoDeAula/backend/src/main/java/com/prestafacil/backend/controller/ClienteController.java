@@ -46,6 +46,11 @@ public class ClienteController {
         // Llama al servicio para obtener todos los clientes desde MySQL.
         return clienteService.listarClientes();
     }
+    @GetMapping("/empresa/{empresaId}")
+    public List<Cliente> listarClientesPorEmpresa(@PathVariable Long empresaId) {
+
+        return clienteService.listarClientesPorEmpresa(empresaId);
+    }
 
     // Método que atiende GET a:
     // http://localhost:8080/api/clientes/{id}

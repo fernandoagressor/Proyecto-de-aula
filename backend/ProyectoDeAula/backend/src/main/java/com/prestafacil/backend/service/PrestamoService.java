@@ -1,5 +1,7 @@
 package com.prestafacil.backend.service;
 
+import com.prestafacil.backend.model.EmpleadoEmpresa;
+import com.prestafacil.backend.repository.EmpleadoEmpresaRepository;
 import com.prestafacil.backend.model.Abono;
 import com.prestafacil.backend.model.Cliente;
 import com.prestafacil.backend.model.ConfiguracionSistema;
@@ -31,24 +33,47 @@ public class PrestamoService {
     private final AbonoRepository abonoRepository;
     private final ConfiguracionSistemaRepository configuracionSistemaRepository;
     private final NotificacionService notificacionService;
+    private final EmpleadoEmpresaRepository empleadoEmpresaRepository;
 
     public PrestamoService(
             PrestamoRepository prestamoRepository,
             ClienteRepository clienteRepository,
             AbonoRepository abonoRepository,
             ConfiguracionSistemaRepository configuracionSistemaRepository,
-            NotificacionService notificacionService
+            NotificacionService notificacionService,
+            EmpleadoEmpresaRepository empleadoEmpresaRepository
     ) {
         this.prestamoRepository = prestamoRepository;
         this.clienteRepository = clienteRepository;
         this.abonoRepository = abonoRepository;
         this.configuracionSistemaRepository = configuracionSistemaRepository;
         this.notificacionService = notificacionService;
+        this.empleadoEmpresaRepository = empleadoEmpresaRepository;
     }
 
     public List<Prestamo> listarPrestamos() {
         return prestamoRepository.findAll();
     }
+    // =============================
+// ADMIN → SOLO CLIENTES
+// =============================
+    public List<Prestamo> listarPrestamosClientes() {
+
+        return prestamoRepository.findByClienteIsNotNull();
+    }
+
+    // =============================
+// EMPRESA → SOLO EMPLEADOS
+// =============================
+    public List<Prestamo> listarPrestamosEmpleadosPorEmpresa(Long empresaId) {
+
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El id de la empresa es obligatorio.");
+        }
+
+        return prestamoRepository.findByEmpresaIdAndClienteIsNull(empresaId);
+    }
+
 
     public List<Prestamo> listarPrestamosPorCliente(Long clienteId) {
         if (clienteId == null) {
@@ -56,6 +81,25 @@ public class PrestamoService {
         }
 
         return prestamoRepository.findByClienteId(clienteId);
+    }
+
+    public List<Prestamo> listarPrestamosPorEmpleado(Long empleadoId) {
+        if (empleadoId == null) {
+            throw new IllegalArgumentException("El id del empleado es obligatorio.");
+        }
+
+        EmpleadoEmpresa empleado = empleadoEmpresaRepository.findById(empleadoId)
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado."));
+
+        return prestamoRepository.findByEmpleadoCedula(empleado.getCedula());
+    }
+    public List<Prestamo> listarPrestamosPorEmpresa(Long empresaId) {
+
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El id de la empresa es obligatorio.");
+        }
+
+        return prestamoRepository.findByEmpresaId(empresaId);
     }
 
     public Prestamo obtenerPorId(Long id) {
@@ -88,6 +132,54 @@ public class PrestamoService {
                 "Nueva solicitud de préstamo",
                 "El cliente " + obtenerNombreCliente(cliente) +
                         " solicitó un préstamo por " + formatearDinero(monto) +
+                        " a " + plazoMeses + " meses."
+        );
+
+        return prestamoGuardado;
+    }
+    @Transactional
+    public Prestamo solicitarPrestamoEmpleado(
+            Long empleadoId,
+            Long empresaId,
+            Double monto,
+            Integer plazoMeses
+    ) {
+
+        if (empleadoId == null) {
+            throw new IllegalArgumentException("El empleado es obligatorio.");
+        }
+
+        if (empresaId == null) {
+            throw new IllegalArgumentException("La empresa es obligatoria.");
+        }
+
+        validarSolicitudPrestamo(empleadoId, monto, plazoMeses);
+
+        EmpleadoEmpresa empleado = empleadoEmpresaRepository.findById(empleadoId)
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado."));
+
+        Double interes = obtenerTasaInteresActual();
+
+        Prestamo prestamo = new Prestamo();
+
+        prestamo.prepararSolicitudEmpleado(
+                empleado.getNombre(),
+                empleado.getCedula(),
+                empleado.getCargo(),
+                empresaId,
+                monto,
+                plazoMeses,
+                interes
+        );
+
+        Prestamo prestamoGuardado = prestamoRepository.save(prestamo);
+
+        notificacionService.crearAdministrativa(
+                "🏢",
+                "Nueva solicitud de préstamo empleado",
+                "El empleado " + empleado.getNombre() +
+                        " solicitó un préstamo por " +
+                        formatearDinero(monto) +
                         " a " + plazoMeses + " meses."
         );
 

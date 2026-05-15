@@ -49,6 +49,14 @@ public class ClienteService {
         // Llama al repositorio → SELECT * FROM cliente
         return clienteRepository.findAll();
     }
+    public List<Cliente> listarClientesPorEmpresa(Long empresaId) {
+
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El id de la empresa es obligatorio.");
+        }
+
+        return clienteRepository.findByEmpresaId(empresaId);
+    }
 
     // =============================
     // OBTENER CLIENTE POR ID
@@ -71,6 +79,7 @@ public class ClienteService {
 
         // 1. Guarda el cliente en MySQL.
         // Internamente ejecuta un INSERT.
+
         Cliente clienteGuardado = clienteRepository.save(cliente);
 
         // 2. Crea un usuario automáticamente para ese cliente.
@@ -87,6 +96,7 @@ public class ClienteService {
 
         // Relaciona el usuario con el cliente.
         usuario.setClienteId(clienteGuardado.getId());
+
 
         // Guarda el usuario en la tabla usuario.
         usuarioRepository.save(usuario);

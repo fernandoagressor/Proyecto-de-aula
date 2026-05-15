@@ -175,6 +175,9 @@ export class MainLayoutComponent implements OnInit {
     if (rol === 'empleado') {
       return 'Empleado';
     }
+    if (rol === 'empresa') {
+      return 'Empresa';
+    }
 
     if (rol === 'cliente') {
       return 'Cliente';

@@ -3,10 +3,10 @@
   <!-- Encabezado -->
   <section class="page-header">
     <div>
-      <span class="page-eyebrow">Módulo empresarial</span>
-      <h1 class="page-title">Empresas aliadas</h1>
+      <span class="page-eyebrow">Panel empresarial</span>
+      <h1 class="page-title">Mi empresa</h1>
       <p class="page-description">
-        Registra y administra empresas que ofrecen préstamos empresariales a sus empleados.
+        Administra la información de la empresa que usa PrestaFácil para otorgar préstamos internos a sus empleados.
       </p>
     </div>
   </section>
@@ -21,23 +21,23 @@
 
     <article class="stat-card">
       <div class="stat-icon blue">🏢</div>
-      <span>Total empresas</span>
+      <span>Empresas configuradas</span>
       <strong>{{ empresas.length }}</strong>
-      <p>Empresas registradas en el sistema.</p>
+      <p>Empresas cliente registradas en esta instalación.</p>
     </article>
 
     <article class="stat-card">
       <div class="stat-icon green">✅</div>
       <span>Empresas activas</span>
       <strong>{{ totalEmpresasActivas() }}</strong>
-      <p>Empresas habilitadas para operar.</p>
+      <p>Empresas habilitadas para gestionar préstamos internos.</p>
     </article>
 
     <article class="stat-card">
       <div class="stat-icon amber">💰</div>
-      <span>Cupo aprobado</span>
+      <span>Cartera autorizada</span>
       <strong>{{ formatearDinero(totalCupoAprobado()) }}</strong>
-      <p>Cupo empresarial total asignado.</p>
+      <p>Monto disponible para préstamos internos a empleados.</p>
     </article>
 
   </section>
@@ -47,9 +47,9 @@
 
     <div class="section-header">
       <div>
-        <h2>{{ empresaEditando ? 'Editar empresa' : 'Registrar empresa aliada' }}</h2>
+        <h2>{{ empresaEditando ? 'Editar empresa cliente' : 'Registrar empresa cliente' }}</h2>
         <p>
-          {{ empresaEditando ? 'Actualiza la información de la empresa seleccionada.' : 'Agrega una empresa para asociar empleados y préstamos empresariales.' }}
+          {{ empresaEditando ? 'Actualiza la información de la empresa que usa el sistema.' : 'Registra la empresa que administrará préstamos internos para sus empleados.' }}
         </p>
       </div>
     </div>
@@ -57,7 +57,7 @@
     <div class="form-grid">
 
       <div class="form-field">
-        <label>Nombre de empresa</label>
+        <label>Nombre de la empresa</label>
         <input
           class="input-modern"
           type="text"
@@ -77,12 +77,12 @@
       </div>
 
       <div class="form-field">
-        <label>Responsable</label>
+        <label>Responsable interno</label>
         <input
           class="input-modern"
           type="text"
           [(ngModel)]="nuevaEmpresa.responsable"
-          placeholder="Nombre del contacto"
+          placeholder="Nombre del responsable"
         />
       </div>
 
@@ -97,7 +97,7 @@
       </div>
 
       <div class="form-field">
-        <label>Correo</label>
+        <label>Correo empresarial</label>
         <input
           class="input-modern"
           type="email"
@@ -107,12 +107,12 @@
       </div>
 
       <div class="form-field">
-        <label>Cupo aprobado</label>
+        <label>Cartera autorizada</label>
         <input
           class="input-modern"
           type="number"
           [(ngModel)]="nuevaEmpresa.cupoAprobado"
-          placeholder="Cupo aprobado"
+          placeholder="Monto autorizado"
         />
       </div>
 
@@ -167,8 +167,8 @@
 
     <div class="section-header table-header">
       <div>
-        <h2>Listado de empresas</h2>
-        <p>Consulta, edita o desactiva empresas aliadas.</p>
+        <h2>Empresas cliente</h2>
+        <p>Consulta, edita o desactiva empresas que usan PrestaFácil para préstamos internos.</p>
       </div>
 
       <span class="counter-chip">
@@ -187,7 +187,7 @@
           <th>NIT</th>
           <th>Responsable</th>
           <th>Contacto</th>
-          <th>Cupo aprobado</th>
+          <th>Cartera autorizada</th>
           <th>Estado</th>
           <th class="text-right">Acciones</th>
         </tr>
@@ -209,7 +209,7 @@
 
               <div>
                 <strong>{{ empresa.nombre }}</strong>
-                <span>Empresa aliada</span>
+                <span>Empresa cliente</span>
               </div>
             </div>
           </td>
@@ -234,15 +234,15 @@
           </td>
 
           <td>
-              <span
-                class="badge-status"
-                [ngClass]="{
-                  'status-active': empresa.estado === 'ACTIVA',
-                  'status-inactive': empresa.estado === 'INACTIVA'
-                }"
-              >
-                {{ empresa.estado }}
-              </span>
+            <span
+              class="badge-status"
+              [ngClass]="{
+                'status-active': empresa.estado === 'ACTIVA',
+                'status-inactive': empresa.estado === 'INACTIVA'
+              }"
+            >
+              {{ empresa.estado }}
+            </span>
           </td>
 
           <td>

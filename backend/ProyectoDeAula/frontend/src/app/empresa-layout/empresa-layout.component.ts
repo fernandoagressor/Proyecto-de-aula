@@ -65,6 +65,22 @@ export class EmpresaLayoutComponent implements OnInit {
       return 'Cliente';
     }
 
+    if (rol === 'empresa') {
+      return 'Empresa';
+    }
+
+    if (rol === 'empleado_empresa') {
+      return 'Empleado empresa';
+    }
+
     return 'Usuario empresarial';
+  }
+
+  esEmpresa(): boolean {
+    return this.usuarioLogueado?.rol === 'empresa';
+  }
+
+  esEmpleadoEmpresa(): boolean {
+    return this.usuarioLogueado?.rol === 'empleado_empresa';
   }
 }

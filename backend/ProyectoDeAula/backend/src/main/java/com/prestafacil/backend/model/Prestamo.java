@@ -11,36 +11,44 @@ public class Prestamo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Un cliente puede tener muchos préstamos
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "cliente_id", nullable = false)
+    // Cliente persona natural.
+    // Puede ser null si el préstamo pertenece a un empleado de empresa.
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    // Monto solicitado por el cliente
+    // Datos del empleado de empresa.
+    // Se usan cuando el préstamo no pertenece a un cliente natural.
+    @Column(name = "empleado_nombre")
+    private String empleadoNombre;
+
+    @Column(name = "empleado_cedula")
+    private String empleadoCedula;
+
+    @Column(name = "empleado_cargo")
+    private String empleadoCargo;
+
+    @Column(name = "empresa_id")
+    private Long empresaId;
+
     @Column(nullable = false)
     private Double monto;
 
-    // Plazo del préstamo en meses
     @Column(nullable = false)
     private Integer plazoMeses;
 
-    // Interés aplicado. Ejemplo: 0.05 representa 5%
     @Column(nullable = false)
     private Double interes;
 
-    // Total original a pagar con interés incluido
     @Column(nullable = false)
     private Double totalConInteres;
 
-    // Saldo pendiente actual
     @Column(nullable = false)
     private Double saldoPendiente;
 
-    // Valor mensual aproximado
     @Column(nullable = false)
     private Double cuotaMensual;
 
-    // Cuotas pendientes por pagar
     @Column(nullable = false)
     private Integer cuotasRestantes;
 
@@ -48,7 +56,6 @@ public class Prestamo {
     @Column(nullable = false)
     private EstadoPrestamo estado;
 
-    // Fechas para trazabilidad real
     private LocalDateTime fechaSolicitud;
     private LocalDateTime fechaAprobacion;
     private LocalDateTime fechaRechazo;
@@ -57,50 +64,25 @@ public class Prestamo {
     public Prestamo() {
     }
 
-    public Prestamo(
-            Long id,
+    public void prepararSolicitud(
             Cliente cliente,
             Double monto,
             Integer plazoMeses,
-            Double interes,
-            Double totalConInteres,
-            Double saldoPendiente,
-            Double cuotaMensual,
-            Integer cuotasRestantes,
-            EstadoPrestamo estado,
-            LocalDateTime fechaSolicitud,
-            LocalDateTime fechaAprobacion,
-            LocalDateTime fechaRechazo,
-            LocalDateTime fechaPago
+            Double interes
     ) {
-        this.id = id;
-        this.cliente = cliente;
-        this.monto = monto;
-        this.plazoMeses = plazoMeses;
-        this.interes = interes;
-        this.totalConInteres = totalConInteres;
-        this.saldoPendiente = saldoPendiente;
-        this.cuotaMensual = cuotaMensual;
-        this.cuotasRestantes = cuotasRestantes;
-        this.estado = estado;
-        this.fechaSolicitud = fechaSolicitud;
-        this.fechaAprobacion = fechaAprobacion;
-        this.fechaRechazo = fechaRechazo;
-        this.fechaPago = fechaPago;
-    }
+        validarDatosBase(monto, plazoMeses, interes);
 
-    // =============================
-    // MÉTODOS DE NEGOCIO
-    // =============================
-
-    /**
-     * Prepara un préstamo nuevo en estado pendiente.
-     * Se usa cuando el cliente o administrador crea una solicitud.
-     */
-    public void prepararSolicitud(Cliente cliente, Double monto, Integer plazoMeses, Double interes) {
-        validarDatosBase(cliente, monto, plazoMeses, interes);
+        if (cliente == null) {
+            throw new IllegalArgumentException("El cliente es obligatorio.");
+        }
 
         this.cliente = cliente;
+        this.empresaId = cliente.getEmpresaId();
+
+        this.empleadoNombre = null;
+        this.empleadoCedula = null;
+        this.empleadoCargo = null;
+
         this.monto = monto;
         this.plazoMeses = plazoMeses;
         this.interes = interes;
@@ -110,9 +92,48 @@ public class Prestamo {
         calcularValoresFinancieros();
     }
 
-    /**
-     * Aprueba el préstamo.
-     */
+    public void prepararSolicitudEmpleado(
+            String empleadoNombre,
+            String empleadoCedula,
+            String empleadoCargo,
+            Long empresaId,
+            Double monto,
+            Integer plazoMeses,
+            Double interes
+    ) {
+        validarDatosBase(monto, plazoMeses, interes);
+
+        if (empleadoNombre == null || empleadoNombre.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del empleado es obligatorio.");
+        }
+
+        if (empleadoCedula == null || empleadoCedula.trim().isEmpty()) {
+            throw new IllegalArgumentException("La cédula del empleado es obligatoria.");
+        }
+
+        if (empleadoCargo == null || empleadoCargo.trim().isEmpty()) {
+            throw new IllegalArgumentException("El cargo del empleado es obligatorio.");
+        }
+
+        if (empresaId == null) {
+            throw new IllegalArgumentException("El id de la empresa es obligatorio.");
+        }
+
+        this.cliente = null;
+        this.empleadoNombre = empleadoNombre;
+        this.empleadoCedula = empleadoCedula;
+        this.empleadoCargo = empleadoCargo;
+        this.empresaId = empresaId;
+
+        this.monto = monto;
+        this.plazoMeses = plazoMeses;
+        this.interes = interes;
+        this.estado = EstadoPrestamo.PENDIENTE;
+        this.fechaSolicitud = LocalDateTime.now();
+
+        calcularValoresFinancieros();
+    }
+
     public void aprobar() {
         if (this.estado != EstadoPrestamo.PENDIENTE) {
             throw new IllegalStateException("Solo se pueden aprobar préstamos pendientes.");
@@ -122,9 +143,6 @@ public class Prestamo {
         this.fechaAprobacion = LocalDateTime.now();
     }
 
-    /**
-     * Rechaza el préstamo.
-     */
     public void rechazar() {
         if (this.estado != EstadoPrestamo.PENDIENTE) {
             throw new IllegalStateException("Solo se pueden rechazar préstamos pendientes.");
@@ -134,9 +152,6 @@ public class Prestamo {
         this.fechaRechazo = LocalDateTime.now();
     }
 
-    /**
-     * Aplica un abono aprobado al préstamo.
-     */
     public void aplicarAbono(Double montoAbono) {
         if (this.estado != EstadoPrestamo.APROBADO) {
             throw new IllegalStateException("Solo se pueden abonar préstamos aprobados.");
@@ -144,6 +159,10 @@ public class Prestamo {
 
         if (montoAbono == null || montoAbono <= 0) {
             throw new IllegalArgumentException("El abono debe ser mayor a cero.");
+        }
+
+        if (this.saldoPendiente == null || this.saldoPendiente <= 0) {
+            throw new IllegalStateException("Este préstamo no tiene saldo pendiente.");
         }
 
         if (montoAbono > this.saldoPendiente) {
@@ -164,11 +183,8 @@ public class Prestamo {
         recalcularCuotasRestantes();
     }
 
-    /**
-     * Calcula monto total, saldo pendiente y cuota mensual.
-     */
     public void calcularValoresFinancieros() {
-        validarDatosBase(this.cliente, this.monto, this.plazoMeses, this.interes);
+        validarDatosBase(this.monto, this.plazoMeses, this.interes);
 
         this.totalConInteres = this.monto + (this.monto * this.interes);
         this.saldoPendiente = this.totalConInteres;
@@ -176,9 +192,6 @@ public class Prestamo {
         this.cuotasRestantes = this.plazoMeses;
     }
 
-    /**
-     * Recalcula cuotas restantes según saldo y cuota.
-     */
     public void recalcularCuotasRestantes() {
         if (this.saldoPendiente == null || this.saldoPendiente <= 0) {
             this.cuotasRestantes = 0;
@@ -193,14 +206,7 @@ public class Prestamo {
         this.cuotasRestantes = (int) Math.ceil(this.saldoPendiente / this.cuotaMensual);
     }
 
-    /**
-     * Valida datos mínimos para evitar préstamos incompletos.
-     */
-    private void validarDatosBase(Cliente cliente, Double monto, Integer plazoMeses, Double interes) {
-        if (cliente == null) {
-            throw new IllegalArgumentException("El cliente es obligatorio.");
-        }
-
+    private void validarDatosBase(Double monto, Integer plazoMeses, Double interes) {
         if (monto == null || monto <= 0) {
             throw new IllegalArgumentException("El monto debe ser mayor a cero.");
         }
@@ -214,9 +220,25 @@ public class Prestamo {
         }
     }
 
-    // =============================
-    // GETTERS Y SETTERS
-    // =============================
+    public String obtenerNombreTitular() {
+        if (cliente != null && cliente.getNombre() != null && !cliente.getNombre().trim().isEmpty()) {
+            return cliente.getNombre();
+        }
+
+        if (empleadoNombre != null && !empleadoNombre.trim().isEmpty()) {
+            return empleadoNombre;
+        }
+
+        return "Titular no registrado";
+    }
+
+    public boolean esPrestamoCliente() {
+        return cliente != null;
+    }
+
+    public boolean esPrestamoEmpleado() {
+        return empleadoNombre != null && !empleadoNombre.trim().isEmpty();
+    }
 
     public Long getId() {
         return id;
@@ -232,6 +254,39 @@ public class Prestamo {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+        this.empresaId = cliente != null ? cliente.getEmpresaId() : null;
+    }
+
+    public String getEmpleadoNombre() {
+        return empleadoNombre;
+    }
+
+    public void setEmpleadoNombre(String empleadoNombre) {
+        this.empleadoNombre = empleadoNombre;
+    }
+
+    public String getEmpleadoCedula() {
+        return empleadoCedula;
+    }
+
+    public void setEmpleadoCedula(String empleadoCedula) {
+        this.empleadoCedula = empleadoCedula;
+    }
+
+    public String getEmpleadoCargo() {
+        return empleadoCargo;
+    }
+
+    public void setEmpleadoCargo(String empleadoCargo) {
+        this.empleadoCargo = empleadoCargo;
+    }
+
+    public Long getEmpresaId() {
+        return empresaId;
+    }
+
+    public void setEmpresaId(Long empresaId) {
+        this.empresaId = empresaId;
     }
 
     public Double getMonto() {

@@ -25,6 +25,16 @@ export class AbonoService {
   // Constructor con inyección de HttpClient
   constructor(private http: HttpClient) {}
 
+  listarPendientesClientes(): Observable<Abono[]> {
+    return this.http.get<Abono[]>(`${this.apiUrl}/pendientes/clientes`);
+  }
+
+  listarPendientesEmpresa(empresaId: number): Observable<Abono[]> {
+    return this.http.get<Abono[]>(
+      `${this.apiUrl}/pendientes/empresa/${empresaId}`
+    );
+  }
+
   // Método para obtener TODOS los abonos
   listarAbonos(): Observable<Abono[]> {
 

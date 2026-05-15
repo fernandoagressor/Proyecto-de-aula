@@ -1,138 +1,178 @@
-// Importa decoradores y herramientas
-// Component → define el componente
-// OnInit → ejecuta código al iniciar
-// ChangeDetectorRef → fuerza actualización de la vista
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-
-// Permite usar *ngIf, *ngFor
 import { CommonModule } from '@angular/common';
-
-// Permite usar [(ngModel)]
 import { FormsModule } from '@angular/forms';
 
-// Servicio para comunicación con backend
 import { ClienteService } from '../services/cliente.service';
-
-// Modelo Cliente
 import { Cliente } from '../services/cliente';
 
+import { EmpleadoEmpresaService } from '../services/empleado-empresa.service';
 
-// Decorador del componente
 @Component({
-  selector: 'app-mi-perfil', // Nombre en HTML
-
+  selector: 'app-mi-perfil',
   standalone: true,
-
   imports: [CommonModule, FormsModule],
-
   templateUrl: './mi-perfil.html',
-
   styleUrls: ['./mi-perfil.css']
 })
-
-// Clase del componente
 export class MiPerfilComponent implements OnInit {
 
-  // Variable donde se guarda el cliente
   cliente: Cliente | null = null;
+  empleadoEmpresa: any = null;
 
-  // Mensaje de estado (éxito o error)
+  usuarioLogueado: any = null;
+  tipoPerfil: 'cliente' | 'empleado_empresa' | '' = '';
+
   mensaje: string = '';
 
-  // Constructor con servicios
   constructor(
     private clienteService: ClienteService,
-    private cd: ChangeDetectorRef // Permite actualizar la vista manualmente
+    private empleadoEmpresaService: EmpleadoEmpresaService,
+    private cd: ChangeDetectorRef
   ) {}
 
-  // Se ejecuta al iniciar el componente
   ngOnInit(): void {
-
-    // Obtiene usuario guardado
     const usuarioGuardado = localStorage.getItem('usuarioLogueado');
 
-    if (usuarioGuardado) {
+    if (!usuarioGuardado) {
+      return;
+    }
 
-      // Convierte a objeto
-      const usuario = JSON.parse(usuarioGuardado);
+    this.usuarioLogueado = JSON.parse(usuarioGuardado);
 
-      // Si tiene clienteId
-      if (usuario.clienteId) {
+    const rol = this.usuarioLogueado?.rol;
 
-        // Carga el perfil
-        this.cargarPerfil(usuario.clienteId);
+    if (rol === 'cliente') {
+      this.tipoPerfil = 'cliente';
+
+      if (this.usuarioLogueado?.clienteId) {
+        this.cargarPerfilCliente(this.usuarioLogueado.clienteId);
       }
+
+      return;
+    }
+
+    if (rol === 'empleado_empresa') {
+      this.tipoPerfil = 'empleado_empresa';
+      this.cargarPerfilEmpleadoEmpresa();
+      return;
     }
   }
 
-  // Método para cargar perfil desde backend
-  cargarPerfil(clienteId: number): void {
-
-    // Llama al backend (GET)
+  cargarPerfilCliente(clienteId: number): void {
     this.clienteService.obtenerClientePorId(clienteId).subscribe({
-
-      // Si llega la data
       next: (data: Cliente) => {
-
-        // Guarda datos
         this.cliente = data;
-
-        // Fuerza actualización de la vista
+        this.empleadoEmpresa = null;
         this.cd.detectChanges();
       },
-
-      // Error
       error: (err: any) => {
-        console.error('Error al cargar perfil', err);
+        console.error('Error al cargar perfil cliente', err);
+        this.mensaje = 'No fue posible cargar el perfil del cliente.';
       }
     });
   }
 
-  // Método para guardar cambios
-  guardarCambios(): void {
+  cargarPerfilEmpleadoEmpresa(): void {
+    const empresaId = this.usuarioLogueado?.empresaId;
+    const usuarioAcceso = this.usuarioLogueado?.nombre;
 
-    // Validación
+    if (!empresaId || !usuarioAcceso) {
+      this.mensaje = 'No se encontró la información del empleado.';
+      return;
+    }
+
+    this.empleadoEmpresaService.listarPorEmpresa(empresaId).subscribe({
+      next: (empleados: any[]) => {
+        this.empleadoEmpresa =
+          empleados.find(e => e.usuarioAcceso === usuarioAcceso) || null;
+
+        this.cliente = null;
+
+        if (!this.empleadoEmpresa) {
+          this.mensaje = 'No se encontró el perfil del empleado.';
+        }
+
+        this.cd.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Error al cargar perfil empleado empresa', err);
+        this.mensaje = 'No fue posible cargar el perfil del empleado.';
+      }
+    });
+  }
+
+  guardarCambios(): void {
+    if (this.tipoPerfil === 'cliente') {
+      this.guardarCambiosCliente();
+      return;
+    }
+
+    if (this.tipoPerfil === 'empleado_empresa') {
+      this.guardarCambiosEmpleadoEmpresa();
+      return;
+    }
+  }
+
+  guardarCambiosCliente(): void {
     if (!this.cliente || this.cliente.id == null) {
       return;
     }
 
-    // Crea objeto actualizado
     const clienteActualizado: Cliente = {
-
       id: this.cliente.id,
-
       nombre: this.cliente.nombre,
-
       cedula: this.cliente.cedula,
-
       telefono: this.cliente.telefono,
-
       direccion: this.cliente.direccion
     };
 
-    // Llama al backend (PUT)
-    this.clienteService.actualizarCliente(this.cliente.id, clienteActualizado).subscribe({
-
-      // Si todo sale bien
+    this.clienteService.actualizarCliente(
+      this.cliente.id,
+      clienteActualizado
+    ).subscribe({
       next: (data: Cliente) => {
-
-        // Actualiza el cliente en pantalla
         this.cliente = data;
-
-        // Mensaje de éxito
         this.mensaje = 'Perfil actualizado correctamente';
-
-        // Refresca la vista
         this.cd.detectChanges();
       },
-
-      // Error
       error: (err: any) => {
-
-        console.error('Error al actualizar perfil', err);
-
+        console.error('Error al actualizar perfil cliente', err);
         this.mensaje = 'Error al actualizar perfil';
       }
     });
+  }
+
+  guardarCambiosEmpleadoEmpresa(): void {
+    if (!this.empleadoEmpresa || !this.empleadoEmpresa.id) {
+      return;
+    }
+
+    const empleadoActualizado = {
+      ...this.empleadoEmpresa,
+      empresaId: this.usuarioLogueado?.empresaId
+    };
+
+    this.empleadoEmpresaService.actualizarEmpleado(
+      this.empleadoEmpresa.id,
+      empleadoActualizado
+    ).subscribe({
+      next: (data: any) => {
+        this.empleadoEmpresa = data;
+        this.mensaje = 'Perfil del empleado actualizado correctamente';
+        this.cd.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Error al actualizar perfil empleado', err);
+        this.mensaje = 'Error al actualizar perfil del empleado';
+      }
+    });
+  }
+
+  esCliente(): boolean {
+    return this.tipoPerfil === 'cliente';
+  }
+
+  esEmpleadoEmpresa(): boolean {
+    return this.tipoPerfil === 'empleado_empresa';
   }
 }

@@ -1,31 +1,44 @@
-<!-- Contenedor principal -->
 <div class="solicitud-page">
 
-  <!-- Encabezado de la vista -->
   <section class="page-header">
     <div>
-      <span class="page-eyebrow">Nueva solicitud</span>
+      <span class="page-eyebrow">
+        {{ esEmpleadoEmpresa() ? 'Solicitud empleado' : 'Nueva solicitud' }}
+      </span>
+
       <h1 class="page-title">Solicitar préstamo</h1>
+
       <p class="page-description">
-        Ingresa el monto y el plazo deseado para enviar tu solicitud de préstamo.
+        {{
+        esEmpleadoEmpresa()
+        ? 'Ingresa el monto y el plazo deseado para enviar tu solicitud como empleado de empresa.'
+        : 'Ingresa el monto y el plazo deseado para enviar tu solicitud de préstamo.'
+        }}
       </p>
     </div>
   </section>
 
-  <!-- Card principal -->
   <section class="solicitud-card">
 
     <div class="solicitud-content">
 
-      <!-- Información lateral -->
       <div class="info-panel">
         <div class="info-icon">💰</div>
 
-        <h2>Solicitud de préstamo</h2>
+        <h2>
+          {{
+          esEmpleadoEmpresa()
+          ? 'Solicitud de préstamo empleado'
+          : 'Solicitud de préstamo'
+          }}
+        </h2>
 
         <p>
-          Tu solicitud será registrada en el sistema y quedará pendiente de revisión
-          por parte del equipo administrativo.
+          {{
+          esEmpleadoEmpresa()
+          ? 'Tu solicitud será registrada como préstamo interno de empleado y quedará pendiente de revisión por la empresa.'
+          : 'Tu solicitud será registrada en el sistema y quedará pendiente de revisión por parte del equipo administrativo.'
+          }}
         </p>
 
         <div class="info-list">
@@ -42,13 +55,18 @@
 
           <div class="info-item">
             <span>✓</span>
-            <p>Espera la aprobación del administrador.</p>
+            <p>
+              {{
+              esEmpleadoEmpresa()
+              ? 'Espera la aprobación de la empresa.'
+              : 'Espera la aprobación del administrador.'
+              }}
+            </p>
           </div>
 
         </div>
       </div>
 
-      <!-- Formulario -->
       <div class="form-panel">
 
         <div class="section-header">
@@ -58,7 +76,6 @@
 
         <div class="formulario">
 
-          <!-- Monto solicitado -->
           <div class="form-field">
             <label>Monto solicitado</label>
             <input
@@ -69,7 +86,6 @@
             />
           </div>
 
-          <!-- Plazo -->
           <div class="form-field">
             <label>Plazo en meses</label>
             <input
@@ -90,7 +106,6 @@
 
         </div>
 
-        <!-- Mensaje dinámico -->
         <div class="alert-message" *ngIf="mensaje">
           {{ mensaje }}
         </div>

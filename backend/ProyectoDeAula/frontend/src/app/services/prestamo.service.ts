@@ -10,24 +10,41 @@ import { Abono } from './abono';
 })
 export class PrestamoService {
 
-  // URL base del backend para préstamos
   private apiUrl = 'http://localhost:8080/api/prestamos';
-
-  // URL base del backend para abonos
   private abonosUrl = 'http://localhost:8080/api/abonos';
 
   constructor(private http: HttpClient) {}
 
-  // =============================
-  // PRÉSTAMOS
-  // =============================
-
+  // ADMIN GENERAL
   listarPrestamos(): Observable<Prestamo[]> {
     return this.http.get<Prestamo[]>(this.apiUrl);
   }
 
+  // ADMIN: solo préstamos de clientes
+  listarPrestamosClientes(): Observable<Prestamo[]> {
+    return this.http.get<Prestamo[]>(`${this.apiUrl}/clientes`);
+  }
+
+  // CLIENTE: préstamos de un cliente específico
   listarPorCliente(clienteId: number): Observable<Prestamo[]> {
     return this.http.get<Prestamo[]>(`${this.apiUrl}/cliente/${clienteId}`);
+  }
+
+  // EMPLEADO: préstamos propios del empleado
+  listarPorEmpleado(empleadoId: number): Observable<Prestamo[]> {
+    return this.http.get<Prestamo[]>(`${this.apiUrl}/empleado/${empleadoId}`);
+  }
+
+  // EMPRESA: todos los préstamos asociados a una empresa
+  listarPorEmpresa(empresaId: number): Observable<Prestamo[]> {
+    return this.http.get<Prestamo[]>(`${this.apiUrl}/empresa/${empresaId}`);
+  }
+
+  // EMPRESA: solo préstamos de empleados
+  listarPrestamosEmpleadosPorEmpresa(empresaId: number): Observable<Prestamo[]> {
+    return this.http.get<Prestamo[]>(
+      `${this.apiUrl}/empresa/${empresaId}/empleados`
+    );
   }
 
   obtenerPrestamoPorId(id: number): Observable<Prestamo> {
@@ -46,6 +63,20 @@ export class PrestamoService {
     });
   }
 
+  solicitarPrestamoEmpleado(datos: {
+    empleadoId: string;
+    empresaId: string;
+    monto: string;
+    plazoMeses: string;
+  }): Observable<Prestamo> {
+    return this.http.post<Prestamo>(`${this.apiUrl}/solicitar-empleado`, {
+      empleadoId: Number(datos.empleadoId),
+      empresaId: Number(datos.empresaId),
+      monto: Number(datos.monto),
+      plazoMeses: Number(datos.plazoMeses)
+    });
+  }
+
   aprobarPrestamo(id: number): Observable<Prestamo> {
     return this.http.put<Prestamo>(`${this.apiUrl}/${id}/aprobar`, {});
   }
@@ -53,10 +84,6 @@ export class PrestamoService {
   rechazarPrestamo(id: number): Observable<Prestamo> {
     return this.http.put<Prestamo>(`${this.apiUrl}/${id}/rechazar`, {});
   }
-
-  // =============================
-  // ABONOS MANUALES
-  // =============================
 
   abonarPrestamo(id: number, abono: string): Observable<Abono> {
     return this.http.put<Abono>(`${this.apiUrl}/${id}/abonar`, {
@@ -72,19 +99,11 @@ export class PrestamoService {
     return this.http.put<Abono>(`${this.apiUrl}/abonos/${abonoId}/rechazar`, {});
   }
 
-  // =============================
-  // PAGO PSE SIMULADO
-  // =============================
-
   pagarPorPse(prestamoId: number, monto: number): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${prestamoId}/pagar-pse`, {
       monto: Number(monto)
     });
   }
-
-  // =============================
-  // COMPROBANTE PDF
-  // =============================
 
   descargarComprobanteAbono(abonoId: number): Observable<Blob> {
     return this.http.get(`${this.abonosUrl}/${abonoId}/comprobante`, {

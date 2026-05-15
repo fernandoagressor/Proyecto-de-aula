@@ -8,30 +8,29 @@
 
       <div class="brand-text">
         <strong>Presta<span>Fácil</span></strong>
-        <small>Panel empresarial</small>
+        <small>
+          {{ esEmpleadoEmpresa() ? 'Portal del empleado' : 'Panel empresarial' }}
+        </small>
       </div>
     </div>
 
     <div class="topbar-center">
       <div class="search-box">
         <span>🔎</span>
+
         <input
           type="text"
-          placeholder="Buscar empresas, empleados, préstamos..."
+          [placeholder]="
+            esEmpleadoEmpresa()
+              ? 'Buscar mis préstamos, pagos, comprobantes...'
+              : 'Buscar empleados, préstamos internos, pagos...'
+          "
           disabled
         />
       </div>
     </div>
 
     <div class="topbar-right">
-
-      <button
-        class="switch-btn"
-        type="button"
-        (click)="irAPersonas()"
-      >
-        Personas
-      </button>
 
       <button
         class="switch-btn secondary"
@@ -42,6 +41,7 @@
       </button>
 
       <div class="user-chip" *ngIf="usuarioLogueado">
+
         <div class="user-avatar-mini">
           {{ obtenerInicialUsuario() }}
         </div>
@@ -50,6 +50,7 @@
           <strong>{{ usuarioLogueado.nombre }}</strong>
           <span>{{ obtenerRolFormateado() }}</span>
         </div>
+
       </div>
 
       <div class="perfil-menu">
@@ -65,14 +66,19 @@
         <div class="dropdown" *ngIf="menuPerfilAbierto">
 
           <div class="dropdown-user">
+
             <div class="dropdown-avatar">
               {{ obtenerInicialUsuario() }}
             </div>
 
             <div>
-              <strong>{{ usuarioLogueado?.nombre || 'Usuario' }}</strong>
+              <strong>
+                {{ usuarioLogueado?.nombre || 'Usuario' }}
+              </strong>
+
               <span>{{ obtenerRolFormateado() }}</span>
             </div>
+
           </div>
 
           <button
@@ -81,14 +87,6 @@
             (click)="irLandingEmpresas()"
           >
             🏢 Ver landing empresas
-          </button>
-
-          <button
-            class="dropdown-item"
-            type="button"
-            (click)="irAPersonas()"
-          >
-            👤 Ir a panel personas
           </button>
 
           <button
@@ -107,84 +105,171 @@
 
   </header>
 
-  <!-- CUERPO -->
+  <!-- BODY -->
   <div class="empresa-body">
 
-    <!-- SIDEBAR EMPRESAS -->
+    <!-- SIDEBAR -->
     <aside class="empresa-sidebar">
 
       <div class="sidebar-header">
-        <span class="sidebar-label">Sistema empresarial</span>
+
+        <span class="sidebar-label">
+
+          {{
+            esEmpleadoEmpresa()
+              ? 'Portal del empleado'
+              : 'Software empresarial'
+          }}
+
+        </span>
 
         <h2 class="sidebar-title">
-          Empresas
+
+          {{
+          esEmpleadoEmpresa()
+          ? 'Mi cuenta'
+          : 'Gestión interna'
+          }}
+
         </h2>
 
         <p>
-          Administra empresas aliadas, empleados, préstamos empresariales,
-          pagos y reportes.
+
+          {{
+          esEmpleadoEmpresa()
+          ? 'Consulta tus préstamos, saldos pendientes, pagos realizados y comprobantes.'
+          : 'Administra empleados, préstamos internos, pagos automáticos, comprobantes y reportes de cartera.'
+          }}
+
         </p>
+
       </div>
 
       <div class="sidebar-summary">
-        <span class="summary-label">Estado del módulo</span>
+
+        <span class="summary-label">
+          Estado del sistema
+        </span>
+
         <strong>Activo</strong>
-        <small>Operación empresarial segura</small>
+
+        <small>
+
+          {{
+          esEmpleadoEmpresa()
+          ? 'Portal de pagos activo'
+          : 'Gestión interna de empleados'
+          }}
+
+        </small>
+
       </div>
 
       <nav class="menu-lista">
 
-        <a
-          class="menu-titulo"
-          routerLink="/empresa-panel/empresas"
-          routerLinkActive="active"
+        <!-- EMPRESA -->
+        <ng-container
+          *ngIf="esEmpresa() || usuarioLogueado?.rol === 'administrador'"
         >
-          <span class="menu-icon">🏢</span>
-          <span>Empresas aliadas</span>
-        </a>
 
-        <a
-          class="menu-titulo disabled"
-          href="javascript:void(0)"
-        >
-          <span class="menu-icon">👷</span>
-          <span>Empleados</span>
-        </a>
+          <a class="menu-titulo" routerLink="/empresa-panel/dashboard" routerLinkActive="active">
+            <span class="menu-icon">📊</span>
+            <span>Dashboard</span>
+          </a>
 
-        <a
-          class="menu-titulo disabled"
-          href="javascript:void(0)"
-        >
-          <span class="menu-icon">💰</span>
-          <span>Préstamos empresariales</span>
-        </a>
+          <a class="menu-titulo" routerLink="/empresa-panel/empleados" routerLinkActive="active">
+            <span class="menu-icon">👷</span>
+            <span>Empleados</span>
+          </a>
 
-        <a
-          class="menu-titulo disabled"
-          href="javascript:void(0)"
-        >
-          <span class="menu-icon">💳</span>
-          <span>Pagos empresariales</span>
-        </a>
+          <a class="menu-titulo" routerLink="/empresa-panel/prestamos-empleados" routerLinkActive="active">
+            <span class="menu-icon">💰</span>
+            <span>Préstamos</span>
+          </a>
 
-        <a
-          class="menu-titulo disabled"
-          href="javascript:void(0)"
-        >
-          <span class="menu-icon">📊</span>
-          <span>Reportes</span>
-        </a>
+          <a class="menu-titulo" routerLink="/empresa-panel/abonos-pendientes" routerLinkActive="active">
+            <span class="menu-icon">⏳</span>
+            <span>Abonos pendientes</span>
+          </a>
+
+          <a class="menu-titulo" routerLink="/empresa-panel/configuracion" routerLinkActive="active">
+            <span class="menu-icon">⚙️</span>
+            <span>Configurar tasa</span>
+          </a>
+
+        </ng-container>
+
+        <!-- EMPLEADO EMPRESA -->
+        <ng-container *ngIf="esEmpleadoEmpresa()">
+
+          <a
+            class="menu-titulo"
+            routerLink="/empresa-panel/dashboard"
+            routerLinkActive="active"
+          >
+            <span class="menu-icon">📊</span>
+            <span>Dashboard</span>
+          </a>
+
+          <a
+            class="menu-titulo"
+            routerLink="/empresa-panel/mi-perfil"
+            routerLinkActive="active"
+          >
+            <span class="menu-icon">👤</span>
+            <span>Mi perfil</span>
+          </a>
+
+          <a
+            class="menu-titulo"
+            routerLink="/empresa-panel/mis-prestamos"
+            routerLinkActive="active"
+          >
+            <span class="menu-icon">💳</span>
+            <span>Mis préstamos</span>
+          </a>
+
+          <a
+            class="menu-titulo"
+            routerLink="/empresa-panel/solicitar-prestamo"
+            routerLinkActive="active"
+          >
+            <span class="menu-icon">📝</span>
+            <span>Solicitar préstamo</span>
+          </a>
+
+
+        </ng-container>
 
       </nav>
 
       <div class="sidebar-footer">
-        <strong>PrestaFácil Empresas</strong>
-        <span>Versión empresarial 1.0</span>
+
+        <strong>
+
+          {{
+          esEmpleadoEmpresa()
+          ? 'PrestaFácil Empleados'
+          : 'PrestaFácil Empresas'
+          }}
+
+        </strong>
+
+        <span>
+
+          {{
+            esEmpleadoEmpresa()
+              ? 'Portal de consulta y pagos'
+              : 'Sistema para préstamos internos'
+          }}
+
+        </span>
+
       </div>
 
     </aside>
 
-    <!-- CONTENIDO EMPRESARIAL -->
+    <!-- PANEL -->
     <main class="empresa-panel">
 
       <div class="content-shell">

@@ -105,8 +105,8 @@
     linear-gradient(135deg, #042f6f 0%, #0647ad 50%, #0f766e 100%);
   color: white;
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 28px;
+  grid-template-columns: 1fr 460px;
+  gap: 34px;
   padding: 58px;
   box-sizing: border-box;
   overflow: hidden;
@@ -176,95 +176,104 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* VISUAL */
+/* LOGIN EMPRESARIAL */
 
-.hero-visual {
-  position: relative;
-  min-height: 420px;
-}
-
-.company-card {
-  position: absolute;
-  right: 35px;
-  top: 70px;
-  width: 340px;
-  background: white;
-  color: #0f172a;
-  border-radius: 28px;
-  padding: 28px;
-  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.22);
-}
-
-.company-card span {
-  color: #64748b;
-  font-size: 13px;
-  font-weight: 850;
-}
-
-.company-card strong {
-  display: block;
-  margin: 8px 0 22px;
-  font-size: 24px;
-  font-weight: 950;
-}
-
-.company-stat {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.company-stat div {
-  background: #eff6ff;
-  border-radius: 16px;
-  padding: 14px;
-}
-
-.company-stat small {
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.company-stat b {
-  display: block;
-  margin-top: 7px;
-  color: #0647ad;
-  font-size: 16px;
-}
-
-.floating-card {
-  position: absolute;
+.empresa-login-card {
   background: #ffffff;
-  color: #0f172a;
-  border-radius: 18px;
-  padding: 17px;
-  min-width: 180px;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+  border: 1px solid #dbe3ef;
+  border-radius: 28px;
+  padding: 34px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+  align-self: center;
+  position: relative;
+  z-index: 3;
 }
 
-.floating-card span {
-  display: block;
-  color: #64748b;
+.empresa-login-header span {
+  color: #0647ad;
   font-size: 12px;
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.floating-card strong {
-  color: #0f766e;
-  font-size: 22px;
   font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-.floating-card.one {
-  left: 28px;
-  bottom: 70px;
+.empresa-login-header h2 {
+  margin: 10px 0 8px;
+  color: #0f172a;
+  font-size: 31px;
+  font-weight: 950;
+  line-height: 1.1;
 }
 
-.floating-card.two {
-  right: 0;
-  bottom: 22px;
+.empresa-login-header p {
+  margin: 0 0 24px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.empresa-form-field {
+  margin-bottom: 17px;
+}
+
+.empresa-form-field label {
+  display: block;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.empresa-input-icon {
+  height: 52px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 10px;
+  background: #ffffff;
+}
+
+.empresa-input-icon:focus-within {
+  border-color: #0647ad;
+  box-shadow: 0 0 0 4px rgba(6, 71, 173, 0.12);
+}
+
+.empresa-input-icon input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #0f172a;
+  font-size: 15px;
+}
+
+.empresa-btn-login {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 14px;
+  background: #0647ad;
+  color: white;
+  font-size: 15px;
+  font-weight: 950;
+  cursor: pointer;
+  box-shadow: 0 14px 26px rgba(6, 71, 173, 0.2);
+}
+
+.empresa-btn-login:hover {
+  background: #043b91;
+}
+
+.empresa-error-message {
+  margin-top: 14px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 750;
 }
 
 /* SECTIONS */
@@ -449,10 +458,6 @@
 @media (max-width: 1100px) {
   .empresas-hero {
     grid-template-columns: 1fr;
-  }
-
-  .hero-visual {
-    display: none;
   }
 
   .benefits-grid {

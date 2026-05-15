@@ -33,18 +33,38 @@ export class AbonosPendientesComponent implements OnInit {
   }
 
   cargarPendientes(): void {
-    this.abonoService.listarPendientes().subscribe({
+    const usuario = JSON.parse(
+      localStorage.getItem('usuarioLogueado') || '{}'
+    );
+
+    if (usuario?.rol === 'empresa') {
+      const empresaId = usuario?.empresaId || usuario?.id;
+
+      this.abonoService.listarPendientesEmpresa(empresaId).subscribe({
+        next: (data: Abono[]) => {
+          this.abonosPendientes = data || [];
+          this.cdr.detectChanges();
+        },
+        error: (err: any) => {
+          console.error('Error al cargar abonos empresa', err);
+          this.abonosPendientes = [];
+          this.mostrarToast('No fue posible cargar los abonos pendientes.', 'error');
+          this.cdr.detectChanges();
+        }
+      });
+
+      return;
+    }
+
+    this.abonoService.listarPendientesClientes().subscribe({
       next: (data: Abono[]) => {
         this.abonosPendientes = data || [];
         this.cdr.detectChanges();
       },
-
       error: (err: any) => {
-        console.error('Error al cargar abonos pendientes', err);
-
+        console.error('Error al cargar abonos clientes', err);
         this.abonosPendientes = [];
         this.mostrarToast('No fue posible cargar los abonos pendientes.', 'error');
-
         this.cdr.detectChanges();
       }
     });
@@ -94,17 +114,37 @@ export class AbonosPendientesComponent implements OnInit {
     });
   }
 
-  obtenerNombreCliente(abono: any): string {
-    return abono?.prestamo?.cliente?.nombre || 'Sin cliente';
+  obtenerNombreTitular(abono: any): string {
+    return (
+      abono?.prestamo?.cliente?.nombre ||
+      abono?.prestamo?.empleadoNombre ||
+      'Sin titular'
+    );
   }
 
-  obtenerInicialCliente(abono: any): string {
-    const nombre = this.obtenerNombreCliente(abono);
+  obtenerInicialTitular(abono: any): string {
+    const nombre = this.obtenerNombreTitular(abono);
     return nombre.charAt(0).toUpperCase();
   }
 
-  obtenerCedulaCliente(abono: any): string {
-    return abono?.prestamo?.cliente?.cedula || 'No registra';
+  obtenerDocumentoTitular(abono: any): string {
+    return (
+      abono?.prestamo?.cliente?.cedula ||
+      abono?.prestamo?.empleadoCedula ||
+      'No registra'
+    );
+  }
+
+  obtenerTipoTitular(abono: any): string {
+    if (abono?.prestamo?.cliente) {
+      return 'Cliente';
+    }
+
+    if (abono?.prestamo?.empleadoNombre) {
+      return 'Empleado empresa';
+    }
+
+    return 'Sin tipo';
   }
 
   obtenerIdPrestamo(abono: any): string {

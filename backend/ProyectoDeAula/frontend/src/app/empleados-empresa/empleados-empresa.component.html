@@ -1,0 +1,384 @@
+<div class="empleados-page">
+
+  <!-- TOAST -->
+  <div
+    class="toast-message"
+    *ngIf="toastVisible"
+    [ngClass]="{
+      'toast-success': toastTipo === 'success',
+      'toast-error': toastTipo === 'error',
+      'toast-warning': toastTipo === 'warning',
+      'toast-info': toastTipo === 'info'
+    }"
+  >
+    <div class="toast-icon">
+      <span *ngIf="toastTipo === 'success'">✓</span>
+      <span *ngIf="toastTipo === 'error'">!</span>
+      <span *ngIf="toastTipo === 'warning'">!</span>
+      <span *ngIf="toastTipo === 'info'">ℹ</span>
+    </div>
+
+    <div class="toast-content">
+      <strong>
+        {{
+        toastTipo === 'success'
+        ? 'Operación exitosa'
+        : toastTipo === 'error'
+        ? 'Error'
+        : toastTipo === 'warning'
+        ? 'Atención'
+        : 'Información'
+        }}
+      </strong>
+
+      <p>{{ toastMensaje }}</p>
+    </div>
+
+    <button
+      class="toast-close"
+      type="button"
+      (click)="toastVisible = false"
+    >
+      ×
+    </button>
+  </div>
+
+  <!-- HERO -->
+  <section class="empleados-hero">
+
+    <div class="hero-content">
+      <span class="hero-eyebrow">Panel empresarial</span>
+
+      <h1>Empleados</h1>
+
+      <p>
+        Administra los empleados de la empresa. Al crear un empleado, el sistema
+        genera automáticamente su usuario y contraseña temporal de acceso.
+      </p>
+    </div>
+
+    <div class="hero-summary">
+      <span>Total empleados</span>
+      <strong>{{ empleados.length }}</strong>
+      <p>Trabajadores registrados</p>
+    </div>
+
+  </section>
+
+  <!-- RESUMEN -->
+  <section class="stats-grid">
+
+    <article class="stat-card">
+      <div class="stat-icon blue">👷</div>
+
+      <div>
+        <span>Total empleados</span>
+        <strong>{{ empleados.length }}</strong>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon green">✅</div>
+
+      <div>
+        <span>Activos</span>
+        <strong>{{ contarPorEstado('ACTIVO') }}</strong>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon amber">⏸️</div>
+
+      <div>
+        <span>Inactivos</span>
+        <strong>{{ contarPorEstado('INACTIVO') }}</strong>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- FORMULARIO -->
+  <section class="form-card" id="formEmpleado">
+
+    <div class="section-header">
+      <div>
+        <span class="section-eyebrow">
+          {{ empleadoEditando ? 'Modo edición' : 'Nuevo empleado' }}
+        </span>
+
+        <h2>
+          {{ empleadoEditando ? 'Editar empleado' : 'Registrar nuevo empleado' }}
+        </h2>
+
+        <p>
+          {{
+          empleadoEditando
+          ? 'Actualiza la información del empleado seleccionado.'
+          : 'Registra un empleado. El usuario y la contraseña se generan automáticamente.'
+          }}
+        </p>
+      </div>
+
+      <span class="mode-chip" *ngIf="empleadoEditando">
+        Editando #{{ empleadoEditando.id }}
+      </span>
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+        <label>Nombre completo</label>
+
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoEmpleado.nombre"
+          placeholder="Ingrese el nombre"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Cédula</label>
+
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoEmpleado.cedula"
+          placeholder="Ingrese la cédula"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Cargo</label>
+
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoEmpleado.cargo"
+          placeholder="Ingrese el cargo"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Teléfono</label>
+
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="nuevoEmpleado.telefono"
+          placeholder="Ingrese el teléfono"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Correo</label>
+
+        <input
+          class="input-modern"
+          type="email"
+          [(ngModel)]="nuevoEmpleado.correo"
+          placeholder="correo@empresa.com"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Estado</label>
+
+        <select
+          class="select-modern"
+          [(ngModel)]="nuevoEmpleado.estado"
+        >
+          <option value="ACTIVO">Activo</option>
+          <option value="INACTIVO">Inactivo</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+
+      <button
+        class="btn-primary"
+        *ngIf="!empleadoEditando"
+        type="button"
+        (click)="crearEmpleado()"
+      >
+        Crear empleado y usuario
+      </button>
+
+      <button
+        class="btn-primary"
+        *ngIf="empleadoEditando"
+        type="button"
+        (click)="actualizarEmpleado()"
+      >
+        Actualizar empleado
+      </button>
+
+      <button
+        class="btn-secondary"
+        *ngIf="empleadoEditando"
+        type="button"
+        (click)="cancelarEdicion()"
+      >
+        Cancelar
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- TABLA -->
+  <section class="table-card">
+
+    <div class="section-header table-header">
+      <div>
+        <span class="section-eyebrow">Gestión de empleados</span>
+
+        <h2>Listado de empleados</h2>
+
+        <p>
+          Consulta, filtra, edita o elimina los empleados registrados por la empresa.
+        </p>
+      </div>
+
+      <span class="counter-chip">
+        {{ obtenerEmpleadosFiltrados().length }} visibles
+      </span>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <span>🔎</span>
+
+        <input
+          type="text"
+          [(ngModel)]="busqueda"
+          placeholder="Buscar por nombre, cédula, cargo, usuario o estado..."
+        />
+      </div>
+    </div>
+
+    <div class="table-wrapper" *ngIf="obtenerEmpleadosFiltrados().length > 0; else sinEmpleados">
+
+      <table class="table-modern">
+
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Empleado</th>
+          <th>Cédula</th>
+          <th>Cargo</th>
+          <th>Contacto</th>
+          <th>Acceso</th>
+          <th>Estado</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr *ngFor="let empleado of obtenerEmpleadosFiltrados()">
+
+          <td>
+            <span class="id-text">#{{ empleado.id }}</span>
+          </td>
+
+          <td>
+            <div class="employee-cell">
+
+              <div class="employee-avatar">
+                {{ obtenerInicialEmpleado(empleado) }}
+              </div>
+
+              <div>
+                <strong>{{ empleado.nombre || 'Sin nombre' }}</strong>
+                <span>Empleado registrado</span>
+              </div>
+
+            </div>
+          </td>
+
+          <td>
+            <span class="document-text">{{ empleado.cedula }}</span>
+          </td>
+
+          <td>
+            <span class="muted-text">{{ empleado.cargo }}</span>
+          </td>
+
+          <td>
+            <div class="contact-cell">
+              <strong>{{ empleado.telefono }}</strong>
+              <span>{{ empleado.correo }}</span>
+            </div>
+          </td>
+
+          <td>
+            <div class="contact-cell">
+              <strong>{{ empleado.usuarioAcceso || 'Sin usuario' }}</strong>
+              <span>Clave inicial: {{ empleado.passwordTemporal || 'No generada' }}</span>
+            </div>
+          </td>
+
+          <td>
+            <span
+              class="badge-status"
+              [ngClass]="{
+                'status-active': empleado.estado === 'ACTIVO',
+                'status-inactive': empleado.estado === 'INACTIVO'
+              }"
+            >
+              {{ empleado.estado }}
+            </span>
+          </td>
+
+          <td>
+            <div class="actions-box">
+
+              <button
+                class="btn-table edit"
+                type="button"
+                (click)="editarEmpleado(empleado)"
+              >
+                Editar
+              </button>
+
+              <button
+                class="btn-table toggle"
+                type="button"
+                (click)="cambiarEstado(empleado)"
+              >
+                {{ empleado.estado === 'ACTIVO' ? 'Desactivar' : 'Activar' }}
+              </button>
+
+              <button
+                class="btn-table delete"
+                type="button"
+                (click)="eliminarEmpleado(empleado.id)"
+              >
+                Eliminar
+              </button>
+
+            </div>
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <ng-template #sinEmpleados>
+      <div class="empty-state">
+        <div>📭</div>
+        <strong>No hay empleados para mostrar</strong>
+        <p>Registra un nuevo empleado o cambia el texto de búsqueda.</p>
+      </div>
+    </ng-template>
+
+  </section>
+
+</div>

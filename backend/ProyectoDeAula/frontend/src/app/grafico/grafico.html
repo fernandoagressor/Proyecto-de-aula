@@ -1,42 +1,93 @@
-<!-- Contenedor principal de los gráficos -->
-<!-- <div> agrupa todos los elementos -->
-<!-- class="graficos-grid" organiza los gráficos en forma de grid (rejilla) -->
-<div class="graficos-grid">
+<div class="modern-graficos">
 
-  <!-- Tarjeta del primer gráfico -->
-  <!-- class="grafico-card" aplica diseño tipo tarjeta -->
-  <div class="grafico-card">
+  <article class="grafico-card principal">
 
-    <!-- Título del gráfico -->
-    <!-- <h3> es un subtítulo -->
-    <h3>Monto por Estado</h3>
+    <div class="grafico-header">
+      <div>
+        <span>Análisis de cartera</span>
+        <h3>Distribución por estado</h3>
+      </div>
 
-    <!-- Contenedor del canvas -->
-    <!-- class="canvas-box" controla tamaño y espacio del gráfico -->
-    <div class="canvas-box">
+      <strong>{{ formatearDinero(totalGeneral()) }}</strong>
+    </div>
 
-      <!-- <canvas> es donde se dibuja el gráfico -->
-      <!-- id="graficoEstados" permite acceder a este canvas desde el archivo .ts -->
-      <!-- Aquí Angular (con Chart.js u otra librería) dibuja el gráfico -->
-      <canvas id="graficoEstados"></canvas>
+    <div class="estado-bars">
+
+      <div class="estado-row">
+        <div class="estado-info">
+          <span class="dot aprobado"></span>
+          <strong>Aprobados</strong>
+        </div>
+
+        <div class="estado-progress">
+          <div class="fill aprobado" [style.width.%]="porcentajeEstado('APROBADO')"></div>
+        </div>
+
+        <small>{{ formatearDinero(totalPorEstado('APROBADO')) }}</small>
+      </div>
+
+      <div class="estado-row">
+        <div class="estado-info">
+          <span class="dot pendiente"></span>
+          <strong>Pendientes</strong>
+        </div>
+
+        <div class="estado-progress">
+          <div class="fill pendiente" [style.width.%]="porcentajeEstado('PENDIENTE')"></div>
+        </div>
+
+        <small>{{ formatearDinero(totalPorEstado('PENDIENTE')) }}</small>
+      </div>
+
+      <div class="estado-row">
+        <div class="estado-info">
+          <span class="dot pagado"></span>
+          <strong>Pagados</strong>
+        </div>
+
+        <div class="estado-progress">
+          <div class="fill pagado" [style.width.%]="porcentajeEstado('PAGADO')"></div>
+        </div>
+
+        <small>{{ formatearDinero(totalPorEstado('PAGADO')) }}</small>
+      </div>
+
+      <div class="estado-row">
+        <div class="estado-info">
+          <span class="dot rechazado"></span>
+          <strong>Rechazados</strong>
+        </div>
+
+        <div class="estado-progress">
+          <div class="fill rechazado" [style.width.%]="porcentajeEstado('RECHAZADO')"></div>
+        </div>
+
+        <small>{{ formatearDinero(totalPorEstado('RECHAZADO')) }}</small>
+      </div>
 
     </div>
-  </div>
 
-  <!-- Tarjeta del segundo gráfico -->
-  <div class="grafico-card">
+  </article>
 
-    <!-- Título -->
-    <h3>Abonos por Mes</h3>
+  <article class="grafico-card">
 
-    <!-- Contenedor del gráfico -->
-    <div class="canvas-box">
-
-      <!-- Segundo canvas -->
-      <!-- id="graficoMensual" permite dibujar otro gráfico distinto -->
-      <canvas id="graficoMensual"></canvas>
-
+    <div class="grafico-header">
+      <div>
+        <span>Pagos mensuales</span>
+        <h3>Abonos por mes</h3>
+      </div>
     </div>
-  </div>
+
+    <div class="monthly-chart">
+      <div class="month-bar" *ngFor="let item of abonosMensuales()">
+        <div class="bar-bg">
+          <div class="bar-value" [style.height.%]="item.porcentaje"></div>
+        </div>
+
+        <span>{{ item.mes }}</span>
+      </div>
+    </div>
+
+  </article>
 
 </div>

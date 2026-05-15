@@ -1,39 +1,39 @@
-// Indica el paquete donde está ubicado el repositorio.
 package com.prestafacil.backend.repository;
 
-// Importa el enum EstadoPrestamo.
 import com.prestafacil.backend.model.EstadoPrestamo;
-
-// Importa la entidad Prestamo.
 import com.prestafacil.backend.model.Prestamo;
-
-// Importa JpaRepository para tener CRUD automático.
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-// Importa List para devolver listas de préstamos.
 import java.util.List;
 
-// Repositorio encargado de comunicarse con la tabla prestamo.
+@Repository
 public interface PrestamoRepository extends JpaRepository<Prestamo, Long> {
 
-    // Busca todos los préstamos de un cliente específico.
+    // CLIENTE ESPECÍFICO
     List<Prestamo> findByClienteId(Long clienteId);
 
-    // Busca préstamos de un cliente ordenados desde el más reciente.
-    List<Prestamo> findByClienteIdOrderByIdDesc(Long clienteId);
+    // EMPRESA GENERAL
+    List<Prestamo> findByEmpresaId(Long empresaId);
 
-    // Busca todos los préstamos filtrando por estado.
-    List<Prestamo> findByEstado(EstadoPrestamo estado);
+    // ADMIN: solo préstamos de clientes
+    List<Prestamo> findByClienteIsNotNull();
 
-    // Busca todos los préstamos filtrando por estado, ordenados desde el más reciente.
-    List<Prestamo> findByEstadoOrderByIdDesc(EstadoPrestamo estado);
+    // EMPRESA: solo préstamos de empleados de esa empresa
+    List<Prestamo> findByEmpresaIdAndClienteIsNull(Long empresaId);
 
-    // Busca préstamos de un cliente filtrando por varios estados.
-    List<Prestamo> findByClienteIdAndEstadoIn(Long clienteId, List<EstadoPrestamo> estados);
+    // EMPLEADO: préstamos propios por datos del empleado
+    List<Prestamo> findByEmpleadoCedula(String empleadoCedula);
 
-    // Verifica si un cliente tiene algún préstamo en los estados indicados.
-    boolean existsByClienteIdAndEstadoIn(Long clienteId, List<EstadoPrestamo> estados);
+    // Validación cliente activo
+    List<Prestamo> findByClienteIdAndEstadoIn(
+            Long clienteId,
+            List<EstadoPrestamo> estados
+    );
 
-    // Cuenta préstamos por estado.
-    long countByEstado(EstadoPrestamo estado);
+    // Validación empleado activo
+    List<Prestamo> findByEmpleadoCedulaAndEstadoIn(
+            String empleadoCedula,
+            List<EstadoPrestamo> estados
+    );
 }

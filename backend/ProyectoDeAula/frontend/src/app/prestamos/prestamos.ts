@@ -63,15 +63,73 @@ export class PrestamosComponent implements OnInit {
   }
 
   cargarPrestamos(): void {
-    this.prestamoService.listarPrestamos().subscribe({
+
+    const rol = (
+      this.usuarioLogueado?.rol ||
+      this.usuarioLogueado?.tipoUsuario ||
+      ''
+    ).toUpperCase();
+
+    // EMPRESA → solo préstamos de su empresa
+    if (rol === 'EMPRESA') {
+
+      const empresaId = this.usuarioLogueado?.empresaId;
+
+      if (!empresaId) {
+        this.prestamos = [];
+        return;
+      }
+
+      this.prestamoService.listarPorEmpresa(empresaId).subscribe({
+
+        next: (data: Prestamo[]) => {
+
+          this.prestamos = data || [];
+          this.cdr.detectChanges();
+        },
+
+        error: (err: any) => {
+
+          console.error(
+            'Error al cargar préstamos de empresa',
+            err
+          );
+
+          this.prestamos = [];
+
+          this.mostrarToast(
+            'No fue posible cargar los préstamos.',
+            'error'
+          );
+
+          this.cdr.detectChanges();
+        }
+      });
+
+      return;
+    }
+
+
+    // ADMIN → solo préstamos de clientes
+    this.prestamoService.listarPrestamosClientes().subscribe({
+
       next: (data: Prestamo[]) => {
+
         this.prestamos = data || [];
         this.cdr.detectChanges();
       },
+
       error: (err: any) => {
+
         console.error('Error al cargar préstamos', err);
+
         this.prestamos = [];
-        this.mostrarToast('No fue posible cargar los préstamos.', 'error');
+
+        this.mostrarToast(
+          'No fue posible cargar los préstamos.',
+          'error'
+        );
+
         this.cdr.detectChanges();
       }
     });
@@ -353,11 +411,35 @@ export class PrestamosComponent implements OnInit {
   }
 
   esAdmin(): boolean {
-    return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'administrador';
+
+    const rol = (
+      this.usuarioLogueado?.rol ||
+      this.usuarioLogueado?.tipoUsuario ||
+      ''
+    ).toUpperCase();
+
+    return rol === 'ADMIN' || rol === 'ADMINISTRADOR';
   }
 
   esEmpleado(): boolean {
-    return this.usuarioLogueado !== null && this.usuarioLogueado.rol === 'empleado';
+
+    const rol = (
+      this.usuarioLogueado?.rol ||
+      this.usuarioLogueado?.tipoUsuario ||
+      ''
+    ).toUpperCase();
+
+    return rol === 'EMPLEADO';
+  }
+  esEmpresa(): boolean {
+
+    const rol = (
+      this.usuarioLogueado?.rol ||
+      this.usuarioLogueado?.tipoUsuario ||
+      ''
+    ).toUpperCase();
+
+    return rol === 'EMPRESA';
   }
 
   esCliente(): boolean {

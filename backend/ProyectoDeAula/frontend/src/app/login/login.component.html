@@ -55,13 +55,12 @@
     </div>
 
     <nav class="nav-menu">
-
       <div class="segment-control">
         <button
           class="segment"
-          [ngClass]="{ 'active': seccionActiva === 'personas' }"
+          [ngClass]="{ 'active': seccionActiva !== 'empresas' }"
           type="button"
-          (click)="irPersonas()"
+          (click)="irEmpresas()"
         >
           Personas
         </button>
@@ -73,112 +72,25 @@
           (click)="irEmpresas()"
         >
           Empresas
-        </button>
-      </div>
+        </button></div>
 
-      <!-- PRODUCTOS -->
-      <div class="nav-dropdown-wrapper">
-        <button
-          class="nav-link"
-          [ngClass]="{ 'nav-active': seccionActiva === 'productos' }"
-          type="button"
-          (click)="toggleProductos()"
-        >
-          Productos <span>⌄</span>
-        </button>
+      <button class="nav-link" type="button" (click)="abrirProducto('simulador')">
+        Productos <span>⌄</span>
+      </button>
 
-        <div class="nav-dropdown" *ngIf="menuProductosAbierto">
-          <button type="button" (click)="abrirProducto('personales')">
-            <strong>Préstamos personales</strong>
-            <span>Créditos para clientes naturales.</span>
-          </button>
+      <button class="nav-link" type="button" (click)="abrirPago('pse')">
+        Pagos <span>⌄</span>
+      </button>
 
-          <button type="button" (click)="abrirProducto('empresariales')">
-            <strong>Préstamos empresariales</strong>
-            <span>Financiación para empleados de empresas.</span>
-          </button>
-
-          <button type="button" (click)="abrirProducto('simulador')">
-            <strong>Simulador de crédito</strong>
-            <span>Calcula cuotas y saldos estimados.</span>
-          </button>
-
-          <button type="button" (click)="abrirProducto('comprobantes')">
-            <strong>Comprobantes</strong>
-            <span>Consulta recibos y soportes PDF.</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- PAGOS -->
-      <div class="nav-dropdown-wrapper">
-        <button
-          class="nav-link"
-          [ngClass]="{ 'nav-active': seccionActiva === 'pagos' }"
-          type="button"
-          (click)="togglePagos()"
-        >
-          Pagos <span>⌄</span>
-        </button>
-
-        <div class="nav-dropdown" *ngIf="menuPagosAbierto">
-          <button type="button" (click)="abrirPago('pse')">
-            <strong>Pagar por PSE</strong>
-            <span>Realiza pagos seguros en línea.</span>
-          </button>
-
-          <button type="button" (click)="abrirPago('historial')">
-            <strong>Historial de pagos</strong>
-            <span>Revisa tus abonos registrados.</span>
-          </button>
-
-          <button type="button" (click)="abrirPago('comprobante')">
-            <strong>Consultar comprobante</strong>
-            <span>Descarga recibos de pago.</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- ATENCIÓN -->
-      <div class="nav-dropdown-wrapper">
-        <button
-          class="nav-link"
-          [ngClass]="{ 'nav-active': seccionActiva === 'atencion' }"
-          type="button"
-          (click)="toggleAtencion()"
-        >
-          Atención al cliente <span>⌄</span>
-        </button>
-
-        <div class="nav-dropdown" *ngIf="menuAtencionAbierto">
-          <button type="button" (click)="abrirAtencion('ayuda')">
-            <strong>Ayuda</strong>
-            <span>Abre el centro de soporte.</span>
-          </button>
-
-          <button type="button" (click)="abrirAtencion('preguntas')">
-            <strong>Preguntas frecuentes</strong>
-            <span>Préstamos, pagos y comprobantes.</span>
-          </button>
-
-          <button type="button" (click)="abrirAtencion('contacto')">
-            <strong>Contacto</strong>
-            <span>Línea y WhatsApp de atención.</span>
-          </button>
-
-          <button type="button" (click)="abrirAtencion('soporte')">
-            <strong>Soporte</strong>
-            <span>Asistencia simulada del sistema.</span>
-          </button>
-        </div>
-      </div>
-
+      <button class="nav-link" type="button" (click)="abrirAtencion('ayuda')">
+        Atención al cliente <span>⌄</span>
+      </button>
     </nav>
 
     <button
       class="nav-login-btn"
       type="button"
-      (click)="irAIngresar()"
+      (click)="irALogin()"
     >
       Ingresar
       <span>👤</span>
@@ -193,15 +105,9 @@
     <section class="hero-grid">
 
       <!-- BANNER PRINCIPAL -->
-      <div
-        class="hero-banner"
-        [ngClass]="{
-          'hero-empresas': seccionActiva === 'empresas',
-          'hero-personas': seccionActiva === 'personas'
-        }"
-      >
+      <div class="hero-banner">
 
-        <div class="hero-text" *ngIf="seccionActiva !== 'empresas'">
+        <div class="hero-text">
           <span class="hero-label">TU PRÉSTAMO, SIEMPRE CONTIGO</span>
 
           <h1>
@@ -217,44 +123,11 @@
           <button
             class="hero-btn"
             type="button"
-            (click)="irAIngresar()"
+            (click)="irALogin()"
           >
             Ir a mi portal
             <span>→</span>
           </button>
-        </div>
-
-        <div class="hero-text" *ngIf="seccionActiva === 'empresas'">
-          <span class="hero-label">PRESTAFÁCIL EMPRESAS</span>
-
-          <h1>
-            Préstamos empresariales <br />
-            para tus empleados
-          </h1>
-
-          <p>
-            Diseña planes de financiación para colaboradores, administra cupos,
-            revisa pagos y controla cartera empresarial desde una sola plataforma.
-          </p>
-
-          <div class="hero-actions">
-            <button
-              class="hero-btn"
-              type="button"
-              (click)="mostrarToast('Próximamente activaremos el módulo completo de empresas.', 'info')"
-            >
-              Solicitar demo
-              <span>→</span>
-            </button>
-
-            <button
-              class="hero-btn secondary"
-              type="button"
-              (click)="irAIngresar()"
-            >
-              Ingresar empresa
-            </button>
-          </div>
         </div>
 
         <div class="hero-visual">
@@ -266,9 +139,7 @@
             <div class="phone-top"></div>
             <div class="phone-line"></div>
             <div class="phone-line short"></div>
-            <div class="phone-amount">
-              {{ seccionActiva === 'empresas' ? '$ 15.000.000' : '$ 2.450.000' }}
-            </div>
+            <div class="phone-amount">$ 2.450.000</div>
             <div class="phone-button"></div>
           </div>
 
@@ -281,7 +152,7 @@
 
       </div>
 
-      <!-- CARD LOGIN -->
+
       <section class="login-card" id="loginCard">
 
         <div class="login-header">
@@ -310,38 +181,27 @@
         <div class="form-field">
           <label>Contraseña</label>
 
-          <div class="input-icon password-field">
+          <div class="input-icon">
             <span>🔒</span>
 
             <input
-              [type]="mostrarPassword ? 'text' : 'password'"
+              type="password"
               placeholder="Contraseña"
               [(ngModel)]="loginPassword"
               (keyup.enter)="iniciarSesion()"
             />
-
-            <button
-              class="password-toggle"
-              type="button"
-              (click)="alternarMostrarPassword()"
-            >
-              {{ mostrarPassword ? '🙈' : '👁️' }}
-            </button>
           </div>
         </div>
 
         <div class="login-options">
           <label>
-            <input
-              type="checkbox"
-              [(ngModel)]="recordarUsuario"
-            />
+            <input type="checkbox" />
             Recordar usuario
           </label>
 
           <button
             type="button"
-            (click)="abrirRecuperacion()"
+            (click)="mostrarAyuda('Si olvidaste tu contraseña, comunícate con soporte o con el administrador del sistema para restablecer el acceso.')"
           >
             ¿Olvidaste tu contraseña?
           </button>
@@ -369,7 +229,7 @@
         <button
           class="btn-outline"
           type="button"
-          (click)="abrirRegistroCliente()"
+          (click)="abrirSolicitudAcceso()"
         >
           Solicitar acceso
         </button>
@@ -391,26 +251,18 @@
 
       <div class="info-content">
 
-        <h2>
-          {{ seccionActiva === 'empresas' ? 'Soluciones para empresas' : 'Información' }}
-        </h2>
+        <h2>Información</h2>
 
         <div class="tabs">
           <button class="active" type="button">¿Qué es?</button>
-          <button type="button" (click)="mostrarToast('Requisitos: usuario activo, datos del cliente y préstamo registrado.', 'info')">Requisitos</button>
-          <button type="button" (click)="mostrarToast('Tu información se administra con acceso por roles y validaciones del sistema.', 'info')">Seguridad</button>
+          <button type="button">Requisitos</button>
+          <button type="button">Seguridad</button>
         </div>
 
-        <p *ngIf="seccionActiva !== 'empresas'">
+        <p>
           PrestaFácil es una plataforma digital donde puedes gestionar tus
           préstamos en línea, consultar tus cuotas, hacer pagos y descargar
           comprobantes de forma fácil, segura y desde cualquier lugar.
-        </p>
-
-        <p *ngIf="seccionActiva === 'empresas'">
-          PrestaFácil Empresas permite a las organizaciones administrar préstamos
-          otorgados a empleados, controlar saldos, pagos, comprobantes y reportes
-          de cartera interna de forma organizada.
         </p>
 
         <button
@@ -430,22 +282,14 @@
 
       <div class="features-content">
 
-        <h2>
-          {{ seccionActiva === 'empresas' ? '¿Qué puede hacer tu empresa?' : '¿Qué puedes hacer?' }}
-        </h2>
+        <h2>¿Qué puedes hacer?</h2>
 
         <div class="feature-card">
-          <div class="feature-icon">{{ seccionActiva === 'empresas' ? '🏢' : '📅' }}</div>
+          <div class="feature-icon">📅</div>
 
           <div>
-            <h3>{{ seccionActiva === 'empresas' ? 'Registrar empleados' : 'Consultar tus cuotas' }}</h3>
-            <p>
-              {{
-              seccionActiva === 'empresas'
-              ? 'Administra empleados asociados a una empresa y sus solicitudes de financiación.'
-              : 'Revisa el estado de tus préstamos y próximos vencimientos.'
-              }}
-            </p>
+            <h3>Consultar tus cuotas</h3>
+            <p>Revisa el estado de tus préstamos y próximos vencimientos.</p>
           </div>
         </div>
 
@@ -453,14 +297,8 @@
           <div class="feature-icon">💳</div>
 
           <div>
-            <h3>{{ seccionActiva === 'empresas' ? 'Controlar préstamos internos' : 'Pagar abonos o cuotas' }}</h3>
-            <p>
-              {{
-              seccionActiva === 'empresas'
-              ? 'Consulta saldos, estados y pagos realizados por empleados.'
-              : 'Realiza pagos en línea de forma segura y en pocos pasos.'
-              }}
-            </p>
+            <h3>Pagar abonos o cuotas</h3>
+            <p>Realiza pagos en línea de forma segura y en pocos pasos.</p>
           </div>
         </div>
 
@@ -478,8 +316,8 @@
       <div class="features-visual">
         <div class="visual-card">
           <div class="mini-dashboard">
-            <span>{{ seccionActiva === 'empresas' ? 'Cartera empresarial' : 'Saldo pendiente' }}</span>
-            <strong>{{ seccionActiva === 'empresas' ? '$ 18.750.000' : '$ 1.250.000' }}</strong>
+            <span>Saldo pendiente</span>
+            <strong>$ 1.250.000</strong>
 
             <div class="progress">
               <div></div>
@@ -500,8 +338,8 @@
 
       <div class="steps-tabs">
         <button class="active" type="button">Ingresar</button>
-        <button type="button" (click)="mostrarToast('Gestiona clientes, préstamos, pagos y comprobantes desde el panel.', 'info')">Gestionar</button>
-        <button type="button" (click)="abrirPago('pse')">Realizar pagos</button>
+        <button type="button">Gestionar</button>
+        <button type="button">Realizar pagos</button>
       </div>
 
       <div class="steps-grid">
@@ -598,42 +436,42 @@
 
       <div>
         <h3>Atención al cliente</h3>
-        <p (click)="abrirAtencion('ayuda')">¿Necesitas ayuda?</p>
-        <p (click)="abrirAtencion('contacto')">Canales de atención</p>
-        <p (click)="abrirAtencion('preguntas')">Preguntas frecuentes</p>
-        <p (click)="mostrarToast('La seguridad se basa en usuarios, roles y validación de acceso.', 'info')">Seguridad y privacidad</p>
+        <p>¿Necesitas ayuda?</p>
+        <p>Canales de atención</p>
+        <p>Preguntas frecuentes</p>
+        <p>Seguridad y privacidad</p>
       </div>
 
       <div>
         <h3>Beneficios</h3>
-        <p (click)="mostrarToast('Programa de lealtad próximamente disponible.', 'info')">Programa de lealtad</p>
-        <p (click)="mostrarToast('Referidos y beneficios próximamente.', 'info')">Referidos y beneficios</p>
-        <p (click)="mostrarToast('Educación financiera: paga a tiempo y controla tu saldo.', 'info')">Educación financiera</p>
-        <p (click)="abrirProducto('simulador')">Simulador de préstamos</p>
+        <p>Programa de lealtad</p>
+        <p>Referidos y beneficios</p>
+        <p>Educación financiera</p>
+        <p>Simulador de préstamos</p>
       </div>
 
       <div>
         <h3>Información</h3>
-        <p (click)="mostrarToast('PrestaFácil es una plataforma académica de gestión de préstamos.', 'info')">Sobre PrestaFácil</p>
-        <p (click)="mostrarToast('Las tasas son configuradas por el administrador del sistema.', 'info')">Tasas y condiciones</p>
-        <p (click)="mostrarToast('Los documentos estarán disponibles en futuras versiones.', 'info')">Políticas y documentos</p>
-        <p (click)="mostrarToast('Consulta estados, pagos y comprobantes dentro del panel.', 'info')">Transparencia</p>
+        <p>Sobre PrestaFácil</p>
+        <p>Tasas y condiciones</p>
+        <p>Políticas y documentos</p>
+        <p>Transparencia</p>
       </div>
 
       <div>
         <h3>Contacto</h3>
         <p>Línea nacional: 018000 123 456</p>
         <p>WhatsApp: 300 123 4567</p>
-        <p (click)="mostrarToast('Puntos de atención próximamente disponibles.', 'info')">Oficinas y puntos de atención</p>
-        <p (click)="mostrarToast('Redes sociales próximamente disponibles.', 'info')">Redes sociales</p>
+        <p>Oficinas y puntos de atención</p>
+        <p>Redes sociales</p>
       </div>
 
     </div>
 
     <div class="footer-bottom">
       <span>© 2026 PrestaFácil S.A.S. Todos los derechos reservados.</span>
-      <span (click)="mostrarToast('Términos y condiciones próximamente disponibles.', 'info')">Términos y condiciones</span>
-      <span (click)="mostrarToast('Aviso de privacidad próximamente disponible.', 'info')">Aviso de privacidad</span>
+      <span>Términos y condiciones</span>
+      <span>Aviso de privacidad</span>
     </div>
 
   </footer>
@@ -684,7 +522,7 @@
       <button
         type="button"
         class="help-option"
-        (click)="mostrarAyuda('Los comprobantes y facturas están disponibles desde el historial de abonos de cada préstamo.')"
+        (click)="mostrarAyuda('Los comprobantes y facturas estarán disponibles desde el historial de abonos de cada préstamo.')"
       >
         Descargar comprobante o factura
       </button>
@@ -701,85 +539,6 @@
 
     <div class="help-footer">
       Línea de atención: 018000 123 456
-    </div>
-
-  </div>
-
-  <!-- MODAL RECUPERAR CONTRASEÑA -->
-  <div class="modal-overlay" *ngIf="modalRecuperacionAbierto">
-
-    <div class="modal-card">
-
-      <div class="modal-header">
-        <div>
-          <span>Recuperación</span>
-          <h2>Restablecer contraseña</h2>
-        </div>
-
-        <button type="button" (click)="cerrarRecuperacion()">×</button>
-      </div>
-
-      <p>
-        Ingresa tu correo registrado. Si existe en el sistema, recibirás instrucciones
-        para recuperar el acceso.
-      </p>
-
-      <div class="form-field">
-        <label>Correo electrónico</label>
-        <div class="input-icon">
-          <span>✉️</span>
-          <input
-            type="email"
-            placeholder="correo@ejemplo.com"
-            [(ngModel)]="correoRecuperacion"
-          />
-        </div>
-      </div>
-
-      <button
-        class="btn-login"
-        type="button"
-        (click)="enviarRecuperacion()"
-      >
-        Enviar solicitud
-      </button>
-
-    </div>
-
-  </div>
-
-  <!-- MODAL SOLICITAR CUENTA -->
-  <div class="modal-overlay" *ngIf="modalRegistroAbierto">
-
-    <div class="modal-card">
-
-      <div class="modal-header">
-        <div>
-          <span>Solicitud de acceso</span>
-          <h2>Crear cuenta cliente</h2>
-        </div>
-
-        <button type="button" (click)="cerrarRegistroCliente()">×</button>
-      </div>
-
-      <p>
-        Para este proyecto, las cuentas de clientes son creadas por el administrador
-        desde el panel de usuarios. Esta solicitud simula el registro inicial.
-      </p>
-
-      <div class="request-box">
-        <strong>¿Qué hará el administrador?</strong>
-        <span>Crear tu cliente, asociar usuario y asignar rol cliente.</span>
-      </div>
-
-      <button
-        class="btn-login"
-        type="button"
-        (click)="solicitarCuentaCliente()"
-      >
-        Enviar solicitud de acceso
-      </button>
-
     </div>
 
   </div>

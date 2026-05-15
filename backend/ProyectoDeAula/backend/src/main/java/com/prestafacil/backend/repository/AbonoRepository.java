@@ -23,6 +23,13 @@ public interface AbonoRepository extends JpaRepository<Abono, Long> {
     // Busca abonos según su estado: PENDIENTE, APROBADO o RECHAZADO.
     List<Abono> findByEstado(String estado);
 
+    List<Abono> findByEstadoAndPrestamoClienteIsNotNullOrderByFechaDesc(String estado);
+
+    List<Abono> findByEstadoAndPrestamoClienteIsNullAndPrestamoEmpresaIdOrderByFechaDesc(
+            String estado,
+            Long empresaId
+    );
+
     // Busca abonos por estado ordenados desde el más reciente.
     List<Abono> findByEstadoOrderByFechaDesc(String estado);
 

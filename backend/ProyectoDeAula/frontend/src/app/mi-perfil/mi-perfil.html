@@ -1,19 +1,25 @@
-<!-- Contenedor principal -->
 <div class="perfil-page">
 
-  <!-- Encabezado de la vista -->
   <section class="page-header">
     <div>
-      <span class="page-eyebrow">Cuenta del cliente</span>
+      <span class="page-eyebrow">
+        {{ esEmpleadoEmpresa() ? 'Cuenta del empleado' : 'Cuenta del cliente' }}
+      </span>
+
       <h1 class="page-title">Mi perfil</h1>
+
       <p class="page-description">
-        Consulta tu información personal y actualiza tus datos de contacto.
+        {{
+        esEmpleadoEmpresa()
+        ? 'Consulta tu información laboral y actualiza tus datos de contacto.'
+        : 'Consulta tu información personal y actualiza tus datos de contacto.'
+        }}
       </p>
     </div>
   </section>
 
-  <!-- Card del perfil -->
-  <section class="perfil-card" *ngIf="cliente">
+  <!-- PERFIL CLIENTE -->
+  <section class="perfil-card" *ngIf="esCliente() && cliente">
 
     <div class="perfil-header">
 
@@ -30,7 +36,6 @@
 
     <div class="perfil-grid">
 
-      <!-- Nombre -->
       <div class="form-field">
         <label>Nombre completo</label>
         <input
@@ -41,7 +46,6 @@
         <small>Este campo no es editable.</small>
       </div>
 
-      <!-- Cédula -->
       <div class="form-field">
         <label>Cédula</label>
         <input
@@ -52,7 +56,6 @@
         <small>Documento de identificación registrado.</small>
       </div>
 
-      <!-- Teléfono -->
       <div class="form-field">
         <label>Teléfono</label>
         <input
@@ -63,7 +66,6 @@
         />
       </div>
 
-      <!-- Dirección -->
       <div class="form-field">
         <label>Dirección</label>
         <input
@@ -76,7 +78,6 @@
 
     </div>
 
-    <!-- Acciones -->
     <div class="form-actions">
       <button
         class="btn-primary"
@@ -87,11 +88,102 @@
       </button>
     </div>
 
-    <!-- Mensaje dinámico -->
-    <div class="alert-message" *ngIf="mensaje">
-      {{ mensaje }}
+  </section>
+
+  <!-- PERFIL EMPLEADO EMPRESA -->
+  <section class="perfil-card" *ngIf="esEmpleadoEmpresa() && empleadoEmpresa">
+
+    <div class="perfil-header">
+
+      <div class="perfil-avatar">
+        {{ empleadoEmpresa.nombre ? empleadoEmpresa.nombre.charAt(0).toUpperCase() : 'E' }}
+      </div>
+
+      <div>
+        <h2>{{ empleadoEmpresa.nombre }}</h2>
+        <p>Empleado registrado por la empresa</p>
+      </div>
+
+    </div>
+
+    <div class="perfil-grid">
+
+      <div class="form-field">
+        <label>Nombre completo</label>
+        <input
+          class="input-modern input-disabled"
+          [value]="empleadoEmpresa.nombre"
+          disabled
+        />
+        <small>Este campo no es editable.</small>
+      </div>
+
+      <div class="form-field">
+        <label>Cédula</label>
+        <input
+          class="input-modern input-disabled"
+          [value]="empleadoEmpresa.cedula"
+          disabled
+        />
+        <small>Documento de identificación registrado.</small>
+      </div>
+
+      <div class="form-field">
+        <label>Cargo</label>
+        <input
+          class="input-modern input-disabled"
+          [value]="empleadoEmpresa.cargo"
+          disabled
+        />
+        <small>Cargo registrado por la empresa.</small>
+      </div>
+
+      <div class="form-field">
+        <label>Correo</label>
+        <input
+          class="input-modern"
+          type="email"
+          [(ngModel)]="empleadoEmpresa.correo"
+          placeholder="Ingrese su correo"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Teléfono</label>
+        <input
+          class="input-modern"
+          type="text"
+          [(ngModel)]="empleadoEmpresa.telefono"
+          placeholder="Ingrese su teléfono"
+        />
+      </div>
+
+      <div class="form-field">
+        <label>Usuario de acceso</label>
+        <input
+          class="input-modern input-disabled"
+          [value]="empleadoEmpresa.usuarioAcceso"
+          disabled
+        />
+        <small>Usuario asignado para iniciar sesión.</small>
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+      <button
+        class="btn-primary"
+        type="button"
+        (click)="guardarCambios()"
+      >
+        Guardar cambios
+      </button>
     </div>
 
   </section>
+
+  <div class="alert-message" *ngIf="mensaje">
+    {{ mensaje }}
+  </div>
 
 </div>

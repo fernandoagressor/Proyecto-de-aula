@@ -1,5 +1,30 @@
 <div class="empresas-page">
+  <div class="mensaje-modal" *ngIf="mensajeVisible">
 
+    <div class="mensaje-card">
+
+      <button class="mensaje-cerrar" type="button" (click)="cerrarMensaje()">
+        ×
+      </button>
+
+      <div class="mensaje-icono">
+        ℹ
+      </div>
+
+      <div class="mensaje-contenido">
+        <h3>{{ mensajeTitulo }}</h3>
+        <p>{{ mensajeTexto }}</p>
+      </div>
+
+      <button class="mensaje-boton" type="button" (click)="cerrarMensaje()">
+        Entendido
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- NAVBAR -->
   <header class="empresas-navbar">
 
     <div class="brand-box">
@@ -22,13 +47,19 @@
 
   </header>
 
+  <!-- HERO -->
   <section class="empresas-hero">
 
+    <div class="hero-bg">
+      <img src="/empresa-hero.png" alt="PrestaFácil Empresas">
+    </div>
+
     <div class="hero-content">
+
       <span class="eyebrow">PRESTAFÁCIL EMPRESAS</span>
 
       <h1>
-        Sistema de préstamos <br />
+        Sistema de préstamos <br>
         internos para empresas
       </h1>
 
@@ -47,12 +78,14 @@
           Ingresar al panel empresarial
         </button>
       </div>
+
     </div>
 
+    <!-- LOGIN EMPRESA -->
     <section class="empresa-login-card" id="loginEmpresaCard">
 
       <div class="empresa-login-header">
-        <span>Acceso seguro empresas</span>
+        <span>ACCESO SEGURO EMPRESAS</span>
         <h2>Ingresa al panel empresarial</h2>
         <p>Accede como empresa o empleado empresarial.</p>
       </div>
@@ -103,59 +136,64 @@
 
   </section>
 
+  <!-- BENEFICIOS -->
   <section class="benefits-section">
-
-    <div class="section-title">
-      <span>Software para empresas</span>
-      <h2>Todo para administrar créditos a empleados</h2>
-      <p>
-        Un sistema diseñado para que una empresa gestione préstamos internos,
-        empleados, pagos, comprobantes y reportes sin depender de procesos manuales.
-      </p>
-    </div>
 
     <div class="benefits-grid">
 
       <article class="benefit-card">
-        <div class="benefit-icon">🏢</div>
-        <h3>Mi empresa</h3>
-        <p>Configura la información de la empresa que usará PrestaFácil como sistema interno.</p>
+        <img src="/empresa-panel.png" alt="Panel empresarial">
+
+        <div class="benefit-content">
+          <div class="benefit-icon">🏢</div>
+
+          <div>
+            <h3>Mi empresa</h3>
+            <p>
+              Configura la información de la empresa que usará
+              PrestaFácil como sistema interno.
+            </p>
+          </div>
+        </div>
       </article>
 
       <article class="benefit-card">
-        <div class="benefit-icon">👷</div>
-        <h3>Empleados</h3>
-        <p>Registra empleados, consulta su información y asocia solicitudes de préstamo.</p>
+        <img src="/empresa-empleados.png" alt="Empleados">
+
+        <div class="benefit-content">
+          <div class="benefit-icon">👤</div>
+
+          <div>
+            <h3>Empleados</h3>
+            <p>
+              Registra empleados, consulta su información
+              y asocia solicitudes de préstamo.
+            </p>
+          </div>
+        </div>
       </article>
 
       <article class="benefit-card">
-        <div class="benefit-icon">💰</div>
-        <h3>Préstamos a empleados</h3>
-        <p>Aprueba créditos internos con saldo, cuotas, estado, historial y control administrativo.</p>
-      </article>
+        <img src="/empresa-pagos.png" alt="Pagos empresariales">
 
-      <article class="benefit-card">
-        <div class="benefit-icon">💳</div>
-        <h3>Pagos de empleados</h3>
-        <p>Permite pagos por PSE simulado, abonos manuales y generación de comprobantes PDF.</p>
-      </article>
+        <div class="benefit-content">
+          <div class="benefit-icon">💳</div>
 
-      <article class="benefit-card">
-        <div class="benefit-icon">📊</div>
-        <h3>Reportes de cartera</h3>
-        <p>Consulta capital prestado, pagos recibidos, saldos pendientes y empleados activos.</p>
-      </article>
-
-      <article class="benefit-card">
-        <div class="benefit-icon">🎧</div>
-        <h3>Atención interna</h3>
-        <p>Canal de soporte para administradores, empleados y responsables de cartera.</p>
+          <div>
+            <h3>Pagos empresariales</h3>
+            <p>
+              Gestiona pagos, abonos, comprobantes PDF
+              y control financiero empresarial.
+            </p>
+          </div>
+        </div>
       </article>
 
     </div>
 
   </section>
 
+  <!-- FLUJO -->
   <section class="flow-section">
 
     <div class="section-title">
@@ -167,46 +205,42 @@
 
       <div class="flow-card">
         <span>1</span>
+        <div class="flow-icon">🏢</div>
         <h3>Empresa configura el sistema</h3>
-        <p>La empresa que adquiere PrestaFácil registra su información y parámetros internos.</p>
+        <p>
+          La empresa que adquiere PrestaFácil registra su información
+          y parámetros internos.
+        </p>
       </div>
 
       <div class="flow-card">
         <span>2</span>
+        <div class="flow-icon">👤</div>
         <h3>Empleado solicita préstamo</h3>
-        <p>El empleado solicita financiación interna desde el portal empresarial.</p>
+        <p>
+          El empleado solicita financiación interna desde el portal empresarial.
+        </p>
       </div>
 
       <div class="flow-card">
         <span>3</span>
+        <div class="flow-icon">✅</div>
         <h3>La empresa aprueba</h3>
-        <p>El administrador empresarial revisa la solicitud, aprueba o rechaza el préstamo.</p>
+        <p>
+          El administrador empresarial revisa la solicitud, aprueba o rechaza el préstamo.
+        </p>
       </div>
 
       <div class="flow-card">
         <span>4</span>
+        <div class="flow-icon">📄</div>
         <h3>Pagos y comprobantes</h3>
-        <p>El empleado paga cuotas o abonos y descarga comprobantes desde el sistema.</p>
+        <p>
+          El empleado paga cuotas o abonos y descarga comprobantes desde el sistema.
+        </p>
       </div>
 
     </div>
-
-  </section>
-
-  <section class="cta-section">
-
-    <div>
-      <span>Solución empresarial</span>
-      <h2>Vende PrestaFácil como sistema de préstamos internos para empresas</h2>
-      <p>
-        Este módulo permite que una empresa administre empleados, préstamos internos,
-        pagos, comprobantes y reportes de cartera desde una sola plataforma.
-      </p>
-    </div>
-
-    <button type="button" (click)="solicitarDemo()">
-      Solicitar demo
-    </button>
 
   </section>
 

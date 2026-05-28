@@ -13,14 +13,18 @@ import { Router } from '@angular/router';
 })
 export class EmpresasComponent {
 
+  loginNombre: string = '';
+  loginPassword: string = '';
+  mensajeLogin: string = '';
+
+  mensajeVisible: boolean = false;
+  mensajeTitulo: string = '';
+  mensajeTexto: string = '';
+
   constructor(
     private usuarioService: UsuarioService,
     private router: Router
   ) {}
-
-  loginNombre: string = '';
-  loginPassword: string = '';
-  mensajeLogin: string = '';
 
   irALoginEmpresa(): void {
     const elemento = document.getElementById('loginEmpresaCard');
@@ -101,11 +105,17 @@ export class EmpresasComponent {
   }
 
   solicitarDemo(): void {
-    alert('Solicitud de demo empresarial recibida. Próximamente se conectará con backend.');
+    this.mostrarMensaje(
+      'PrestaFácil Empresas',
+      'Solicitud de demo empresarial recibida.'
+    );
   }
 
   verProductos(): void {
-    alert('PrestaFácil Empresas es un software para que empresas administren préstamos internos a empleados.');
+    this.mostrarMensaje(
+      'PrestaFácil Empresas',
+      'PrestaFácil Empresas es un software para que empresas administren préstamos internos a empleados.'
+    );
   }
 
   irAPersonas(): void {
@@ -114,10 +124,26 @@ export class EmpresasComponent {
   }
 
   irAPagos(): void {
-    alert('Los pagos de empleados estarán disponibles dentro del panel empresarial.');
+    this.mostrarMensaje(
+      'PrestaFácil Empresas',
+      'Los pagos de empleados estarán disponibles dentro del panel empresarial.'
+    );
   }
 
   irAtencion(): void {
-    alert('Atención empresarial: soporte para empresas que usan PrestaFácil.');
+    this.mostrarMensaje(
+      'PrestaFácil Empresas',
+      'Atención empresarial: soporte para empresas que usan PrestaFácil.'
+    );
+  }
+
+  mostrarMensaje(titulo: string, texto: string): void {
+    this.mensajeTitulo = titulo;
+    this.mensajeTexto = texto;
+    this.mensajeVisible = true;
+  }
+
+  cerrarMensaje(): void {
+    this.mensajeVisible = false;
   }
 }
